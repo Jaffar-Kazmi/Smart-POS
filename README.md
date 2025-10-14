@@ -203,17 +203,6 @@ We welcome contributions from the community! This project is part of an academic
 - Test your changes thoroughly
 - Update documentation as needed
 
-## 📱 Screenshots
-
-### Dashboard
-![Dashboard](https://via.placeholder.com/600x400/E3F2FD/1976D2?text=Sales+Dashboard+with+Charts)
-
-### Point of Sale
-![POS Interface](https://via.placeholder.com/600x400/E8F5E8/2E7D32?text=POS+Interface+with+Product+Grid)
-
-### Product Management
-![Product Management](https://via.placeholder.com/600x400/FFF3E0/F57C00?text=Product+Management+Interface)
-
 ## 🐛 Known Issues
 
 - [ ] Sidebar navigation overflow on smaller screens (fix in progress)
@@ -233,23 +222,10 @@ Based on HCI requirements analysis:
 
 ## 🎓 Academic Project Information
 
-**Course**: Advanced Computer Programming (BSCS 5-1)  
+**Course**: Human Computer Interaction (BSCS 5-1)  
 **Institution**: Riphah International University  
 **Supervisor**: Mr. Hameed Ali  
 **Semester**: Fall 2025
-
-### Team Members
-- **Jaffar Raza Kazmi** - 57375 (Project Lead & Backend Development)
-- **Zain Ali** - 57113 (UI/UX Design & Frontend Development)
-- **Basit Ali** - 54596 (Database Design & Testing)
-- **Sayed Bashar Sial** - 47252 (Documentation & Quality Assurance)
-
-## 📄 Documentation
-
-- [Project Proposal](docs/SmartPOS-Proposal.pdf)
-- [HCI Requirements Analysis](docs/SmartPOS_HCI_Requirements_Analysis.docx)
-- [API Documentation](docs/API.md) *(Coming Soon)*
-- [User Manual](docs/USER_MANUAL.md) *(Coming Soon)*
 
 ## 🔧 System Requirements
 
@@ -270,9 +246,7 @@ Based on HCI requirements analysis:
 
 For support, questions, or feedback:
 
-- **Email**: jaffar.kazmi@example.com
-- **Issues**: [GitHub Issues](https://github.com/yourusername/smartpos-desktop/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/smartpos-desktop/discussions)
+- **Email**: kazmijaffar890@gmail.com
 
 ## 📝 License
 
