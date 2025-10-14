@@ -1,4 +1,4 @@
-# SmartPOS Desktop 🏪
+# SmartPOS Desktop 
 
 [![Flutter Version](https://img.shields.io/badge/Flutter-3.10+-blue.svg)](https://flutter.dev/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://flutter.dev/desktop)
@@ -9,16 +9,14 @@
 
 SmartPOS Desktop is a comprehensive, offline-capable point-of-sale application built with Flutter for Windows, macOS, and Linux. Designed specifically for small retail stores, grocery shops, and local cafes that need a reliable, user-friendly POS solution without dependence on internet connectivity or subscription services.
 
-![SmartPOS Dashboard](https://via.placeholder.com/800x400/2196F3/FFFFFF?text=SmartPOS+Dashboard+Preview)
+## Features
 
-## ✨ Features
-
-### 🔐 **Authentication & User Management**
+### **Authentication & User Management**
 - Role-based authentication (Admin/Cashier)
 - Secure session management with automatic timeout
 - User activity logging and audit trails
 
-### 🛒 **Point of Sale**
+### **Point of Sale**
 - Fast checkout with barcode scanning support
 - Product search and selection
 - Real-time cart management
@@ -26,34 +24,34 @@ SmartPOS Desktop is a comprehensive, offline-capable point-of-sale application b
 - Discount application (percentage & fixed amount)
 - Receipt generation and printing
 
-### 📦 **Inventory Management**
+### **Inventory Management**
 - Real-time stock tracking
 - Low stock alerts and notifications
 - Product categorization and search
 - Bulk inventory updates
 - Cost and profit margin tracking
 
-### 👥 **Customer Management**
+### **Customer Management**
 - Customer database with contact information
 - Purchase history tracking
 - Loyalty points system
 - Customer analytics and insights
 
-### 📊 **Reports & Analytics**
+### **Reports & Analytics**
 - Interactive dashboard with key metrics
 - Daily, weekly, and monthly sales reports
 - Product performance analytics
 - Visual charts and graphs with FL Chart
 - Export capabilities (CSV, PDF)
 
-### 🖥️ **Desktop Optimized**
+### **Desktop Optimized**
 - Native desktop performance
 - Offline-first operation
 - Local SQLite database
 - Material 3 modern UI design
 - Responsive layout with sidebar navigation
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework**: [Flutter 3.10+](https://flutter.dev/) for cross-platform desktop development
 - **Database**: [SQLite](https://www.sqlite.org/) with [sqflite](https://pub.dev/packages/sqflite) for local data storage
@@ -64,7 +62,7 @@ SmartPOS Desktop is a comprehensive, offline-capable point-of-sale application b
 - **Navigation**: [GoRouter](https://pub.dev/packages/go_router) for declarative routing
 - **Architecture**: Clean Architecture with feature-first approach
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -104,7 +102,7 @@ SmartPOS Desktop is a comprehensive, offline-capable point-of-sale application b
    flutter run -d linux
    ```
 
-### 🔑 Demo Credentials
+### Demo Credentials
 
 Use these credentials to test the application:
 
@@ -118,7 +116,7 @@ Use these credentials to test the application:
    - Password: `password`
    - Access: Sales, limited product and customer management
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 lib/
@@ -155,7 +153,7 @@ feature/
 
 ## 🎯 Current Development Status
 
-### ✅ **Completed Features**
+### **Completed Features**
 - [x] Project setup and architecture
 - [x] Database schema and SQLite integration
 - [x] Authentication system with role-based access
@@ -167,7 +165,7 @@ feature/
 - [x] Material 3 UI implementation
 - [x] Responsive sidebar navigation
 
-### 🚧 **In Progress**
+### **In Progress**
 - [ ] Advanced POS features (discounts, multiple payment methods)
 - [ ] Receipt generation and printing
 - [ ] Inventory management enhancements
@@ -175,7 +173,7 @@ feature/
 - [ ] Advanced reporting features
 - [ ] PDF export functionality
 
-### 📋 **Planned Features**
+### **Planned Features**
 - [ ] Barcode scanner integration
 - [ ] Multi-language support
 - [ ] Data backup and restore
@@ -183,7 +181,7 @@ feature/
 - [ ] Plugin system for extensions
 - [ ] Cloud sync capabilities (optional)
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions from the community! This project is part of an academic assignment, but we're open to suggestions and improvements.
 
@@ -203,7 +201,7 @@ We welcome contributions from the community! This project is part of an academic
 - Test your changes thoroughly
 - Update documentation as needed
 
-## 🐛 Known Issues
+## Known Issues
 
 - [ ] Sidebar navigation overflow on smaller screens (fix in progress)
 - [ ] Asset directory warnings during development
@@ -220,14 +218,14 @@ Based on HCI requirements analysis:
 - **Error Rate**: < 2% for transactions
 - **User Training**: < 2 hours for basic proficiency
 
-## 🎓 Academic Project Information
+## Academic Project Information
 
 **Course**: Human Computer Interaction (BSCS 5-1)  
 **Institution**: Riphah International University  
 **Supervisor**: Mr. Hameed Ali  
 **Semester**: Fall 2025
 
-## 🔧 System Requirements
+## System Requirements
 
 ### Minimum Requirements
 - **OS**: Windows 10, macOS 10.14, or Ubuntu 18.04+
@@ -242,17 +240,17 @@ Based on HCI requirements analysis:
 - **Display**: 1920x1080 resolution
 - **Hardware**: Barcode scanner, receipt printer (optional)
 
-## 📞 Support
+## Support
 
 For support, questions, or feedback:
 
 - **Email**: kazmijaffar890@gmail.com
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Mr. Hameed Ali** - Project supervisor and guidance
 - **Flutter Team** - For the amazing cross-platform framework
