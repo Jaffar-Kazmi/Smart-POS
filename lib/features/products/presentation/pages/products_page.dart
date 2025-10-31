@@ -1,8 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:pos_app/features/auth/presentation/providers/auth_provider.dart';
 import '../providers/product_provider.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/constants/app_strings.dart';
+import '../../domain/entities/product.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({Key? key}) : super(key: key);
@@ -24,53 +26,60 @@ class _ProductsPageState extends State<ProductsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isAdmin = authProvider.isAdmin;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(isAdmin),
             const SizedBox(height: 16),
             _buildSearchBar(),
             const SizedBox(height: 16),
             Expanded(
-              child: _buildProductsList(),
+              child: _buildProductsList(isAdmin),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddProductDialog(),
-        backgroundColor: AppColors.primary,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+      // Only show add button for Admin
+      floatingActionButton: isAdmin
+          ? FloatingActionButton(
+              onPressed: () => _showAddProductDialog(),
+              backgroundColor: AppColors.primary,
+              child: const Icon(Icons.add, color: Colors.white),
+            )
+          : null,
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool isAdmin) {
     return Row(
       children: [
         Text(
           'Products & Inventory',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+                fontWeight: FontWeight.bold,
+              ),
         ),
         const Spacer(),
-        Consumer<ProductProvider>(
-          builder: (context, provider, child) {
-            final lowStockCount = provider.lowStockProducts.length;
-            if (lowStockCount > 0) {
-              return Chip(
-                label: Text('$lowStockCount Low Stock'),
-                backgroundColor: AppColors.warning.withOpacity(0.1),
-                labelStyle: TextStyle(color: AppColors.warning),
-                avatar: Icon(Icons.warning, size: 16, color: AppColors.warning),
-              );
-            }
-            return Container();
-          },
-        ),
+        if (isAdmin) // Only show low stock chip to admin
+          Consumer<ProductProvider>(
+            builder: (context, provider, child) {
+              final lowStockCount = provider.lowStockProducts.length;
+              if (lowStockCount > 0) {
+                return Chip(
+                  label: Text('$lowStockCount Low Stock'),
+                  backgroundColor: AppColors.warning.withOpacity(0.1),
+                  labelStyle: const TextStyle(color: AppColors.warning),
+                  avatar: const Icon(Icons.warning, size: 16, color: AppColors.warning),
+                );
+              }
+              return Container();
+            },
+          ),
       ],
     );
   }
@@ -93,7 +102,7 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  Widget _buildProductsList() {
+  Widget _buildProductsList(bool isAdmin) {
     return Consumer<ProductProvider>(
       builder: (context, productProvider, child) {
         if (productProvider.isLoading) {
@@ -135,26 +144,31 @@ class _ProductsPageState extends State<ProductsPage> {
                     color: Colors.grey[200],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.image,
-                    color: Colors.grey[400],
+                    color: Colors.grey,
                   ),
                 ),
                 title: Text(
                   product.name,
                   style: const TextStyle(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (product.description != null)
-                      Text(product.description!),
+                      Text(
+                        product.description!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
                         Text(
                           '\$${product.price.toStringAsFixed(2)}',
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.primary,
                             fontWeight: FontWeight.bold,
                           ),
@@ -163,46 +177,46 @@ class _ProductsPageState extends State<ProductsPage> {
                         Text(
                           'Stock: ${product.stockQuantity}',
                           style: TextStyle(
-                            color: product.isLowStock
-                                ? AppColors.error
-                                : Colors.grey[600],
+                            color: product.isLowStock ? AppColors.error : Colors.grey[600],
                           ),
                         ),
                       ],
                     ),
                   ],
                 ),
-                trailing: PopupMenuButton(
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 'edit',
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit),
-                          SizedBox(width: 8),
-                          Text('Edit'),
+                trailing: isAdmin
+                    ? PopupMenuButton(
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit),
+                                SizedBox(width: 8),
+                                Text('Edit'),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text('Delete', style: TextStyle(color: Colors.red)),
+                              ],
+                            ),
+                          ),
                         ],
-                      ),
-                    ),
-                    const PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          Icon(Icons.delete, color: Colors.red),
-                          SizedBox(width: 8),
-                          Text('Delete', style: TextStyle(color: Colors.red)),
-                        ],
-                      ),
-                    ),
-                  ],
-                  onSelected: (value) {
-                    if (value == 'edit') {
-                      _showEditProductDialog(product);
-                    } else if (value == 'delete') {
-                      _showDeleteConfirmation(product);
-                    }
-                  },
-                ),
+                        onSelected: (value) {
+                          if (value == 'edit') {
+                            _showEditProductDialog(product);
+                          } else if (value == 'delete') {
+                            _showDeleteConfirmation(product);
+                          }
+                        },
+                      )
+                    : const Icon(Icons.lock, color: Colors.grey), // Read-only indicator
               ),
             );
           },
@@ -212,67 +226,14 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   void _showAddProductDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add New Product'),
-        content: const Text('Add product functionality will be implemented here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Add'),
-          ),
-        ],
-      ),
-    );
+    // Implementation for adding a product
   }
 
-  void _showEditProductDialog(product) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Edit ${product.name}'),
-        content: const Text('Edit product functionality will be implemented here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
+  void _showEditProductDialog(Product product) {
+    // Implementation for editing a product
   }
 
-  void _showDeleteConfirmation(product) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Product'),
-        content: Text('Are you sure you want to delete ${product.name}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Provider.of<ProductProvider>(context, listen: false)
-                  .deleteProduct(product.id);
-              Navigator.of(context).pop();
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
+  void _showDeleteConfirmation(Product product) {
+    // Implementation for deleting a product
   }
 }

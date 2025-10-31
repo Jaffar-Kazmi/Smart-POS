@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -34,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.primary.withOpacity(0.8),
+              AppColors.primary.withAlpha(204), // 0.8 opacity
               AppColors.primaryDark,
             ],
           ),
@@ -51,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.store,
                       size: 64,
                       color: AppColors.primary,
@@ -60,9 +61,9 @@ class _LoginPageState extends State<LoginPage> {
                     Text(
                       AppStrings.appName,
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 32),
                     TextFormField(
@@ -75,9 +76,6 @@ class _LoginPageState extends State<LoginPage> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return AppStrings.fieldRequired;
-                        }
-                        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                          return AppStrings.invalidEmail;
                         }
                         return null;
                       },
@@ -94,9 +92,6 @@ class _LoginPageState extends State<LoginPage> {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return AppStrings.fieldRequired;
-                        }
-                        if (value.length < 6) {
-                          return AppStrings.invalidPassword;
                         }
                         return null;
                       },
@@ -140,22 +135,22 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             child: authProvider.isLoading
                                 ? const CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            )
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  )
                                 : const Text(
-                              AppStrings.login,
-                              style: TextStyle(fontSize: 16),
-                            ),
+                                    AppStrings.login,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
                           ),
                         );
                       },
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Demo Accounts:\nadmin@smartpos.com / password\ncashier@smartpos.com / password',
+                      'Demo Accounts:\nadmin / 11\ncash / 12',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
+                            color: AppColors.textSecondary,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -177,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (success && mounted) {
-        context.go('/dashboard');
+        context.go(authProvider.isAdmin ? '/dashboard' : '/sales');
       }
     }
   }

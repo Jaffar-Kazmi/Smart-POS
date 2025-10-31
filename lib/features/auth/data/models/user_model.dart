@@ -1,21 +1,29 @@
-import '../../domain/entities/user.dart';
+
+import 'package:pos_app/features/auth/domain/entities/user.dart';
 
 class UserModel extends User {
   UserModel({
-    required super.id,
-    required super.email,
-    required super.role,
-    required super.name,
-    required super.createdAt,
-    required super.updatedAt,
-  });
+    required int id,
+    required String name,
+    required String email,
+    required String role,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : super(
+          id: id,
+          name: name,
+          email: email,
+          role: role,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+        );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['id'],
+      name: json['name'],
       email: json['email'],
       role: json['role'],
-      name: json['name'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -24,9 +32,9 @@ class UserModel extends User {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'name': name,
       'email': email,
       'role': role,
-      'name': name,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

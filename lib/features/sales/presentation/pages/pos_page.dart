@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/sales_provider.dart';
-import '../../../products/presentation/providers/product_provider.dart';
-import '../../../customers/presentation/providers/customer_provider.dart';
-import '../../../auth/presentation/providers/auth_provider.dart';
-import '../../../../core/constants/app_colors.dart';
+import 'package:pos_app/features/sales/presentation/providers/sales_provider.dart';
+import 'package:pos_app/features/products/presentation/providers/product_provider.dart';
+import 'package:pos_app/features/customers/presentation/providers/customer_provider.dart';
+import 'package:pos_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:pos_app/core/constants/app_colors.dart';
+import 'package:pos_app/features/products/domain/entities/product.dart';
 
 class POSPage extends StatefulWidget {
   const POSPage({Key? key}) : super(key: key);
@@ -22,7 +23,29 @@ class _POSPageState extends State<POSPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ProductProvider>(context, listen: false).loadProducts();
       Provider.of<CustomerProvider>(context, listen: false).loadCustomers();
+      final salesProvider = Provider.of<SalesProvider>(context, listen: false);
+      salesProvider.addListener(_onSalesProviderUpdate);
     });
+  }
+
+  @override
+  void dispose() {
+    Provider.of<SalesProvider>(context, listen: false).removeListener(_onSalesProviderUpdate);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSalesProviderUpdate() {
+    final salesProvider = Provider.of<SalesProvider>(context, listen: false);
+    if (salesProvider.error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(salesProvider.error!),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      salesProvider.clearError();
+    }
   }
 
   @override
@@ -109,18 +132,12 @@ class _POSPageState extends State<POSPage> {
     );
   }
 
-  Widget _buildProductCard(product) {
+  Widget _buildProductCard(Product product) {
     return Card(
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
           Provider.of<SalesProvider>(context, listen: false).addToCart(product);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('${product.name} added to cart'),
-              duration: const Duration(seconds: 1),
-            ),
-          );
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,19 +207,19 @@ class _POSPageState extends State<POSPage> {
   Widget _buildCartHeader() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.primary,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black12,
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
       child: Row(
         children: [
-          Icon(Icons.shopping_cart, color: Colors.white),
+          const Icon(Icons.shopping_cart, color: Colors.white),
           const SizedBox(width: 8),
           Text(
             'Shopping Cart',
@@ -222,7 +239,7 @@ class _POSPageState extends State<POSPage> {
                 ),
                 child: Text(
                   '${salesProvider.cart.length}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
                   ),
@@ -272,7 +289,7 @@ class _POSPageState extends State<POSPage> {
     );
   }
 
-  Widget _buildCartItem(cartItem) {
+  Widget _buildCartItem(CartItem cartItem) {
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       child: Padding(
@@ -286,10 +303,11 @@ class _POSPageState extends State<POSPage> {
                   child: Text(
                     cartItem.product.name,
                     style: Theme.of(context).textTheme.titleSmall,
+                    overflow: TextOverflow.ellipsis, // Add ellipsis for long text
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.delete, color: AppColors.error),
+                  icon: const Icon(Icons.delete, color: AppColors.error),
                   onPressed: () {
                     Provider.of<SalesProvider>(context, listen: false)
                         .removeFromCart(cartItem.product.id);
@@ -305,7 +323,7 @@ class _POSPageState extends State<POSPage> {
                 Row(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.remove),
+                      icon: const Icon(Icons.remove),
                       onPressed: cartItem.quantity > 1 ? () {
                         Provider.of<SalesProvider>(context, listen: false)
                             .updateCartItemQuantity(
@@ -323,7 +341,7 @@ class _POSPageState extends State<POSPage> {
                       child: Text('${cartItem.quantity}'),
                     ),
                     IconButton(
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       onPressed: () {
                         Provider.of<SalesProvider>(context, listen: false)
                             .updateCartItemQuantity(
@@ -340,10 +358,10 @@ class _POSPageState extends State<POSPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Subtotal:'),
+                const Text('Subtotal:'),
                 Text(
                   '\$${cartItem.subtotal.toStringAsFixed(2)}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,
                   ),
@@ -374,7 +392,7 @@ class _POSPageState extends State<POSPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Subtotal:'),
+                  const Text('Subtotal:'),
                   Text('\$${salesProvider.cartSubtotal.toStringAsFixed(2)}'),
                 ],
               ),
@@ -382,7 +400,7 @@ class _POSPageState extends State<POSPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Discount:'),
+                  const Text('Discount:'),
                   Text('-\$${salesProvider.discountAmount.toStringAsFixed(2)}'),
                 ],
               ),
@@ -426,7 +444,7 @@ class _POSPageState extends State<POSPage> {
                   foregroundColor: Colors.white,
                   minimumSize: const Size.fromHeight(48),
                 ),
-                child: Text(
+                child: const Text(
                   'Checkout',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
@@ -441,7 +459,7 @@ class _POSPageState extends State<POSPage> {
             style: OutlinedButton.styleFrom(
               minimumSize: const Size.fromHeight(48),
             ),
-            child: Text('Clear Cart'),
+            child: const Text('Clear Cart'),
           ),
         ],
       ),
@@ -451,12 +469,14 @@ class _POSPageState extends State<POSPage> {
   void _showCheckoutDialog() {
     showDialog(
       context: context,
-      builder: (context) => _CheckoutDialog(),
+      builder: (context) => const _CheckoutDialog(),
     );
   }
 }
 
 class _CheckoutDialog extends StatefulWidget {
+  const _CheckoutDialog({Key? key}) : super(key: key);
+
   @override
   State<_CheckoutDialog> createState() => _CheckoutDialogState();
 }
@@ -468,7 +488,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Checkout'),
+      title: const Text('Checkout'),
       content: SizedBox(
         width: 400,
         child: Column(
@@ -476,7 +496,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
           children: [
             TextField(
               controller: _discountController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Discount Amount',
                 prefixText: '\$',
                 border: OutlineInputBorder(),
@@ -491,7 +511,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
               value: _selectedPaymentMethod,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Payment Method',
                 border: OutlineInputBorder(),
               ),
@@ -502,11 +522,13 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
               ))
                   .toList(),
               onChanged: (value) {
-                setState(() {
-                  _selectedPaymentMethod = value!;
-                });
-                Provider.of<SalesProvider>(context, listen: false)
-                    .setPaymentMethod(value!);
+                if (value != null) {
+                  setState(() {
+                    _selectedPaymentMethod = value;
+                  });
+                  Provider.of<SalesProvider>(context, listen: false)
+                      .setPaymentMethod(value);
+                }
               },
             ),
           ],
@@ -515,7 +537,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         Consumer<SalesProvider>(
           builder: (context, salesProvider, child) {
@@ -526,7 +548,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                 foregroundColor: Colors.white,
               ),
               child: salesProvider.isLoading
-                  ? SizedBox(
+                  ? const SizedBox(
                 width: 16,
                 height: 16,
                 child: CircularProgressIndicator(
@@ -534,7 +556,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
-                  : Text('Complete Sale'),
+                  : const Text('Complete Sale'),
             );
           },
         ),
@@ -551,7 +573,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
     if (success && mounted) {
       Navigator.of(context).pop();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Sale completed successfully!'),
           backgroundColor: AppColors.success,
         ),

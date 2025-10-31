@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
@@ -28,7 +29,7 @@ void main() async {
     await windowManager.ensureInitialized();
     WindowOptions windowOptions = const WindowOptions(
       size: Size(1200, 800),
-      minimumSize: Size(1000, 600),
+      minimumSize: Size(800, 600), // Adjusted for better responsiveness
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
@@ -49,7 +50,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -57,10 +58,18 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
-        ChangeNotifierProvider(create: (_) => ProductProvider()),
-        ChangeNotifierProvider(create: (_) => SalesProvider()),
         ChangeNotifierProvider(create: (_) => CustomerProvider()),
         ChangeNotifierProvider(create: (_) => ReportsProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProxyProvider<ProductProvider, SalesProvider>(
+          create: (context) => SalesProvider(
+            Provider.of<ProductProvider>(context, listen: false),
+          ),
+          update: (context, productProvider, salesProvider) {
+            // This is where you could update the salesProvider if it depends on productProvider
+            return salesProvider ?? SalesProvider(productProvider);
+          },
+        ),
       ],
       child: MaterialApp.router(
         title: 'SmartPOS Desktop',
@@ -75,7 +84,7 @@ class MyApp extends StatelessWidget {
             centerTitle: false,
             elevation: 0,
           ),
-          cardTheme: CardThemeData(  // Fixed: Use CardThemeData instead of CardTheme
+          cardTheme: CardThemeData(
             elevation: 2,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),

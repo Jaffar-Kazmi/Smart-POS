@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/customer_provider.dart';
-import '../../../../core/constants/app_colors.dart';
+import 'package:pos_app/features/customers/presentation/providers/customer_provider.dart';
+import 'package:pos_app/core/constants/app_colors.dart';
+import '../../domain/entities/customer.dart';
 
 class CustomersPage extends StatefulWidget {
   const CustomersPage({Key? key}) : super(key: key);
@@ -96,14 +97,19 @@ class _CustomersPageState extends State<CustomersPage> {
                 title: Text(
                   customer.name,
                   style: const TextStyle(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (customer.email != null)
-                      Text(customer.email!),
+                      Text(customer.email!,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     if (customer.phone != null)
-                      Text(customer.phone!),
+                      Text(customer.phone!,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     Text('Loyalty Points: ${customer.loyaltyPoints}'),
                   ],
                 ),
@@ -166,7 +172,7 @@ class _CustomersPageState extends State<CustomersPage> {
     );
   }
 
-  void _showEditCustomerDialog(customer) {
+  void _showEditCustomerDialog(Customer customer) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -186,7 +192,7 @@ class _CustomersPageState extends State<CustomersPage> {
     );
   }
 
-  void _showDeleteConfirmation(customer) {
+  void _showDeleteConfirmation(Customer customer) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
