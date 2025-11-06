@@ -1,4 +1,3 @@
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'database_tables.dart';
@@ -12,31 +11,20 @@ class DatabaseHelper {
   static DatabaseHelper get instance => _instance;
 
   Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDatabase();
+    _database ??= await _initDatabase();
     return _database!;
   }
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'smartpos.db');
+
     return await openDatabase(
       path,
-      version: 5, // Incremented version to ensure schema is updated safely
+      version: 2,
       onCreate: _createTables,
-      onUpgrade: _onUpgrade, // Non-destructive upgrade
-      onOpen: (db) async {
-        await db.execute("PRAGMA foreign_keys = ON");
-      },
+      onUpgrade: _onUpgrade,
+      onOpen: _insertInitialData,
     );
-  }
-
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // Non-destructive upgrade path. 
-    // If you need to add tables or columns, do it here with ALTER TABLE.
-    if (oldVersion < 5) {
-       // In a real app, you would migrate data. For now, to fix the reset issue,
-       // we ensure that dropping tables does not happen on every version bump.
-    }
   }
 
   Future<void> _createTables(Database db, int version) async {
@@ -46,158 +34,212 @@ class DatabaseHelper {
     await db.execute(DatabaseTables.createCustomersTable);
     await db.execute(DatabaseTables.createSalesTable);
     await db.execute(DatabaseTables.createSaleItemsTable);
-    await _insertMockData(db);
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      try {
+        final info = await db.rawQuery("PRAGMA table_info(users)");
+        final columnNames = info.map((col) => col['name']).toList();
+
+        if (!columnNames.contains('username')) {
+          await db.execute(
+              'ALTER TABLE users ADD COLUMN username TEXT UNIQUE'
+          );
+
+          final users = await db.query('users');
+          for (var user in users) {
+            final email = user['email'] as String;
+            final username = email.split('@');
+
+            try {
+              await db.update(
+                'users',
+                {'username': username},
+                where: 'id = ?',
+                whereArgs: [user['id']],
+              );
+            } catch (e) {
+              print('Error updating username for user ${user['id']}: $e');
+            }
+          }
+        }
+      } catch (e) {
+        print('Error during migration: $e');
+      }
+    }
+  }
+
+  Future<void> _insertInitialData(Database db) async {
+    final userCount = Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM users')
+    ) ?? 0;
+
+    if (userCount == 0) {
+      await _insertMockData(db);
+    }
   }
 
   Future<void> _insertMockData(Database db) async {
-    // Check if users table is empty before inserting mock data
-    final List<Map<String, dynamic>> users = await db.query('users');
-    if (users.isEmpty) {
-      // Insert users
-      await db.insert('users', {
-        'email': 'admin@smartpos.com',
-        'password': 'password',
-        'role': 'Admin',
-        'name': 'System Administrator',
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      });
+    await db.insert('users', {
+      'email': 'admin@smartpos.com',
+      'username': 'admin',
+      'password': 'password',
+      'role': 'Admin',
+      'name': 'System Administrator',
+      'created_at': DateTime.now().toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
+    });
 
-      await db.insert('users', {
-        'email': 'cashier@smartpos.com',
-        'password': 'password',
-        'role': 'Cashier',
-        'name': 'John Cashier',
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      });
+    await db.insert('users', {
+      'email': 'cashier@smartpos.com',
+      'username': 'cashier',
+      'password': 'password',
+      'role': 'Cashier',
+      'name': 'John Cashier',
+      'created_at': DateTime.now().toIso8601String(),
+      'updated_at': DateTime.now().toIso8601String(),
+    });
+  }
 
-      await db.insert('users', {
-        'email': 'admin',
-        'password': '11',
-        'role': 'Admin',
-        'name': 'Admin',
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      });
+  Future<bool> emailExists(String email) async {
+    final db = await database;
+    final result = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+    return result.isNotEmpty;
+  }
 
-      await db.insert('users', {
-        'email': 'cash',
-        'password': '12',
-        'role': 'Cashier',
-        'name': 'Cashier',
-        'created_at': DateTime.now().toIso8601String(),
-        'updated_at': DateTime.now().toIso8601String(),
-      });
+  Future<bool> usernameExists(String username) async {
+    final db = await database;
+    final result = await db.query(
+      'users',
+      where: 'username = ?',
+      whereArgs: [username],
+    );
+    return result.isNotEmpty;
+  }
 
-      // Insert categories and other mock data as before
-      List<Map<String, dynamic>> categories = [
-      {'name': 'Electronics', 'description': 'Electronic devices and accessories'},
-      {'name': 'Clothing', 'description': 'Apparel and fashion items'},
-      {'name': 'Home & Garden', 'description': 'Home improvement and garden supplies'},
-      {'name': 'Books', 'description': 'Books and educational materials'},
-      {'name': 'Sports', 'description': 'Sports equipment and accessories'},
-    ];
+  Future<bool> registerUser({
+    required String name,
+    required String email,
+    required String username,
+    required String password,
+    required String role,
+  }) async {
+    try {
+      final db = await database;
 
-    for (var category in categories) {
-      category['created_at'] = DateTime.now().toIso8601String();
-      category['updated_at'] = DateTime.now().toIso8601String();
-      await db.insert('categories', category);
-    }
-
-    List<Map<String, dynamic>> products = [
-      {
-        'name': 'Wireless Bluetooth Headphones',
-        'description': 'High-quality wireless headphones with noise cancellation',
-        'price': 89.99,
-        'cost': 45.00,
-        'stock_quantity': 100, 
-        'min_stock': 5,
-        'category_id': 1,
-        'barcode': '1234567890123',
-        'image_path': '/images/headphones.png',
-      },
-      {
-        'name': 'Cotton T-Shirt',
-        'description': 'Comfortable cotton t-shirt in various colors',
-        'price': 19.99,
-        'cost': 8.00,
-        'stock_quantity': 100, 
-        'min_stock': 10,
-        'category_id': 2,
-        'barcode': '1234567890124',
-        'image_path': '/images/tshirt.png',
-      },
-      {
-        'name': 'LED Desk Lamp',
-        'description': 'Adjustable LED desk lamp with USB charging',
-        'price': 34.99,
-        'cost': 18.00,
-        'stock_quantity': 100, 
-        'min_stock': 3,
-        'category_id': 3,
-        'barcode': '1234567890125',
-        'image_path': '/images/desklamp.png',
-      },
-      {
-        'name': 'Programming Book - Flutter Development',
-        'description': 'Complete guide to Flutter app development',
-        'price': 49.99,
-        'cost': 25.00,
-        'stock_quantity': 100, 
-        'min_stock': 2,
-        'category_id': 4,
-        'barcode': '1234567890126',
-        'image_path': '/images/book.png',
-      },
-      {
-        'name': 'Yoga Mat',
-        'description': 'Non-slip yoga mat with carrying strap',
-        'price': 29.99,
-        'cost': 15.00,
-        'stock_quantity': 100, 
-        'min_stock': 3,
-        'category_id': 5,
-        'barcode': '1234567890127',
-        'image_path': '/images/yogamat.png',
-      },
-    ];
-
-    for (var product in products) {
-      product['created_at'] = DateTime.now().toIso8601String();
-      product['updated_at'] = DateTime.now().toIso8601String();
-      await db.insert('products', product);
-    }
-
-    List<Map<String, dynamic>> customers = [
-      {
-        'name': 'Alice Johnson',
-        'email': 'alice.johnson@email.com',
-        'phone': '+1-555-0123',
-        'address': '123 Main St, Anytown, ST 12345',
-        'loyalty_points': 120,
-      },
-      {
-        'name': 'Bob Smith',
-        'email': 'bob.smith@email.com',
-        'phone': '+1-555-0124',
-        'address': '456 Oak Ave, Somewhere, ST 12346',
-        'loyalty_points': 85,
-      },
-      {
-        'name': 'Carol Davis',
-        'email': 'carol.davis@email.com',
-        'phone': '+1-555-0125',
-        'address': '789 Pine Rd, Elsewhere, ST 12347',
-        'loyalty_points': 200,
-      },
-    ];
-
-    for (var customer in customers) {
-      customer['created_at'] = DateTime.now().toIso8601String();
-      customer['updated_at'] = DateTime.now().toIso8601String();
-      await db.insert('customers', customer);
+      if (await emailExists(email) || await usernameExists(username)) {
+        return false;
       }
+
+      await db.insert('users', {
+        'name': name,
+        'email': email,
+        'username': username,
+        'password': password,
+        'role': role,
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      print('User registered successfully: $username');
+      return true;
+    } catch (e) {
+      print('Error registering user: $e');
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> loginUser(String identifier, String password) async {
+    try {
+      final db = await database;
+
+      final result = await db.query(
+        'users',
+        where: '(email = ? OR username = ?) AND password = ?',
+        whereArgs: [identifier, identifier, password],
+      );
+
+      if (result.isNotEmpty) {
+        print('User logged in successfully: $identifier');
+        return result.first;
+      }
+
+      print('Invalid email/username or password');
+      return null;
+    } catch (e) {
+      print('Error logging in user: $e');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserById(int id) async {
+    try {
+      final db = await database;
+      final result = await db.query(
+        'users',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      return result.isNotEmpty ? result.first : null;
+    } catch (e) {
+      print('Error getting user by ID: $e');
+      return null;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
+    try {
+      final db = await database;
+      return await db.query('users');
+    } catch (e) {
+      print('Error getting all users: $e');
+      return [];
+    }
+  }
+
+  Future<bool> updateUser(int id, Map<String, dynamic> values) async {
+    try {
+      final db = await database;
+      values['updated_at'] = DateTime.now().toIso8601String();
+
+      final result = await db.update(
+        'users',
+        values,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+
+      return result > 0;
+    } catch (e) {
+      print('Error updating user: $e');
+      return false;
+    }
+  }
+
+  Future<bool> deleteUser(int id) async {
+    try {
+      final db = await database;
+      final result = await db.delete(
+        'users',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      return result > 0;
+    } catch (e) {
+      print('Error deleting user: $e');
+      return false;
+    }
+  }
+
+  Future<void> close() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
     }
   }
 }
