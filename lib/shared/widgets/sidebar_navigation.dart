@@ -38,26 +38,18 @@ class SidebarNavigation extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       height: 64,
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
         color: AppColors.primary,
       ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.store,
+      child: Center(
+        child: Text(
+          'SmartPOS',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white,
-            size: 32,
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(width: 12),
-          Text(
-            AppStrings.appName,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -70,68 +62,72 @@ class SidebarNavigation extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        // Dashboard - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
             icon: Icons.dashboard,
-            title: AppStrings.dashboard,
+            title: 'Dashboard',
             path: '/dashboard',
             isSelected: currentPath == '/dashboard',
           ),
 
-        // Sales - Both roles
         _buildNavigationItem(
           context,
           icon: Icons.shopping_cart,
-          title: AppStrings.sales,
+          title: 'Sales',
           path: '/sales',
           isSelected: currentPath == '/sales',
         ),
 
-        // Products - Both roles (different permissions inside)
         _buildNavigationItem(
           context,
           icon: Icons.inventory,
-          title: AppStrings.products,
+          title: 'Products',
           path: '/products',
           isSelected: currentPath == '/products',
         ),
 
-        // Customers - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
             icon: Icons.people,
-            title: AppStrings.customers,
+            title: 'Customers',
             path: '/customers',
             isSelected: currentPath == '/customers',
           ),
 
-        // Reports - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
             icon: Icons.analytics,
-            title: AppStrings.reports,
+            title: 'Reports',
             path: '/reports',
             isSelected: currentPath == '/reports',
           ),
 
         const Divider(height: 32),
 
-        // Settings - Admin only
+        if (isAdmin)
+          _buildNavigationItem(
+            context,
+            icon: Icons.person_add,
+            title: 'User Management',
+            path: '/admin/users',
+            isSelected: currentPath == '/admin/users',
+          ),
+
         if (isAdmin)
           _buildNavigationItem(
             context,
             icon: Icons.settings,
-            title: AppStrings.settings,
+            title: 'Settings',
             path: '/settings',
             isSelected: currentPath == '/settings',
           ),
       ],
     );
   }
+
 
   Widget _buildNavigationItem(
       BuildContext context, {
