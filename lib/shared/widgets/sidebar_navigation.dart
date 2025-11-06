@@ -38,7 +38,7 @@ class SidebarNavigation extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Container(
       height: 64,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: const BoxDecoration(
         color: AppColors.primary,
       ),
@@ -47,9 +47,9 @@ class SidebarNavigation extends StatelessWidget {
           const Icon(
             Icons.store,
             color: Colors.white,
-            size: 32,
+            size: 24,
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 8),
           Text(
             AppStrings.appName,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
@@ -75,7 +75,7 @@ class SidebarNavigation extends StatelessWidget {
           _buildNavigationItem(
             context,
             icon: Icons.dashboard,
-            title: AppStrings.dashboard,
+            title: 'Dashboard',
             path: '/dashboard',
             isSelected: currentPath == '/dashboard',
           ),
@@ -84,16 +84,16 @@ class SidebarNavigation extends StatelessWidget {
         _buildNavigationItem(
           context,
           icon: Icons.shopping_cart,
-          title: AppStrings.sales,
+          title: 'Sales',
           path: '/sales',
           isSelected: currentPath == '/sales',
         ),
 
-        // Products - Both roles (different permissions inside)
+        // Products - Both roles
         _buildNavigationItem(
           context,
           icon: Icons.inventory,
-          title: AppStrings.products,
+          title: 'Products',
           path: '/products',
           isSelected: currentPath == '/products',
         ),
@@ -103,7 +103,7 @@ class SidebarNavigation extends StatelessWidget {
           _buildNavigationItem(
             context,
             icon: Icons.people,
-            title: AppStrings.customers,
+            title: 'Customers',
             path: '/customers',
             isSelected: currentPath == '/customers',
           ),
@@ -113,25 +113,36 @@ class SidebarNavigation extends StatelessWidget {
           _buildNavigationItem(
             context,
             icon: Icons.analytics,
-            title: AppStrings.reports,
+            title: 'Reports',
             path: '/reports',
             isSelected: currentPath == '/reports',
           ),
 
         const Divider(height: 32),
 
+        // User Management - Admin only (NEW)
+        if (isAdmin)
+          _buildNavigationItem(
+            context,
+            icon: Icons.person_add,
+            title: 'User Management',
+            path: '/admin/users',
+            isSelected: currentPath == '/admin/users',
+          ),
+
         // Settings - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
             icon: Icons.settings,
-            title: AppStrings.settings,
+            title: 'Settings',
             path: '/settings',
             isSelected: currentPath == '/settings',
           ),
       ],
     );
   }
+
 
   Widget _buildNavigationItem(
       BuildContext context, {
