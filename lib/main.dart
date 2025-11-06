@@ -12,6 +12,7 @@ import 'features/products/presentation/providers/product_provider.dart';
 import 'features/sales/presentation/providers/sales_provider.dart';
 import 'features/customers/presentation/providers/customer_provider.dart';
 import 'features/reports/presentation/providers/reports_provider.dart';
+import 'features/admin/presentation/providers/user_management_provider.dart';
 import 'shared/navigation/app_router.dart';
 import 'core/constants/app_colors.dart';
 
@@ -58,18 +59,15 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
-        ChangeNotifierProvider(create: (_) => CustomerProvider()),
-        ChangeNotifierProvider(create: (_) => ReportsProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
-        ChangeNotifierProxyProvider<ProductProvider, SalesProvider>(
+        ChangeNotifierProvider(
           create: (context) => SalesProvider(
             Provider.of<ProductProvider>(context, listen: false),
           ),
-          update: (context, productProvider, salesProvider) {
-            // This is where you could update the salesProvider if it depends on productProvider
-            return salesProvider ?? SalesProvider(productProvider);
-          },
         ),
+        ChangeNotifierProvider(create: (_) => CustomerProvider()),
+        ChangeNotifierProvider(create: (_) => ReportsProvider()),
+        ChangeNotifierProvider(create: (_) => UserManagementProvider()),
       ],
       child: MaterialApp.router(
         title: 'SmartPOS Desktop',

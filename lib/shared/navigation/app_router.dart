@@ -1,15 +1,17 @@
-
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import 'package:pos_app/features/auth/presentation/pages/login_page.dart';
-import 'package:pos_app/features/auth/presentation/providers/auth_provider.dart';
-import 'package:pos_app/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:pos_app/features/products/presentation/pages/products_page.dart';
-import 'package:pos_app/features/sales/presentation/pages/pos_page.dart';
-import 'package:pos_app/features/customers/presentation/pages/customers_page.dart';
-import 'package:pos_app/features/reports/presentation/pages/reports_page.dart';
-import 'package:pos_app/shared/widgets/main_layout.dart';
+import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/providers/auth_provider.dart';
+import '../../features/admin/presentation/pages/user_management_page.dart';
+import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/products/presentation/pages/products_page.dart';
+import '../../features/sales/presentation/pages/pos_page.dart';
+import '../../features/customers/presentation/pages/customers_page.dart';
+import '../../features/reports/presentation/pages/reports_page.dart';
+import '../widgets/main_layout.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -17,31 +19,25 @@ class AppRouter {
     redirect: (context, state) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final isLoggedIn = authProvider.isLoggedIn;
-      final isAdmin = authProvider.isAdmin;
 
-      final isLoggingIn = state.uri.path == '/login';
-
-      // If not logged in, redirect to login page
-      if (!isLoggedIn && !isLoggingIn) {
+      if (!isLoggedIn && state.uri.path != '/login' && state.uri.path != '/register') {
         return '/login';
       }
 
-      // If logged in and trying to access login page, redirect to appropriate home screen
-      if (isLoggedIn && isLoggingIn) {
-        return isAdmin ? '/dashboard' : '/sales';
+      if (isLoggedIn && state.uri.path == '/login') {
+        return '/dashboard';
       }
 
-      // Prevent non-admins from accessing admin routes
-      if (!isAdmin && _isAdminRoute(state.uri.path)) {
-        return '/sales'; // Redirect to sales page
-      }
-
-      return null; // No redirect needed
+      return null;
     },
     routes: [
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterPage(),
       ),
       ShellRoute(
         builder: (context, state, child) => MainLayout(
@@ -69,20 +65,14 @@ class AppRouter {
             path: '/reports',
             builder: (context, state) => const ReportsPage(),
           ),
+          GoRoute(
+            path: '/admin/users',
+            builder: (context, state) => const UserManagementPage(),
+          ),
         ],
       ),
     ],
   );
-
-  static bool _isAdminRoute(String path) {
-    const adminRoutes = [
-      '/dashboard',
-      '/customers',
-      '/reports',
-      '/settings', // Assuming you have a settings page
-    ];
-    return adminRoutes.contains(path);
-  }
 
   static String _getTitleFromPath(String path) {
     switch (path) {
@@ -96,6 +86,8 @@ class AppRouter {
         return 'Customer Management';
       case '/reports':
         return 'Reports & Analytics';
+      case '/admin/users':
+        return 'User Management';
       default:
         return 'SmartPOS Desktop';
     }
