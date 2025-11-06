@@ -39,25 +39,17 @@ class SidebarNavigation extends StatelessWidget {
     return Container(
       height: 64,
       padding: const EdgeInsets.all(12),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: AppColors.primary,
       ),
-      child: Row(
-        children: [
-          const Icon(
-            Icons.store,
+      child: Center(
+        child: Text(
+          'SmartPOS',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
             color: Colors.white,
-            size: 24,
+            fontWeight: FontWeight.bold,
           ),
-          const SizedBox(width: 8),
-          Text(
-            AppStrings.appName,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -70,7 +62,6 @@ class SidebarNavigation extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        // Dashboard - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
@@ -80,7 +71,6 @@ class SidebarNavigation extends StatelessWidget {
             isSelected: currentPath == '/dashboard',
           ),
 
-        // Sales - Both roles
         _buildNavigationItem(
           context,
           icon: Icons.shopping_cart,
@@ -89,7 +79,6 @@ class SidebarNavigation extends StatelessWidget {
           isSelected: currentPath == '/sales',
         ),
 
-        // Products - Both roles
         _buildNavigationItem(
           context,
           icon: Icons.inventory,
@@ -98,7 +87,6 @@ class SidebarNavigation extends StatelessWidget {
           isSelected: currentPath == '/products',
         ),
 
-        // Customers - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
@@ -108,7 +96,6 @@ class SidebarNavigation extends StatelessWidget {
             isSelected: currentPath == '/customers',
           ),
 
-        // Reports - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
@@ -120,7 +107,6 @@ class SidebarNavigation extends StatelessWidget {
 
         const Divider(height: 32),
 
-        // User Management - Admin only (NEW)
         if (isAdmin)
           _buildNavigationItem(
             context,
@@ -130,7 +116,6 @@ class SidebarNavigation extends StatelessWidget {
             isSelected: currentPath == '/admin/users',
           ),
 
-        // Settings - Admin only
         if (isAdmin)
           _buildNavigationItem(
             context,
