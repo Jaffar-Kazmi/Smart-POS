@@ -24,10 +24,9 @@ class ProductProvider extends ChangeNotifier {
     try {
       _products = await _repository.getAllProducts();
       _applyFilter();
-      _isLoading = false;
-      notifyListeners();
     } catch (e) {
       _error = e.toString();
+    } finally {
       _isLoading = false;
       notifyListeners();
     }
@@ -54,7 +53,7 @@ class ProductProvider extends ChangeNotifier {
   Future<bool> addProduct(Product product) async {
     try {
       await _repository.addProduct(product);
-      await loadProducts();
+      await loadProducts(); // Refresh the list
       return true;
     } catch (e) {
       _error = e.toString();
@@ -66,7 +65,7 @@ class ProductProvider extends ChangeNotifier {
   Future<bool> updateProduct(Product product) async {
     try {
       await _repository.updateProduct(product);
-      await loadProducts();
+      await loadProducts(); // Refresh the list
       return true;
     } catch (e) {
       _error = e.toString();
@@ -78,12 +77,22 @@ class ProductProvider extends ChangeNotifier {
   Future<bool> deleteProduct(int productId) async {
     try {
       await _repository.deleteProduct(productId);
-      await loadProducts();
+      await loadProducts(); // Refresh the list
       return true;
     } catch (e) {
       _error = e.toString();
       notifyListeners();
       return false;
+    }
+  }
+
+  // New method for real-time stock updates
+  void updateProductStock(int productId, int newStock) {
+    final productIndex = _products.indexWhere((p) => p.id == productId);
+    if (productIndex != -1) {
+      _products[productIndex] = _products[productIndex].copyWith(stockQuantity: newStock);
+      _applyFilter();
+      notifyListeners();
     }
   }
 }

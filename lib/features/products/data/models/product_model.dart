@@ -1,28 +1,42 @@
-import '../../domain/entities/product.dart';
+
+import 'package:pos_app/features/products/domain/entities/product.dart';
 
 class ProductModel extends Product {
   ProductModel({
-    required super.id,
-    required super.name,
-    super.description,
-    required super.price,
-    required super.cost,
-    required super.stockQuantity,
-    required super.minStock,
-    super.categoryId,
-    super.barcode,
-    super.imagePath,
-    required super.createdAt,
-    required super.updatedAt,
-  });
+    required int id,
+    required String name,
+    String? description,
+    required double price,
+    required double cost,
+    required int stockQuantity,
+    required int minStock,
+    int? categoryId,
+    String? barcode,
+    String? imagePath,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : super(
+          id: id,
+          name: name,
+          description: description,
+          price: price,
+          cost: cost,
+          stockQuantity: stockQuantity,
+          minStock: minStock,
+          categoryId: categoryId,
+          barcode: barcode,
+          imagePath: imagePath,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+        );
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
     return ProductModel(
       id: json['id'],
       name: json['name'],
       description: json['description'],
-      price: json['price']?.toDouble() ?? 0.0,
-      cost: json['cost']?.toDouble() ?? 0.0,
+      price: json['price'],
+      cost: json['cost'],
       stockQuantity: json['stock_quantity'],
       minStock: json['min_stock'],
       categoryId: json['category_id'],
@@ -48,5 +62,36 @@ class ProductModel extends Product {
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
+  }
+
+  @override
+  ProductModel copyWith({
+    int? id,
+    String? name,
+    String? description,
+    double? price,
+    double? cost,
+    int? stockQuantity,
+    int? minStock,
+    int? categoryId,
+    String? barcode,
+    String? imagePath,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return ProductModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      cost: cost ?? this.cost,
+      stockQuantity: stockQuantity ?? this.stockQuantity,
+      minStock: minStock ?? this.minStock,
+      categoryId: categoryId ?? this.categoryId,
+      barcode: barcode ?? this.barcode,
+      imagePath: imagePath ?? this.imagePath,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
   }
 }

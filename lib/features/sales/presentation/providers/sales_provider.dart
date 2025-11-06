@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:pos_app/features/products/presentation/providers/product_provider.dart';
 import '../../domain/entities/sale.dart';
 import '../../domain/entities/sale_item.dart';
 import '../../../products/domain/entities/product.dart';
@@ -16,6 +18,7 @@ class CartItem {
 
 class SalesProvider extends ChangeNotifier {
   final SalesRepositoryImpl _repository = SalesRepositoryImpl();
+  final ProductProvider _productProvider;
 
   List<Sale> _sales = [];
   List<CartItem> _cart = [];
@@ -24,6 +27,8 @@ class SalesProvider extends ChangeNotifier {
   String _paymentMethod = 'Cash';
   bool _isLoading = false;
   String? _error;
+
+  SalesProvider(this._productProvider);
 
   List<Sale> get sales => _sales;
   List<CartItem> get cart => _cart;
@@ -36,13 +41,31 @@ class SalesProvider extends ChangeNotifier {
   double get cartSubtotal => _cart.fold(0, (sum, item) => sum + item.subtotal);
   double get cartTotal => cartSubtotal - _discountAmount;
 
-  void addToCart(Product product) {
-    final existingIndex = _cart.indexWhere((item) => item.product.id == product.id);
+  int getCartItemQuantity(int productId) {
+    try {
+      return _cart.firstWhere((item) => item.product.id == productId).quantity;
+    } catch (e) {
+      return 0;
+    }
+  }
 
+  void addToCart(Product product) {
+    _error = null;
+
+    final productInState = _productProvider.products.firstWhere((p) => p.id == product.id);
+    final cartQuantity = getCartItemQuantity(product.id);
+
+    if (cartQuantity >= productInState.stockQuantity) {
+      _error = 'Cannot add more items than available in stock.';
+      notifyListeners();
+      return;
+    }
+
+    final existingIndex = _cart.indexWhere((item) => item.product.id == product.id);
     if (existingIndex != -1) {
       _cart[existingIndex].quantity++;
     } else {
-      _cart.add(CartItem(product: product));
+      _cart.add(CartItem(product: productInState));
     }
 
     notifyListeners();
@@ -56,6 +79,15 @@ class SalesProvider extends ChangeNotifier {
   void updateCartItemQuantity(int productId, int quantity) {
     final index = _cart.indexWhere((item) => item.product.id == productId);
     if (index != -1) {
+      final product = _cart[index].product;
+      final productInState = _productProvider.products.firstWhere((p) => p.id == product.id);
+
+      if (quantity > productInState.stockQuantity) {
+        _error = 'Cannot set quantity higher than available stock.';
+        notifyListeners();
+        return;
+      }
+
       if (quantity > 0) {
         _cart[index].quantity = quantity;
       } else {
@@ -71,6 +103,10 @@ class SalesProvider extends ChangeNotifier {
     _discountAmount = 0;
     _paymentMethod = 'Cash';
     notifyListeners();
+  }
+
+  void clearError() {
+    _error = null;
   }
 
   void setSelectedCustomer(Customer? customer) {
@@ -96,7 +132,6 @@ class SalesProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Create sale items list
       final List<SaleItem> saleItems = _cart.map((cartItem) => SaleItem(
         id: 0,
         saleId: 0,
@@ -106,14 +141,13 @@ class SalesProvider extends ChangeNotifier {
         subtotal: cartItem.subtotal,
       )).toList();
 
-      // Create sale object
       final sale = Sale(
-        id: 0, // Will be assigned by database
+        id: 0,
         customerId: _selectedCustomer?.id,
         userId: userId,
         totalAmount: cartTotal,
         discountAmount: _discountAmount,
-        taxAmount: 0, // You can calculate tax here
+        taxAmount: 0,
         paymentMethod: _paymentMethod,
         status: 'Completed',
         createdAt: DateTime.now(),
@@ -122,6 +156,13 @@ class SalesProvider extends ChangeNotifier {
       );
 
       await _repository.addSale(sale);
+
+      // Update product stock in the UI
+      for (var item in sale.items) {
+        final product = _productProvider.products.firstWhere((p) => p.id == item.productId);
+        _productProvider.updateProductStock(item.productId, product.stockQuantity - item.quantity);
+      }
+
       clearCart();
       await loadSales();
 
@@ -136,7 +177,6 @@ class SalesProvider extends ChangeNotifier {
     }
   }
 
-
   Future<void> loadSales() async {
     _isLoading = true;
     _error = null;
@@ -144,10 +184,9 @@ class SalesProvider extends ChangeNotifier {
 
     try {
       _sales = await _repository.getAllSales();
-      _isLoading = false;
-      notifyListeners();
     } catch (e) {
       _error = e.toString();
+    } finally {
       _isLoading = false;
       notifyListeners();
     }

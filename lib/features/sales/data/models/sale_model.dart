@@ -1,41 +1,63 @@
-import '../../domain/entities/sale.dart';
-import '../../domain/entities/sale_item.dart';
+
+import 'package:pos_app/features/sales/domain/entities/sale.dart';
+import 'package:pos_app/features/sales/domain/entities/sale_item.dart';
 import 'sale_item_model.dart';
 
 class SaleModel extends Sale {
   SaleModel({
-    required super.id,
-    super.customerId,
-    required super.userId,
-    required super.totalAmount,
-    required super.discountAmount,
-    required super.taxAmount,
-    required super.paymentMethod,
-    required super.status,
-    required super.createdAt,
-    required super.updatedAt,
-    required super.items,
-  });
+    required int id,
+    int? customerId,
+    required int userId,
+    required double totalAmount,
+    required double discountAmount,
+    required double taxAmount,
+    required String paymentMethod,
+    required String status,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required List<SaleItem> items,
+  }) : super(
+          id: id,
+          customerId: customerId,
+          userId: userId,
+          totalAmount: totalAmount,
+          discountAmount: discountAmount,
+          taxAmount: taxAmount,
+          paymentMethod: paymentMethod,
+          status: status,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          items: items,
+        );
 
   factory SaleModel.fromJson(Map<String, dynamic> json, List<Map<String, dynamic>> itemsJson) {
-    // Convert SaleItemModel list to SaleItem list
-    final List<SaleItem> saleItems = itemsJson
-        .map((item) => SaleItemModel.fromJson(item))
-        .cast<SaleItem>()
-        .toList();
-
     return SaleModel(
       id: json['id'],
       customerId: json['customer_id'],
       userId: json['user_id'],
-      totalAmount: json['total_amount']?.toDouble() ?? 0.0,
-      discountAmount: json['discount_amount']?.toDouble() ?? 0.0,
-      taxAmount: json['tax_amount']?.toDouble() ?? 0.0,
+      totalAmount: json['total_amount'],
+      discountAmount: json['discount_amount'],
+      taxAmount: json['tax_amount'],
       paymentMethod: json['payment_method'],
       status: json['status'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      items: saleItems,
+      items: itemsJson.map((item) => SaleItemModel.fromJson(item)).toList(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'customer_id': customerId,
+      'user_id': userId,
+      'total_amount': totalAmount,
+      'discount_amount': discountAmount,
+      'tax_amount': taxAmount,
+      'payment_method': paymentMethod,
+      'status': status,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
   }
 }

@@ -1,3 +1,4 @@
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'database_tables.dart';
@@ -11,64 +12,86 @@ class DatabaseHelper {
   static DatabaseHelper get instance => _instance;
 
   Future<Database> get database async {
-    _database ??= await _initDatabase();
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
     return _database!;
   }
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'smartpos.db');
-
     return await openDatabase(
       path,
-      version: 1,
+      version: 5, // Incremented version to ensure schema is updated safely
       onCreate: _createTables,
-      onOpen: _insertInitialData,
+      onUpgrade: _onUpgrade, // Non-destructive upgrade
+      onOpen: (db) async {
+        await db.execute("PRAGMA foreign_keys = ON");
+      },
     );
   }
 
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    // Non-destructive upgrade path. 
+    // If you need to add tables or columns, do it here with ALTER TABLE.
+    if (oldVersion < 5) {
+       // In a real app, you would migrate data. For now, to fix the reset issue,
+       // we ensure that dropping tables does not happen on every version bump.
+    }
+  }
+
   Future<void> _createTables(Database db, int version) async {
-    // Create all tables
     await db.execute(DatabaseTables.createUsersTable);
     await db.execute(DatabaseTables.createCategoriesTable);
     await db.execute(DatabaseTables.createProductsTable);
     await db.execute(DatabaseTables.createCustomersTable);
     await db.execute(DatabaseTables.createSalesTable);
     await db.execute(DatabaseTables.createSaleItemsTable);
-  }
-
-  Future<void> _insertInitialData(Database db) async {
-    // Check if data already exists
-    final userCount = Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM users')
-    ) ?? 0;
-
-    if (userCount == 0) {
-      await _insertMockData(db);
-    }
+    await _insertMockData(db);
   }
 
   Future<void> _insertMockData(Database db) async {
-    // Insert users
-    await db.insert('users', {
-      'email': 'admin@smartpos.com',
-      'password': 'password',
-      'role': 'Admin',
-      'name': 'System Administrator',
-      'created_at': DateTime.now().toIso8601String(),
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+    // Check if users table is empty before inserting mock data
+    final List<Map<String, dynamic>> users = await db.query('users');
+    if (users.isEmpty) {
+      // Insert users
+      await db.insert('users', {
+        'email': 'admin@smartpos.com',
+        'password': 'password',
+        'role': 'Admin',
+        'name': 'System Administrator',
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      });
 
-    await db.insert('users', {
-      'email': 'cashier@smartpos.com',
-      'password': 'password',
-      'role': 'Cashier',
-      'name': 'John Cashier',
-      'created_at': DateTime.now().toIso8601String(),
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+      await db.insert('users', {
+        'email': 'cashier@smartpos.com',
+        'password': 'password',
+        'role': 'Cashier',
+        'name': 'John Cashier',
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      });
 
-    // Insert categories
-    List<Map<String, dynamic>> categories = [
+      await db.insert('users', {
+        'email': 'admin',
+        'password': '11',
+        'role': 'Admin',
+        'name': 'Admin',
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      await db.insert('users', {
+        'email': 'cash',
+        'password': '12',
+        'role': 'Cashier',
+        'name': 'Cashier',
+        'created_at': DateTime.now().toIso8601String(),
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+
+      // Insert categories and other mock data as before
+      List<Map<String, dynamic>> categories = [
       {'name': 'Electronics', 'description': 'Electronic devices and accessories'},
       {'name': 'Clothing', 'description': 'Apparel and fashion items'},
       {'name': 'Home & Garden', 'description': 'Home improvement and garden supplies'},
@@ -82,14 +105,13 @@ class DatabaseHelper {
       await db.insert('categories', category);
     }
 
-    // Insert products
     List<Map<String, dynamic>> products = [
       {
         'name': 'Wireless Bluetooth Headphones',
         'description': 'High-quality wireless headphones with noise cancellation',
         'price': 89.99,
         'cost': 45.00,
-        'stock_quantity': 25,
+        'stock_quantity': 100, 
         'min_stock': 5,
         'category_id': 1,
         'barcode': '1234567890123',
@@ -100,7 +122,7 @@ class DatabaseHelper {
         'description': 'Comfortable cotton t-shirt in various colors',
         'price': 19.99,
         'cost': 8.00,
-        'stock_quantity': 50,
+        'stock_quantity': 100, 
         'min_stock': 10,
         'category_id': 2,
         'barcode': '1234567890124',
@@ -111,7 +133,7 @@ class DatabaseHelper {
         'description': 'Adjustable LED desk lamp with USB charging',
         'price': 34.99,
         'cost': 18.00,
-        'stock_quantity': 15,
+        'stock_quantity': 100, 
         'min_stock': 3,
         'category_id': 3,
         'barcode': '1234567890125',
@@ -122,7 +144,7 @@ class DatabaseHelper {
         'description': 'Complete guide to Flutter app development',
         'price': 49.99,
         'cost': 25.00,
-        'stock_quantity': 12,
+        'stock_quantity': 100, 
         'min_stock': 2,
         'category_id': 4,
         'barcode': '1234567890126',
@@ -133,7 +155,7 @@ class DatabaseHelper {
         'description': 'Non-slip yoga mat with carrying strap',
         'price': 29.99,
         'cost': 15.00,
-        'stock_quantity': 8,
+        'stock_quantity': 100, 
         'min_stock': 3,
         'category_id': 5,
         'barcode': '1234567890127',
@@ -147,7 +169,6 @@ class DatabaseHelper {
       await db.insert('products', product);
     }
 
-    // Insert customers
     List<Map<String, dynamic>> customers = [
       {
         'name': 'Alice Johnson',
@@ -176,6 +197,7 @@ class DatabaseHelper {
       customer['created_at'] = DateTime.now().toIso8601String();
       customer['updated_at'] = DateTime.now().toIso8601String();
       await db.insert('customers', customer);
+      }
     }
   }
 }

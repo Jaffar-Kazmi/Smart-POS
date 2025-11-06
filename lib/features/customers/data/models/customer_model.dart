@@ -1,16 +1,26 @@
-import '../../domain/entities/customer.dart';
+
+import 'package:pos_app/features/customers/domain/entities/customer.dart';
 
 class CustomerModel extends Customer {
   CustomerModel({
-    required super.id,
-    required super.name,
-    super.email,
-    super.phone,
-    super.address,
-    required super.loyaltyPoints,
-    required super.createdAt,
-    required super.updatedAt,
-  });
+    required int id,
+    required String name,
+    String? email,
+    String? phone,
+    String? address,
+    required int loyaltyPoints,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : super(
+          id: id,
+          name: name,
+          email: email,
+          phone: phone,
+          address: address,
+          loyaltyPoints: loyaltyPoints,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+        );
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) {
     return CustomerModel(
@@ -19,7 +29,7 @@ class CustomerModel extends Customer {
       email: json['email'],
       phone: json['phone'],
       address: json['address'],
-      loyaltyPoints: json['loyalty_points'] ?? 0,
+      loyaltyPoints: json['loyalty_points'],
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );

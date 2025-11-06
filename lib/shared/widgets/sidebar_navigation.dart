@@ -1,9 +1,10 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import '../../features/auth/presentation/providers/auth_provider.dart';
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_strings.dart';
+import 'package:pos_app/features/auth/presentation/providers/auth_provider.dart';
+import 'package:pos_app/core/constants/app_colors.dart';
+import 'package:pos_app/core/constants/app_strings.dart';
 
 class SidebarNavigation extends StatelessWidget {
   const SidebarNavigation({Key? key}) : super(key: key);
@@ -38,12 +39,12 @@ class SidebarNavigation extends StatelessWidget {
     return Container(
       height: 64,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: AppColors.primary,
       ),
       child: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.store,
             color: Colors.white,
             size: 32,
@@ -63,17 +64,23 @@ class SidebarNavigation extends StatelessWidget {
 
   Widget _buildNavigationItems(BuildContext context) {
     final currentPath = GoRouterState.of(context).uri.path;
+    final authProvider = Provider.of<AuthProvider>(context);
+    final isAdmin = authProvider.isAdmin;
 
     return ListView(
       padding: const EdgeInsets.symmetric(vertical: 8),
       children: [
-        _buildNavigationItem(
-          context,
-          icon: Icons.dashboard,
-          title: AppStrings.dashboard,
-          path: '/dashboard',
-          isSelected: currentPath == '/dashboard',
-        ),
+        // Dashboard - Admin only
+        if (isAdmin)
+          _buildNavigationItem(
+            context,
+            icon: Icons.dashboard,
+            title: AppStrings.dashboard,
+            path: '/dashboard',
+            isSelected: currentPath == '/dashboard',
+          ),
+
+        // Sales - Both roles
         _buildNavigationItem(
           context,
           icon: Icons.shopping_cart,
@@ -81,6 +88,8 @@ class SidebarNavigation extends StatelessWidget {
           path: '/sales',
           isSelected: currentPath == '/sales',
         ),
+
+        // Products - Both roles (different permissions inside)
         _buildNavigationItem(
           context,
           icon: Icons.inventory,
@@ -88,28 +97,38 @@ class SidebarNavigation extends StatelessWidget {
           path: '/products',
           isSelected: currentPath == '/products',
         ),
-        _buildNavigationItem(
-          context,
-          icon: Icons.people,
-          title: AppStrings.customers,
-          path: '/customers',
-          isSelected: currentPath == '/customers',
-        ),
-        _buildNavigationItem(
-          context,
-          icon: Icons.analytics,
-          title: AppStrings.reports,
-          path: '/reports',
-          isSelected: currentPath == '/reports',
-        ),
+
+        // Customers - Admin only
+        if (isAdmin)
+          _buildNavigationItem(
+            context,
+            icon: Icons.people,
+            title: AppStrings.customers,
+            path: '/customers',
+            isSelected: currentPath == '/customers',
+          ),
+
+        // Reports - Admin only
+        if (isAdmin)
+          _buildNavigationItem(
+            context,
+            icon: Icons.analytics,
+            title: AppStrings.reports,
+            path: '/reports',
+            isSelected: currentPath == '/reports',
+          ),
+
         const Divider(height: 32),
-        _buildNavigationItem(
-          context,
-          icon: Icons.settings,
-          title: AppStrings.settings,
-          path: '/settings',
-          isSelected: currentPath == '/settings',
-        ),
+
+        // Settings - Admin only
+        if (isAdmin)
+          _buildNavigationItem(
+            context,
+            icon: Icons.settings,
+            title: AppStrings.settings,
+            path: '/settings',
+            isSelected: currentPath == '/settings',
+          ),
       ],
     );
   }
