@@ -23,34 +23,55 @@ class DatabaseHelper {
       version: 2,
       onCreate: _createTables,
       onUpgrade: _onUpgrade,
-      onOpen: _insertInitialData,
     );
   }
 
   Future<void> _createTables(Database db, int version) async {
-    await db.execute(DatabaseTables.createUsersTable);
+    // Create users table with ALL columns including username
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        email TEXT UNIQUE NOT NULL,
+        username TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        role TEXT NOT NULL,
+        name TEXT NOT NULL,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+
+    // Create other tables
     await db.execute(DatabaseTables.createCategoriesTable);
     await db.execute(DatabaseTables.createProductsTable);
     await db.execute(DatabaseTables.createCustomersTable);
     await db.execute(DatabaseTables.createSalesTable);
     await db.execute(DatabaseTables.createSaleItemsTable);
+
+    // Insert initial/mock data
+    await _insertMockData(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
+    if (oldVersion < 2 && newVersion >= 2) {
       try {
+        // Check if username column exists
         final info = await db.rawQuery("PRAGMA table_info(users)");
         final columnNames = info.map((col) => col['name']).toList();
 
         if (!columnNames.contains('username')) {
-          await db.execute(
-              'ALTER TABLE users ADD COLUMN username TEXT UNIQUE'
-          );
+          print('Adding username column to users table...');
 
+          // Add username column
+          await db.execute('ALTER TABLE users ADD COLUMN username TEXT UNIQUE');
+
+          // Get all existing users
           final users = await db.query('users');
+
+          // Generate usernames from emails and update
           for (var user in users) {
-            final email = user['email'] as String;
-            final username = email.split('@');
+            final email = user['email'] as String? ?? '';
+            final username = email.split('@')[0].toLowerCase();
 
             try {
               await db.update(
@@ -60,9 +81,11 @@ class DatabaseHelper {
                 whereArgs: [user['id']],
               );
             } catch (e) {
-              print('Error updating username for user ${user['id']}: $e');
+              print('Error updating user: $e');
             }
           }
+
+          print('Migration completed successfully');
         }
       } catch (e) {
         print('Error during migration: $e');
@@ -70,36 +93,40 @@ class DatabaseHelper {
     }
   }
 
-  Future<void> _insertInitialData(Database db) async {
-    final userCount = Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM users')
-    ) ?? 0;
-
-    if (userCount == 0) {
-      await _insertMockData(db);
-    }
-  }
-
   Future<void> _insertMockData(Database db) async {
-    await db.insert('users', {
-      'email': 'admin@smartpos.com',
-      'username': 'admin',
-      'password': 'password',
-      'role': 'Admin',
-      'name': 'System Administrator',
-      'created_at': DateTime.now().toIso8601String(),
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+    try {
+      final userCount = Sqflite.firstIntValue(
+          await db.rawQuery('SELECT COUNT(*) FROM users')
+      ) ?? 0;
 
-    await db.insert('users', {
-      'email': 'cashier@smartpos.com',
-      'username': 'cashier',
-      'password': 'password',
-      'role': 'Cashier',
-      'name': 'John Cashier',
-      'created_at': DateTime.now().toIso8601String(),
-      'updated_at': DateTime.now().toIso8601String(),
-    });
+      if (userCount == 0) {
+        print('Inserting mock data...');
+
+        await db.insert('users', {
+          'email': 'admin@smartpos.com',
+          'username': 'admin',
+          'password': 'password',
+          'role': 'Admin',
+          'name': 'System Administrator',
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+
+        await db.insert('users', {
+          'email': 'cashier@smartpos.com',
+          'username': 'cashier',
+          'password': 'password',
+          'role': 'Cashier',
+          'name': 'John Cashier',
+          'created_at': DateTime.now().toIso8601String(),
+          'updated_at': DateTime.now().toIso8601String(),
+        });
+
+        print('Mock data inserted successfully');
+      }
+    } catch (e) {
+      print('Error inserting mock data: $e');
+    }
   }
 
   Future<bool> emailExists(String email) async {

@@ -1,7 +1,7 @@
 name: pos_app
-description: A complete Flutter desktop POS application
+description: A complete Flutter desktop POS application with role-based access, inventory management, and sales tracking.
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -18,30 +18,32 @@ dependencies:
 
   # Database
   sqflite: ^2.3.0
-  sqflite_common_ffi: ^2.3.0+4  # For desktop support
+  sqflite_common_ffi: ^2.3.0+4
   path: ^1.8.3
   path_provider: ^2.1.2
 
   # UI & Material Design
   cupertino_icons: ^1.0.6
-  # Remove material_color_utilities as it's provided by Flutter SDK
 
-  # Charts
+  # Charts & Data Visualization
   fl_chart: ^0.66.2
 
   # PDF Generation
   pdf: ^3.10.7
   printing: ^5.12.0
 
-  # Navigation
+  # Navigation & Routing
   go_router: ^12.1.3
 
-  # Utilities
+  # Internationalization & Utilities
   intl: ^0.18.1
   uuid: ^4.2.1
 
-  # Desktop specific
+  # Desktop Support
   window_manager: ^0.3.7
+
+  # CSV Export
+  csv: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -55,5 +57,4 @@ flutter:
     - assets/images/
     - assets/icons/
 
-  # Enable desktop platforms
   generate: true

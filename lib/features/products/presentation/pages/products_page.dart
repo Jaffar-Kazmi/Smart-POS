@@ -4,6 +4,7 @@ import '../providers/product_provider.dart';
 import '../../domain/entities/product.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/services/export_service.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({Key? key}) : super(key: key);
@@ -72,9 +73,7 @@ class _ProductsPageState extends State<ProductsPage> {
         const Spacer(),
         if (isAdmin)
           OutlinedButton.icon(
-            onPressed: () {
-              // Export functionality
-            },
+            onPressed: _exportProductsToCSV,
             icon: const Icon(Icons.file_upload),
             label: const Text('Export'),
           ),
@@ -263,6 +262,41 @@ class _ProductsPageState extends State<ProductsPage> {
         ],
       ),
     );
+  }
+
+  Future<void> _exportProductsToCSV() async {
+    try {
+      final productProvider = Provider.of<ProductProvider>(context, listen: false);
+      final products = productProvider.products;
+
+      if (products.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No products to export')),
+          );
+        }
+        return;
+      }
+
+      // Export directly without loading dialog
+      final filePath = await ExportService.exportProductsToCSV(products);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Exported to: $filePath'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
+    }
   }
 }
 

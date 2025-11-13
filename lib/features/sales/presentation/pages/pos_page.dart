@@ -30,8 +30,6 @@ class _POSPageState extends State<POSPage> {
 
   @override
   void dispose() {
-    Provider.of<SalesProvider>(context, listen: false).removeListener(_onSalesProviderUpdate);
-    _searchController.dispose();
     super.dispose();
   }
 
