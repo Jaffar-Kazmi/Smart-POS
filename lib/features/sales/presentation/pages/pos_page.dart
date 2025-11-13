@@ -30,8 +30,6 @@ class _POSPageState extends State<POSPage> {
 
   @override
   void dispose() {
-    Provider.of<SalesProvider>(context, listen: false).removeListener(_onSalesProviderUpdate);
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -169,7 +167,7 @@ class _POSPageState extends State<POSPage> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '\$${product.price.toStringAsFixed(2)}',
+                      '${product.price.toStringAsFixed(2)} /-',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
@@ -318,7 +316,7 @@ class _POSPageState extends State<POSPage> {
             const SizedBox(height: 8),
             Row(
               children: [
-                Text('\$${cartItem.product.price.toStringAsFixed(2)}'),
+                Text('${cartItem.product.price.toStringAsFixed(2)} /-'),
                 const Spacer(),
                 Row(
                   children: [
@@ -360,7 +358,7 @@ class _POSPageState extends State<POSPage> {
               children: [
                 const Text('Subtotal:'),
                 Text(
-                  '\$${cartItem.subtotal.toStringAsFixed(2)}',
+                  '${cartItem.subtotal.toStringAsFixed(2)} /-',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: AppColors.primary,
@@ -393,7 +391,7 @@ class _POSPageState extends State<POSPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Subtotal:'),
-                  Text('\$${salesProvider.cartSubtotal.toStringAsFixed(2)}'),
+                  Text('${salesProvider.cartSubtotal.toStringAsFixed(2)} /-'),
                 ],
               ),
               const SizedBox(height: 8),
@@ -401,7 +399,7 @@ class _POSPageState extends State<POSPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Discount:'),
-                  Text('-\$${salesProvider.discountAmount.toStringAsFixed(2)}'),
+                  Text('- ${salesProvider.discountAmount.toStringAsFixed(2)} /-'),
                 ],
               ),
               const Divider(),
@@ -415,7 +413,7 @@ class _POSPageState extends State<POSPage> {
                     ),
                   ),
                   Text(
-                    '\$${salesProvider.cartTotal.toStringAsFixed(2)}',
+                    '${salesProvider.cartTotal.toStringAsFixed(2)} /-',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: AppColors.primary,
@@ -498,7 +496,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
               controller: _discountController,
               decoration: const InputDecoration(
                 labelText: 'Discount Amount',
-                prefixText: '\$',
+                suffixText: '/-',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,

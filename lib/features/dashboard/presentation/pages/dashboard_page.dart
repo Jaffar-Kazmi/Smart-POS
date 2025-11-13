@@ -76,7 +76,7 @@ class _DashboardPageState extends State<DashboardPage> {
             Expanded(
               child: _StatsCard(
                 title: "Today's Sales",
-                value: '\$${stats?.todaysSales.toStringAsFixed(2) ?? '0.00'}',
+                value: '${stats?.todaysSales.toStringAsFixed(2) ?? '0.00'} /-',
                 icon: Icons.attach_money,
                 color: AppColors.success,
               ),
@@ -152,7 +152,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           sideTitles: SideTitles(
                             showTitles: true,
                             getTitlesWidget: (value, meta) {
-                              return Text('\$${value.toInt()}');
+                              return Text('${value.toInt()} /-');
                             },
                           ),
                         ),
@@ -233,7 +233,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             color: Colors.white,
                           ),
                         ),
-                        title: Text('\$${transaction.totalAmount.toStringAsFixed(2)}'),
+                        title: Text('${transaction.totalAmount.toStringAsFixed(2)} /-'),
                         subtitle: Text(
                           '${transaction.paymentMethod} • ${_formatDateTime(transaction.createdAt)}',
                         ),
