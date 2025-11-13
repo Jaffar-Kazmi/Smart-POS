@@ -15,6 +15,16 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   final TextEditingController _searchController = TextEditingController();
+  String _selectedCategory = 'All';
+
+  final List<String> _categories = [
+    'All',
+    'Electronics',
+    'Clothing',
+    'Home & Garden',
+    'Books',
+    'Sports',
+  ];
 
   @override
   void initState() {
@@ -44,6 +54,8 @@ class _ProductsPageState extends State<ProductsPage> {
             _buildHeader(isAdmin),
             const SizedBox(height: 16),
             _buildSearchBar(),
+            const SizedBox(height: 12),
+            _buildCategoryFilter(),
             const SizedBox(height: 16),
             Expanded(
               child: _buildProductsList(isAdmin),
@@ -66,7 +78,11 @@ class _ProductsPageState extends State<ProductsPage> {
       children: [
         Text(
           'Products & Inventory',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+          style: Theme
+              .of(context)
+              .textTheme
+              .headlineSmall
+              ?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -85,16 +101,100 @@ class _ProductsPageState extends State<ProductsPage> {
     return TextField(
       controller: _searchController,
       decoration: InputDecoration(
-        hintText: 'Search products...',
+        hintText: 'Search by product name or barcode...',
         prefixIcon: const Icon(Icons.search),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),
+        suffixIcon: _searchController.text.isNotEmpty
+            ? IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () {
+            _searchController.clear();
+            Provider.of<ProductProvider>(context, listen: false)
+                .searchProducts('');
+            setState(() {});
+          },
+        )
+            : null,
       ),
       onChanged: (value) {
-        Provider.of<ProductProvider>(context, listen: false).searchProducts(value);
+        Provider.of<ProductProvider>(context, listen: false).searchProducts(
+            value);
+        setState(() {});
       },
     );
+  }
+
+  Widget _buildCategoryFilter() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Filter by Category:',
+          style: Theme
+              .of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 8),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: _categories.map((category) {
+              final isSelected = _selectedCategory == category;
+              return Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: FilterChip(
+                  label: Text(category),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    setState(() {
+                      _selectedCategory = category;
+                    });
+                    _applyFilters();
+                  },
+                  backgroundColor: Colors.grey[200],
+                  selectedColor: AppColors.primary,
+                  labelStyle: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight
+                        .normal,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _applyFilters() {
+    final provider = Provider.of<ProductProvider>(context, listen: false);
+    final searchText = _searchController.text.toLowerCase();
+
+    // Get all products first
+    provider.loadProducts();
+
+    // Apply search filter
+    if (searchText.isNotEmpty) {
+      provider.searchProducts(searchText);
+    }
+  }
+
+  int _getCategoryId(String categoryName) {
+    const categoryMap = {
+      'Electronics': 1,
+      'Clothing': 2,
+      'Home & Garden': 3,
+      'Books': 4,
+      'Sports': 5,
+    };
+    return categoryMap[categoryName] ?? 1;
   }
 
   Widget _buildProductsList(bool isAdmin) {
@@ -105,7 +205,15 @@ class _ProductsPageState extends State<ProductsPage> {
         }
 
         final products = productProvider.products;
-        if (products.isEmpty) {
+
+        // Apply category filter on the UI side if backend doesn't support it
+        final filteredProducts = _selectedCategory == 'All'
+            ? products
+            : products
+            .where((p) => p.categoryId == _getCategoryId(_selectedCategory))
+            .toList();
+
+        if (filteredProducts.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -117,18 +225,25 @@ class _ProductsPageState extends State<ProductsPage> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'No products found',
+                  _selectedCategory == 'All'
+                      ? 'No products found'
+                      : 'No products in $_selectedCategory',
                   style: TextStyle(color: Colors.grey[600]),
                 ),
+                if (_searchController.text.isNotEmpty)
+                  Text(
+                    'Try different search terms',
+                    style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                  ),
               ],
             ),
           );
         }
 
         return ListView.builder(
-          itemCount: products.length,
+          itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
-            final product = products[index];
+            final product = filteredProducts[index];
             return Card(
               margin: const EdgeInsets.only(bottom: 8),
               child: ListTile(
@@ -146,7 +261,7 @@ class _ProductsPageState extends State<ProductsPage> {
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Price: ${product.price.toStringAsFixed(2)} /-'),
+                    Text('Price: ${product.price.toStringAsFixed(2)}/-'),
                     Text(
                       'Stock: ${product.stockQuantity} units',
                       style: TextStyle(
@@ -156,6 +271,11 @@ class _ProductsPageState extends State<ProductsPage> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    if (product.barcode?.isNotEmpty ?? false)
+                      Text(
+                        'Barcode: ${product.barcode}',
+                        style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                      ),
                   ],
                 ),
                 trailing: isAdmin
@@ -167,7 +287,8 @@ class _ProductsPageState extends State<ProductsPage> {
                       _showDeleteConfirmation(product);
                     }
                   },
-                  itemBuilder: (context) => [
+                  itemBuilder: (context) =>
+                  [
                     const PopupMenuItem(
                       value: 'edit',
                       child: Row(
@@ -202,65 +323,66 @@ class _ProductsPageState extends State<ProductsPage> {
   void _showAddProductDialog() {
     showDialog(
       context: context,
-      builder: (context) => _ProductDialog(
-        onSave: (product) {
-          final productProvider = Provider.of<ProductProvider>(context, listen: false);
-
-          // Call addProduct with Product object
-          productProvider.addProduct(product);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Product added successfully')),
-          );
-        },
-      ),
+      builder: (context) =>
+          _ProductDialog(
+            onSave: (product) {
+              final productProvider = Provider.of<ProductProvider>(
+                  context, listen: false);
+              productProvider.addProduct(product);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Product added successfully')),
+              );
+            },
+          ),
     );
   }
 
   void _showEditProductDialog(Product product) {
     showDialog(
       context: context,
-      builder: (context) => _ProductDialog(
-        product: product,
-        onSave: (updatedProduct) {
-          final productProvider = Provider.of<ProductProvider>(context, listen: false);
-
-          // Call updateProduct with Product object
-          productProvider.updateProduct(updatedProduct);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Product updated successfully')),
-          );
-        },
-      ),
+      builder: (context) =>
+          _ProductDialog(
+            product: product,
+            onSave: (updatedProduct) {
+              final productProvider = Provider.of<ProductProvider>(
+                  context, listen: false);
+              productProvider.updateProduct(updatedProduct);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Product updated successfully')),
+              );
+            },
+          ),
     );
   }
 
   void _showDeleteConfirmation(Product product) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete Product'),
-        content: Text('Are you sure you want to delete ${product.name}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+      builder: (context) =>
+          AlertDialog(
+            title: const Text('Delete Product'),
+            content: Text('Are you sure you want to delete ${product.name}?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Provider.of<ProductProvider>(context, listen: false)
+                      .deleteProduct(product.id);
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('Product deleted successfully')),
+                  );
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                child: const Text(
+                    'Delete', style: TextStyle(color: Colors.white)),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Provider.of<ProductProvider>(context, listen: false)
-                  .deleteProduct(product.id);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Product deleted successfully')),
-              );
-            },
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
     );
   }
 
@@ -270,37 +392,44 @@ class _ProductsPageState extends State<ProductsPage> {
       final products = productProvider.products;
 
       if (products.isEmpty) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No products to export')),
-          );
-        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No products to export')),
+        );
         return;
       }
 
-      // Export directly without loading dialog
+      print('📦 Exporting ${products.length} products...');
+
       final filePath = await ExportService.exportProductsToCSV(products);
 
+      print('Export complete: $filePath');
+
+      // Show result
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Exported to: $filePath'),
+            content: Text('Exported to path: $filePath'),
             backgroundColor: Colors.green,
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 2),
           ),
         );
       }
     } catch (e) {
+      print('Export error: $e');
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }
   }
 }
 
-// Product Dialog for Add/Edit
+// Product Dialog (same as before - omitted for brevity)
 class _ProductDialog extends StatefulWidget {
   final Product? product;
   final Function(Product product) onSave;
@@ -324,7 +453,6 @@ class _ProductDialogState extends State<_ProductDialog> {
   late TextEditingController _minStockController;
   late TextEditingController _barcodeController;
   int _selectedCategoryId = 1;
-
   bool _isLoading = false;
 
   @override
@@ -533,7 +661,6 @@ class _ProductDialogState extends State<_ProductDialog> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      // Create a Product object from form data
       final product = Product(
         id: widget.product?.id ?? 0,
         name: _nameController.text.trim(),
