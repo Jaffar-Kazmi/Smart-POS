@@ -33,6 +33,7 @@ class AppStrings {
   static const String productPrice = 'Price';
   static const String productStock = 'Stock';
   static const String category = 'Category';
+  static const String currencySymbol = '/-';
 
   // Sales
   static const String addToCart = 'Add to Cart';
