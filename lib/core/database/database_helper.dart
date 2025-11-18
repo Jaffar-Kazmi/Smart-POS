@@ -41,12 +41,59 @@ class DatabaseHelper {
       )
     ''');
 
+    await db.execute('''
+  CREATE TABLE IF NOT EXISTS categories (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )
+''');
+
+    await db.execute('''
+  CREATE TABLE IF NOT EXISTS customers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    phone TEXT,
+    email TEXT,
+    address TEXT,
+    is_walk_in INTEGER DEFAULT 0,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+  )
+''');
+
+    await db.execute('''
+  CREATE TABLE IF NOT EXISTS coupons (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    code TEXT UNIQUE NOT NULL,
+    discount_percent REAL NOT NULL,
+    is_active INTEGER DEFAULT 1,
+    expiry_date TEXT,
+    created_at TEXT NOT NULL
+  )
+''');
+
+
+
     // Create other tables
     await db.execute(DatabaseTables.createCategoriesTable);
     await db.execute(DatabaseTables.createProductsTable);
     await db.execute(DatabaseTables.createCustomersTable);
     await db.execute(DatabaseTables.createSalesTable);
     await db.execute(DatabaseTables.createSaleItemsTable);
+    await db.execute('''
+  ALTER TABLE sales ADD COLUMN discount_percent REAL DEFAULT 0
+''');
+
+    await db.execute('''
+  ALTER TABLE sales ADD COLUMN coupon_code TEXT
+''');
+
+    await db.execute('''
+  ALTER TABLE sales ADD COLUMN customer_id INTEGER
+''');
 
     // Insert initial/mock data
     await _insertMockData(db);
@@ -181,6 +228,123 @@ class DatabaseHelper {
     }
   }
 
+  Future<int> insertCategory(Map<String, dynamic> category) async {
+    final db = await database;
+    return await db.insert('categories', category);
+  }
+
+  Future<List<Category>> getAllCategories() async {
+    final db = await database;
+    final maps = await db.query('categories', orderBy: 'name ASC');
+    return maps.map((map) => Category.fromMap(map)).toList();
+  }
+
+  Future<int> updateCategory(Map<String, dynamic> category) async {
+    final db = await database;
+    return await db.update(
+      'categories',
+      category,
+      where: 'id = ?',
+      whereArgs: [category['id']],
+    );
+  }
+
+  Future<int> deleteCategory(int id) async {
+    final db = await database;
+    return await db.delete('categories', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Category? getCategoryById(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      'categories',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return Category.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  Future<int> insertCustomer(Map<String, dynamic> customer) async {
+    final db = await database;
+    return await db.insert('customers', customer);
+  }
+
+  Future<List<Customer>> getAllCustomers() async {
+    final db = await database;
+    final maps = await db.query('customers', where: 'is_walk_in = 0', orderBy: 'name ASC');
+    return maps.map((map) => Customer.fromMap(map)).toList();
+  }
+
+  Future<int> updateCustomer(Map<String, dynamic> customer) async {
+    final db = await database;
+    return await db.update(
+      'customers',
+      customer,
+      where: 'id = ?',
+      whereArgs: [customer['id']],
+    );
+  }
+
+  Future<int> deleteCustomer(int id) async {
+    final db = await database;
+    return await db.delete('customers', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Customer? getCustomerById(int id) async {
+    final db = await database;
+    final maps = await db.query(
+      'customers',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+    if (maps.isNotEmpty) {
+      return Customer.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  Future<int> insertCoupon(Map<String, dynamic> coupon) async {
+    final db = await database;
+    return await db.insert('coupons', coupon);
+  }
+
+  Future<List<Coupon>> getAllCoupons() async {
+    final db = await database;
+    final maps = await db.query('coupons', orderBy: 'code ASC');
+    return maps.map((map) => Coupon.fromMap(map)).toList();
+  }
+
+  Future<int> updateCoupon(Map<String, dynamic> coupon) async {
+    final db = await database;
+    return await db.update(
+      'coupons',
+      coupon,
+      where: 'id = ?',
+      whereArgs: [coupon['id']],
+    );
+  }
+
+  Future<int> deleteCoupon(int id) async {
+    final db = await database;
+    return await db.delete('coupons', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Coupon? getCouponByCode(String code) async {
+    final db = await database;
+    final maps = await db.query(
+      'coupons',
+      where: 'code = ?',
+      whereArgs: [code.toUpperCase()],
+    );
+    if (maps.isNotEmpty) {
+      return Coupon.fromMap(maps.first);
+    }
+    return null;
+  }
+
   Future<Map<String, dynamic>?> loginUser(String identifier, String password) async {
     try {
       final db = await database;
@@ -268,5 +432,66 @@ class DatabaseHelper {
       await _database!.close();
       _database = null;
     }
+  }
+}
+
+class Sale {
+  final int id;
+  final int userId;
+  final double subtotal;
+  final double discountPercent;  // NEW
+  final String? couponCode;      // NEW
+  final int? customerId;         // NEW
+  final double total;
+  final String paymentMethod;
+  final String cashierName;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
+  Sale({
+    required this.id,
+    required this.userId,
+    required this.subtotal,
+    required this.total,
+    required this.paymentMethod,
+    required this.cashierName,
+    this.discountPercent = 0.0,
+    this.couponCode,
+    this.customerId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  })  : createdAt = createdAt ?? DateTime.now(),
+        updatedAt = updatedAt ?? DateTime.now();
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'subtotal': subtotal,
+      'discount_percent': discountPercent,
+      'coupon_code': couponCode,
+      'customer_id': customerId,
+      'total': total,
+      'payment_method': paymentMethod,
+      'cashier_name': cashierName,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+    };
+  }
+
+  factory Sale.fromMap(Map<String, dynamic> map) {
+    return Sale(
+      id: map['id'] as int,
+      userId: map['user_id'] as int,
+      subtotal: (map['subtotal'] as num).toDouble(),
+      discountPercent: (map['discount_percent'] as num?)?.toDouble() ?? 0.0,
+      couponCode: map['coupon_code'] as String?,
+      customerId: map['customer_id'] as int?,
+      total: (map['total'] as num).toDouble(),
+      paymentMethod: map['payment_method'] as String,
+      cashierName: map['cashier_name'] as String,
+      createdAt: DateTime.parse(map['created_at'] as String),
+      updatedAt: DateTime.parse(map['updated_at'] as String),
+    );
   }
 }

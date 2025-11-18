@@ -154,7 +154,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Admin: jaffar / jaffar\nCashier: raza / razakazmi',
+                            'Admin: admin / password\nCashier: cashier / password',
                             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Colors.white,
                             ),

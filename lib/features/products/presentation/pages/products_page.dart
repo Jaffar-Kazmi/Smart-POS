@@ -5,6 +5,7 @@ import '../../domain/entities/product.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/export_service.dart';
+import 'package:provider/provider.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({Key? key}) : super(key: key);
@@ -247,13 +248,8 @@ class _ProductsPageState extends State<ProductsPage> {
             return Card(
               margin: const EdgeInsets.only(bottom: 8),
               child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: AppColors.primary.withOpacity(0.1),
-                  child: Icon(
-                    Icons.inventory_2,
-                    color: AppColors.primary,
-                  ),
-                ),
+                leading: Icon(Icons.inventory_2, color: Theme.of(context).primaryColor),
+              ),
                 title: Text(
                   product.name,
                   style: const TextStyle(fontWeight: FontWeight.bold),
@@ -426,6 +422,53 @@ class _ProductsPageState extends State<ProductsPage> {
         );
       }
     }
+  }
+
+  Future<int?> _showAddCategoryDialog(BuildContext context) async {
+    final nameController = TextEditingController();
+    return showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Add New Category'),
+        content: TextField(
+          controller: nameController,
+          decoration: const InputDecoration(
+            labelText: 'Category name',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.trim().isEmpty) {
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(content: Text('Please enter category name')),
+                );
+                return;
+              }
+
+              final categoryProvider = ctx.read<CategoryProvider>();
+              final category = Category(
+                id: 0,
+                name: nameController.text.trim(),
+              );
+
+              await categoryProvider.addCategory(category);
+
+              if (ctx.mounted) {
+                final newId = categoryProvider.categories.last.id;
+                Navigator.pop(ctx, newId);
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -607,25 +650,33 @@ class _ProductDialogState extends State<_ProductDialog> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                DropdownButtonFormField<int>(
-                  value: _selectedCategoryId,
-                  decoration: const InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: const [
-                    DropdownMenuItem(value: 1, child: Text('Electronics')),
-                    DropdownMenuItem(value: 2, child: Text('Clothing')),
-                    DropdownMenuItem(value: 3, child: Text('Home & Garden')),
-                    DropdownMenuItem(value: 4, child: Text('Books')),
-                    DropdownMenuItem(value: 5, child: Text('Sports')),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedCategoryId = value ?? 1;
-                    });
-                  },
+            DropdownButtonFormField<int>(
+              value: _selectedCategoryId,
+              decoration: const InputDecoration(
+                labelText: 'Category',
+                border: OutlineInputBorder(),
+                prefixIcon: Icon(Icons.category),
+              ),
+              items: [
+                ...context.watch<CategoryProvider>().categories.map(
+                      (c) => DropdownMenuItem(value: c.id, child: Text(c.name)),
                 ),
+                const DropdownMenuItem<int>(
+                  value: -1,
+                  child: Text('+ Add new category'),
+                ),
+              ],
+              onChanged: (value) async {
+                if (value == -1) {
+                  final newId = await _showAddCategoryDialog(context);
+                  if (newId != null) {
+                    setState(() => _selectedCategoryId = newId);
+                  }
+                } else if (value != null) {
+                  setState(() => _selectedCategoryId = value);
+                }
+              },
+            );
               ],
             ),
           ),

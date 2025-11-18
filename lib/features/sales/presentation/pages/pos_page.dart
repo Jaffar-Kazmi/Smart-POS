@@ -16,6 +16,10 @@ class POSPage extends StatefulWidget {
 
 class _POSPageState extends State<POSPage> {
   final TextEditingController _searchController = TextEditingController();
+  Customer? _selectedCustomer;
+  double _discountPercent = 0.0;
+  String _couponCode = '';
+  Coupon? _appliedCoupon;
 
   @override
   void initState() {
@@ -470,6 +474,7 @@ class _POSPageState extends State<POSPage> {
       builder: (context) => const _CheckoutDialog(),
     );
   }
+
 }
 
 class _CheckoutDialog extends StatefulWidget {
