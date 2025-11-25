@@ -4,18 +4,28 @@ import 'core/theme/theme_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/database/database_helper.dart';
 import 'core/constants/app_colors.dart';
-import 'core/routes/app_router.dart';
+import 'core/core/routes/app_router.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/products/presentation/providers/product_provider.dart';
 import 'features/sales/presentation/providers/sales_provider.dart';
 import 'features/categories/presentation/providers/category_provider.dart';
 import 'features/customers/presentation/providers/customer_provider.dart';
 import 'features/coupons/presentation/providers/coupon_provider.dart';
+import 'features/dashboard/presentation/providers/dashboard_provider.dart';
+import 'features/reports/presentation/providers/reports_provider.dart';
+
+import 'dart:io';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final dbHelper = DatabaseHelper();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
+  final dbHelper = DatabaseHelper.instance;
   await dbHelper.database;
 
   runApp(MyApp(dbHelper: dbHelper));
@@ -31,12 +41,18 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider(dbHelper)),
-        ChangeNotifierProvider(create: (_) => ProductProvider(dbHelper)),
-        ChangeNotifierProvider(create: (_) => SalesProvider(dbHelper)),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProxyProvider<ProductProvider, SalesProvider>(
+          create: (context) => SalesProvider(Provider.of<ProductProvider>(context, listen: false)),
+          update: (context, productProvider, salesProvider) =>
+              salesProvider ?? SalesProvider(productProvider),
+        ),
         ChangeNotifierProvider(create: (_) => CategoryProvider(dbHelper)),
         ChangeNotifierProvider(create: (_) => CustomerProvider(dbHelper)),
         ChangeNotifierProvider(create: (_) => CouponProvider(dbHelper)),
+        ChangeNotifierProvider(create: (_) => DashboardProvider(dbHelper)),
+        ChangeNotifierProvider(create: (_) => ReportsProvider(dbHelper)),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
@@ -75,7 +91,15 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     final authProvider = context.read<AuthProvider>();
-    final user = await authProvider.getCurrentUser();
+
+    // Use the 'currentUser' API (may be synchronous or a Future) instead of calling a possibly removed getCurrentUser()
+    dynamic userOrFuture = authProvider.currentUser;
+    dynamic user;
+    if (userOrFuture is Future) {
+      user = await userOrFuture;
+    } else {
+      user = userOrFuture;
+    }
 
     if (mounted) {
       if (user != null) {

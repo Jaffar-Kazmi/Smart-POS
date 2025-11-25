@@ -1,0 +1,755 @@
+Analyzing Smart-POS...                                          
+
+   info - An uninitialized variable should have an explicit type annotation - Integration\integration_code_snippets.dart:28:1 - prefer_typing_uninitialized_variables
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:28:1 - expected_token
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - Integration\integration_code_snippets.dart:28:1 - missing_const_final_var_or_type
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:28:8 - expected_executable
+   info - The variable name 'Icon' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:28:10 - non_constant_identifier_names
+  error - Undefined class 'inventory_2' - Integration\integration_code_snippets.dart:28:15 - undefined_class
+  error - Expected an identifier - Integration\integration_code_snippets.dart:28:32 - missing_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:28:39 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:28:39 - obsolete_colon_for_default_value
+  error - Undefined name 'Theme' - Integration\integration_code_snippets.dart:28:41 - undefined_identifier
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:28:50 - undefined_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:28:72 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:28:72 - expected_executable
+   info - The variable name 'DropdownButtonFormField' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:31:1 - non_constant_identifier_names
+   info - The type parameter name 'int' matches a visible type name - Integration\integration_code_snippets.dart:31:25 - avoid_types_as_parameter_names
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:32:8 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:32:8 - obsolete_colon_for_default_value
+  error - Undefined name '_selectedCategoryId' - Integration\integration_code_snippets.dart:32:10 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:33:13 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:33:13 - obsolete_colon_for_default_value
+  error - The name 'InputDecoration' isn't a class - Integration\integration_code_snippets.dart:33:21 - creation_with_non_type
+  error - The function 'OutlineInputBorder' isn't defined - Integration\integration_code_snippets.dart:35:13 - undefined_function
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:36:22 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:38:8 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:38:8 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:38:10 - non_constant_default_value
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:39:8 - undefined_identifier
+  error - The name 'CategoryProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:39:22 - non_type_as_type_argument
+  error - The function 'DropdownMenuItem' isn't defined - Integration\integration_code_snippets.dart:40:14 - undefined_function
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:40:51 - undefined_function
+  error - The name 'DropdownMenuItem' isn't a class - Integration\integration_code_snippets.dart:42:11 - creation_with_non_type
+  error - A constant creation can't use a type parameter as a type argument - Integration\integration_code_snippets.dart:42:28 - const_with_type_parameters
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:44:14 - undefined_function
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:47:12 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:47:12 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:47:14 - non_constant_default_value
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:49:50 - undefined_identifier
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:51:9 - undefined_function
+  error - Undefined name '_selectedCategoryId' - Integration\integration_code_snippets.dart:51:24 - undefined_identifier
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:54:7 - undefined_function
+  error - Undefined name '_selectedCategoryId' - Integration\integration_code_snippets.dart:54:22 - undefined_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:57:2 - missing_function_body
+  error - Undefined class 'BuildContext' - Integration\integration_code_snippets.dart:60:37 - undefined_class
+  error - The function 'TextEditingController' isn't defined - Integration\integration_code_snippets.dart:61:26 - undefined_function
+  error - The function 'showDialog' isn't defined - Integration\integration_code_snippets.dart:62:10 - undefined_function
+  error - The function 'AlertDialog' isn't defined - Integration\integration_code_snippets.dart:64:23 - undefined_function
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:65:20 - creation_with_non_type
+  error - The named parameter 'controller' isn't defined - Integration\integration_code_snippets.dart:67:9 - undefined_named_parameter
+  error - The name 'InputDecoration' isn't a class - Integration\integration_code_snippets.dart:68:27 - creation_with_non_type
+  error - The function 'OutlineInputBorder' isn't defined - Integration\integration_code_snippets.dart:70:19 - undefined_function
+  error - The function 'TextButton' isn't defined - Integration\integration_code_snippets.dart:74:9 - undefined_function
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:75:28 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:76:24 - creation_with_non_type
+  error - The function 'ElevatedButton' isn't defined - Integration\integration_code_snippets.dart:78:9 - undefined_function
+  error - Undefined name 'ScaffoldMessenger' - Integration\integration_code_snippets.dart:81:15 - undefined_identifier
+  error - The name 'SnackBar' isn't a class - Integration\integration_code_snippets.dart:82:23 - creation_with_non_type
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:82:41 - undefined_function
+  error - The name 'CategoryProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:87:47 - non_type_as_type_argument
+  error - The function 'Category' isn't defined - Integration\integration_code_snippets.dart:88:30 - undefined_function
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:97:15 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:100:24 - creation_with_non_type
+  error - Undefined class 'Customer' - Integration\integration_code_snippets.dart:114:1 - undefined_class
+  error - Undefined class 'Coupon' - Integration\integration_code_snippets.dart:117:1 - undefined_class
+   info - The variable name 'Padding' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:121:1 - non_constant_identifier_names
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:122:10 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:122:10 - obsolete_colon_for_default_value
+  error - Undefined name 'EdgeInsets' - Integration\integration_code_snippets.dart:122:18 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:123:8 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:123:8 - obsolete_colon_for_default_value
+  error - The function 'Card' isn't defined - Integration\integration_code_snippets.dart:123:10 - undefined_function
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:124:12 - undefined_function
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:125:21 - undefined_identifier
+  error - Undefined name 'Theme' - Integration\integration_code_snippets.dart:125:42 - undefined_identifier
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:125:51 - undefined_identifier
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:126:14 - undefined_function
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:128:13 - undefined_function
+  error - Undefined name 'TextButton' - Integration\integration_code_snippets.dart:130:17 - undefined_identifier
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:131:21 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:131:26 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:132:22 - creation_with_non_type
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:133:48 - undefined_identifier
+   info - The variable name 'TextField' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:140:1 - non_constant_identifier_names
+  error - A function body must be provided - Integration\integration_code_snippets.dart:140:1 - missing_function_body
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:141:13 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:141:13 - obsolete_colon_for_default_value
+  error - The function 'InputDecoration' isn't defined - Integration\integration_code_snippets.dart:141:15 - undefined_function
+  error - The name 'OutlineInputBorder' isn't a class - Integration\integration_code_snippets.dart:143:19 - creation_with_non_type
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:144:23 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:144:28 - undefined_identifier
+  error - The function 'IconButton' isn't defined - Integration\integration_code_snippets.dart:146:11 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:147:25 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:147:30 - undefined_identifier
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:148:30 - undefined_function
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:152:15 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:152:15 - obsolete_colon_for_default_value
+  error - Undefined name 'TextInputType' - Integration\integration_code_snippets.dart:152:17 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:153:12 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:153:12 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:153:14 - non_constant_default_value
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:154:5 - undefined_function
+  error - A function body must be provided - Integration\integration_code_snippets.dart:160:2 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:160:2 - expected_executable
+   info - The variable name 'Row' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:163:1 - non_constant_identifier_names
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:164:11 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:164:11 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:164:13 - non_constant_default_value
+  error - The function 'Expanded' isn't defined - Integration\integration_code_snippets.dart:165:5 - undefined_function
+  error - The function 'InputDecoration' isn't defined - Integration\integration_code_snippets.dart:167:21 - undefined_function
+  error - The name 'OutlineInputBorder' isn't a class - Integration\integration_code_snippets.dart:169:25 - creation_with_non_type
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:170:29 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:170:34 - undefined_identifier
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:172:31 - undefined_function
+  error - The name 'SizedBox' isn't a class - Integration\integration_code_snippets.dart:175:11 - creation_with_non_type
+  error - Undefined name 'ElevatedButton' - Integration\integration_code_snippets.dart:176:5 - undefined_identifier
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:178:19 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:178:24 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:179:20 - creation_with_non_type
+  error - A function body must be provided - Integration\integration_code_snippets.dart:182:2 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:182:2 - expected_executable
+  error - Undefined name '_cartItems' - Integration\integration_code_snippets.dart:186:19 - undefined_identifier
+   info - The variable name 'Row' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:195:1 - non_constant_identifier_names
+  error - The name 'Row' is already defined - Integration\integration_code_snippets.dart:195:1 - duplicate_definition
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:196:20 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:196:20 - obsolete_colon_for_default_value
+  error - Undefined name 'MainAxisAlignment' - Integration\integration_code_snippets.dart:196:22 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:197:11 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:197:11 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:197:13 - non_constant_default_value
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:198:11 - creation_with_non_type
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:199:5 - undefined_function
+  error - A function body must be provided - Integration\integration_code_snippets.dart:201:2 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:201:2 - expected_executable
+  error - 'if' can't be used as an identifier because it's a keyword - Integration\integration_code_snippets.dart:202:1 - expected_identifier_but_got_keyword
+   info - The local variable '_discountPercent' starts with an underscore - Integration\integration_code_snippets.dart:202:5 - no_leading_underscores_for_local_identifiers
+  error - Expected to find ')' - Integration\integration_code_snippets.dart:202:22 - expected_token
+   info - The variable name 'Row' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:203:3 - non_constant_identifier_names
+  error - A function body must be provided - Integration\integration_code_snippets.dart:203:3 - missing_function_body
+  error - The name 'Row' is already defined - Integration\integration_code_snippets.dart:203:3 - duplicate_definition
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:204:22 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:204:22 - obsolete_colon_for_default_value
+  error - Undefined name 'MainAxisAlignment' - Integration\integration_code_snippets.dart:204:24 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:205:13 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:205:13 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:205:15 - non_constant_default_value
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:206:7 - undefined_function
+   info - Unnecessary braces in a string interpolation - Integration\integration_code_snippets.dart:206:23 - unnecessary_brace_in_string_interps
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:207:7 - undefined_function
+  error - The name 'TextStyle' isn't a class - Integration\integration_code_snippets.dart:209:22 - creation_with_non_type
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:209:39 - undefined_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:212:4 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:212:4 - expected_executable
+  error - 'if' can't be used as an identifier because it's a keyword - Integration\integration_code_snippets.dart:213:1 - expected_identifier_but_got_keyword
+  error - The name 'if' is already defined - Integration\integration_code_snippets.dart:213:1 - duplicate_definition
+   info - The local variable '_appliedCoupon' starts with an underscore - Integration\integration_code_snippets.dart:213:5 - no_leading_underscores_for_local_identifiers
+  error - Expected to find ')' - Integration\integration_code_snippets.dart:213:20 - expected_token
+   info - The variable name 'Row' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:214:3 - non_constant_identifier_names
+  error - A function body must be provided - Integration\integration_code_snippets.dart:214:3 - missing_function_body
+  error - The name 'Row' is already defined - Integration\integration_code_snippets.dart:214:3 - duplicate_definition
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:215:22 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:215:22 - obsolete_colon_for_default_value
+  error - Undefined name 'MainAxisAlignment' - Integration\integration_code_snippets.dart:215:24 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:216:13 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:216:13 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:216:15 - non_constant_default_value
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:217:7 - undefined_function
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:218:7 - undefined_function
+  error - The name 'TextStyle' isn't a class - Integration\integration_code_snippets.dart:220:22 - creation_with_non_type
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:220:39 - undefined_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:223:4 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:223:4 - expected_executable
+   info - An uninitialized variable should have an explicit type annotation - Integration\integration_code_snippets.dart:223:5 - prefer_typing_uninitialized_variables
+   info - The variable name 'PAYMENT' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:223:5 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:223:5 - expected_token
+  error - Variables must be declared using the keywords 'const', 'final', 'var' or a type name - Integration\integration_code_snippets.dart:223:5 - missing_const_final_var_or_type
+  error - Can't have modifier 'const' here - Integration\integration_code_snippets.dart:224:1 - extraneous_modifier
+   info - The variable name 'Divider' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:224:7 - non_constant_identifier_names
+  error - A function body must be provided - Integration\integration_code_snippets.dart:224:16 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:224:16 - expected_executable
+   info - The variable name 'Row' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:225:1 - non_constant_identifier_names
+  error - The name 'Row' is already defined - Integration\integration_code_snippets.dart:225:1 - duplicate_definition
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:226:20 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:226:20 - obsolete_colon_for_default_value
+  error - Undefined name 'MainAxisAlignment' - Integration\integration_code_snippets.dart:226:22 - undefined_identifier
+  error - Named parameters must be enclosed in curly braces ('{' and '}') - Integration\integration_code_snippets.dart:227:11 - named_parameter_outside_group
+  error - Using a colon as the separator before a default value is no longer supported - Integration\integration_code_snippets.dart:227:11 - obsolete_colon_for_default_value
+  error - The default value of an optional parameter must be constant - Integration\integration_code_snippets.dart:227:13 - non_constant_default_value
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:228:11 - creation_with_non_type
+  error - The function 'TextStyle' isn't defined - Integration\integration_code_snippets.dart:228:33 - undefined_function
+  error - Undefined name 'FontWeight' - Integration\integration_code_snippets.dart:228:69 - undefined_identifier
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:229:5 - undefined_function
+  error - The name 'TextStyle' isn't a class - Integration\integration_code_snippets.dart:231:20 - creation_with_non_type
+  error - Undefined name 'FontWeight' - Integration\integration_code_snippets.dart:231:56 - undefined_identifier
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:231:80 - undefined_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:237:1 - missing_function_body
+  error - Undefined class 'BuildContext' - Integration\integration_code_snippets.dart:237:36 - undefined_class
+  error - The name 'CustomerProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:238:22 - non_type_as_type_argument
+  error - Undefined class 'Customer' - Integration\integration_code_snippets.dart:240:3 - undefined_class
+  error - The function 'showDialog' isn't defined - Integration\integration_code_snippets.dart:240:28 - undefined_function
+  error - The name 'Customer' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:240:39 - non_type_as_type_argument
+  error - The function 'AlertDialog' isn't defined - Integration\integration_code_snippets.dart:242:23 - undefined_function
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:243:20 - creation_with_non_type
+  error - The function 'SizedBox' isn't defined - Integration\integration_code_snippets.dart:244:16 - undefined_function
+  error - The function 'Column' isn't defined - Integration\integration_code_snippets.dart:246:16 - undefined_function
+  error - Undefined name 'MainAxisSize' - Integration\integration_code_snippets.dart:247:25 - undefined_identifier
+  error - The function 'Expanded' isn't defined - Integration\integration_code_snippets.dart:249:13 - undefined_function
+  error - The function 'ListView' isn't defined - Integration\integration_code_snippets.dart:250:22 - undefined_function
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:252:19 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:253:36 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:253:41 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:254:34 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:255:34 - undefined_identifier
+  error - Undefined name 'Customer' - Integration\integration_code_snippets.dart:255:53 - undefined_identifier
+  error - The name 'CustomerProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:257:35 - non_type_as_type_argument
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:258:28 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:259:38 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:259:43 - undefined_identifier
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:260:30 - undefined_function
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:261:51 - undefined_function
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:262:36 - undefined_identifier
+  error - The name 'SizedBox' isn't a class - Integration\integration_code_snippets.dart:268:19 - creation_with_non_type
+  error - Undefined name 'ElevatedButton' - Integration\integration_code_snippets.dart:269:13 - undefined_identifier
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:273:19 - undefined_identifier
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:276:27 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:276:32 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:277:28 - creation_with_non_type
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:286:5 - undefined_function
+  error - The name 'Customer' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:290:8 - non_type_as_type_argument
+  error - Undefined class 'BuildContext' - Integration\integration_code_snippets.dart:290:42 - undefined_class
+  error - The function 'TextEditingController' isn't defined - Integration\integration_code_snippets.dart:291:20 - undefined_function
+  error - The function 'TextEditingController' isn't defined - Integration\integration_code_snippets.dart:292:21 - undefined_function
+  error - The function 'showDialog' isn't defined - Integration\integration_code_snippets.dart:294:10 - undefined_function
+  error - The name 'Customer' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:294:21 - non_type_as_type_argument
+  error - The function 'AlertDialog' isn't defined - Integration\integration_code_snippets.dart:296:23 - undefined_function
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:297:20 - creation_with_non_type
+  error - The function 'Column' isn't defined - Integration\integration_code_snippets.dart:298:16 - undefined_function
+  error - Undefined name 'MainAxisSize' - Integration\integration_code_snippets.dart:299:23 - undefined_identifier
+  error - The named parameter 'controller' isn't defined - Integration\integration_code_snippets.dart:302:13 - undefined_named_parameter
+  error - The name 'InputDecoration' isn't a class - Integration\integration_code_snippets.dart:303:31 - creation_with_non_type
+  error - The function 'OutlineInputBorder' isn't defined - Integration\integration_code_snippets.dart:305:23 - undefined_function
+  error - The name 'SizedBox' isn't a class - Integration\integration_code_snippets.dart:308:17 - creation_with_non_type
+  error - The named parameter 'controller' isn't defined - Integration\integration_code_snippets.dart:310:13 - undefined_named_parameter
+  error - The name 'InputDecoration' isn't a class - Integration\integration_code_snippets.dart:311:31 - creation_with_non_type
+  error - The function 'OutlineInputBorder' isn't defined - Integration\integration_code_snippets.dart:313:23 - undefined_function
+  error - Undefined name 'TextInputType' - Integration\integration_code_snippets.dart:315:27 - undefined_identifier
+  error - The function 'TextButton' isn't defined - Integration\integration_code_snippets.dart:320:9 - undefined_function
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:321:28 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:322:24 - creation_with_non_type
+  error - The function 'ElevatedButton' isn't defined - Integration\integration_code_snippets.dart:324:9 - undefined_function
+  error - The function 'Customer' isn't defined - Integration\integration_code_snippets.dart:328:30 - undefined_function
+  error - The name 'CustomerProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:334:32 - non_type_as_type_argument
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:337:15 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:340:24 - creation_with_non_type
+  error - Undefined name 'ScaffoldMessenger' - Integration\integration_code_snippets.dart:349:5 - undefined_identifier
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:349:26 - undefined_identifier
+  error - The name 'SnackBar' isn't a class - Integration\integration_code_snippets.dart:350:13 - creation_with_non_type
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:350:31 - undefined_function
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:355:18 - undefined_identifier
+  error - The name 'CouponProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:355:31 - non_type_as_type_argument
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:358:5 - undefined_function
+  error - Undefined name 'ScaffoldMessenger' - Integration\integration_code_snippets.dart:359:5 - undefined_identifier
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:359:26 - undefined_identifier
+  error - The function 'SnackBar' isn't defined - Integration\integration_code_snippets.dart:360:7 - undefined_function
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:361:18 - undefined_function
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:362:26 - undefined_identifier
+  error - Undefined name 'ScaffoldMessenger' - Integration\integration_code_snippets.dart:366:5 - undefined_identifier
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:366:26 - undefined_identifier
+  error - The name 'SnackBar' isn't a class - Integration\integration_code_snippets.dart:367:13 - creation_with_non_type
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:368:18 - undefined_function
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:369:26 - undefined_identifier
+  error - 'if' can't be used as an identifier because it's a keyword - Integration\integration_code_snippets.dart:376:1 - expected_identifier_but_got_keyword
+  error - The name 'if' is already defined - Integration\integration_code_snippets.dart:376:1 - duplicate_definition
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:377:3 - undefined_identifier
+  error - Undefined name 'context' - Integration\integration_code_snippets.dart:378:5 - undefined_identifier
+  error - The function 'MaterialPageRoute' isn't defined - Integration\integration_code_snippets.dart:379:5 - undefined_function
+  error - The function 'ReceiptPage' isn't defined - Integration\integration_code_snippets.dart:380:23 - undefined_function
+  error - Undefined name 'completedSale' - Integration\integration_code_snippets.dart:381:15 - undefined_identifier
+  error - Undefined name '_cartItems' - Integration\integration_code_snippets.dart:382:16 - undefined_identifier
+  error - Undefined class 'Widget' - Integration\integration_code_snippets.dart:397:1 - undefined_class
+  error - Undefined class 'BuildContext' - Integration\integration_code_snippets.dart:397:14 - undefined_class
+  error - The name 'AuthProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:398:38 - non_type_as_type_argument
+  error - The name 'POSPage' isn't a class - Integration\integration_code_snippets.dart:402:18 - creation_with_non_type
+  error - The function 'Scaffold' isn't defined - Integration\integration_code_snippets.dart:405:10 - undefined_function
+  error - The function 'AppBar' isn't defined - Integration\integration_code_snippets.dart:406:13 - undefined_function
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:406:33 - creation_with_non_type
+  error - Undefined class 'Widget' - Integration\integration_code_snippets.dart:412:1 - undefined_class
+  error - The name 'SalesProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:413:20 - non_type_as_type_argument
+  error - The name 'ProductProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:413:35 - non_type_as_type_argument
+  error - The property 'sales' can't be unconditionally accessed because the receiver can be 'null' - Integration\integration_code_snippets.dart:415:40 - unchecked_use_of_nullable_value
+  error - The property 'sales' can't be unconditionally accessed because the receiver can be 'null' - Integration\integration_code_snippets.dart:416:42 - unchecked_use_of_nullable_value
+  error - The function 'GridView' isn't defined - Integration\integration_code_snippets.dart:418:14 - undefined_function
+  error - The name 'SliverGridDelegateWithFixedCrossAxisCount' isn't a class - Integration\integration_code_snippets.dart:419:29 - creation_with_non_type
+  error - Undefined name 'EdgeInsets' - Integration\integration_code_snippets.dart:425:24 - undefined_identifier
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:430:13 - undefined_identifier
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:431:13 - undefined_identifier
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:436:13 - undefined_identifier
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:437:13 - undefined_identifier
+  error - The property 'products' can't be unconditionally accessed because the receiver can be 'null' - Integration\integration_code_snippets.dart:441:29 - unchecked_use_of_nullable_value
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:442:13 - undefined_identifier
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:443:13 - undefined_identifier
+  error - The property 'products' can't be unconditionally accessed because the receiver can be 'null' - Integration\integration_code_snippets.dart:447:29 - unchecked_use_of_nullable_value
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:451:13 - undefined_identifier
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:452:13 - undefined_identifier
+  error - Undefined class 'Widget' - Integration\integration_code_snippets.dart:460:1 - undefined_class
+  error - Undefined class 'IconData' - Integration\integration_code_snippets.dart:460:46 - undefined_class
+  error - Undefined class 'Color' - Integration\integration_code_snippets.dart:460:61 - undefined_class
+  error - The function 'Card' isn't defined - Integration\integration_code_snippets.dart:461:10 - undefined_function
+  error - The function 'Container' isn't defined - Integration\integration_code_snippets.dart:463:12 - undefined_function
+  error - The function 'BoxDecoration' isn't defined - Integration\integration_code_snippets.dart:464:19 - undefined_function
+  error - Undefined name 'BorderRadius' - Integration\integration_code_snippets.dart:465:23 - undefined_identifier
+  error - Undefined name 'EdgeInsets' - Integration\integration_code_snippets.dart:468:22 - undefined_identifier
+  error - The function 'Column' isn't defined - Integration\integration_code_snippets.dart:469:14 - undefined_function
+  error - Undefined name 'MainAxisAlignment' - Integration\integration_code_snippets.dart:470:28 - undefined_identifier
+  error - The named parameter 'size' isn't defined - Integration\integration_code_snippets.dart:472:22 - undefined_named_parameter
+  error - The name 'SizedBox' isn't a class - Integration\integration_code_snippets.dart:473:17 - creation_with_non_type
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:474:11 - undefined_function
+  error - The name 'TextStyle' isn't a class - Integration\integration_code_snippets.dart:476:26 - creation_with_non_type
+  error - Undefined name 'FontWeight' - Integration\integration_code_snippets.dart:476:62 - undefined_identifier
+  error - The name 'SizedBox' isn't a class - Integration\integration_code_snippets.dart:478:17 - creation_with_non_type
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:479:11 - undefined_function
+  error - The name 'TextStyle' isn't a class - Integration\integration_code_snippets.dart:479:36 - creation_with_non_type
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:479:53 - undefined_identifier
+  error - Undefined class 'Widget' - Integration\integration_code_snippets.dart:495:1 - undefined_class
+  error - The name 'build' is already defined - Integration\integration_code_snippets.dart:495:8 - duplicate_definition
+  error - Undefined class 'BuildContext' - Integration\integration_code_snippets.dart:495:14 - undefined_class
+  error - The name 'AuthProvider' isn't a type, so it can't be used as a type argument - Integration\integration_code_snippets.dart:496:38 - non_type_as_type_argument
+  error - The function 'Scaffold' isn't defined - Integration\integration_code_snippets.dart:499:10 - undefined_function
+  error - Undefined name '_pages' - Integration\integration_code_snippets.dart:500:11 - undefined_identifier
+  error - Undefined name '_currentIndex' - Integration\integration_code_snippets.dart:500:18 - undefined_identifier
+  error - The function 'NavigationBar' isn't defined - Integration\integration_code_snippets.dart:501:26 - undefined_function
+  error - Undefined name '_currentIndex' - Integration\integration_code_snippets.dart:502:22 - undefined_identifier
+  error - Undefined name 'NavigationHelper' - Integration\integration_code_snippets.dart:503:21 - undefined_identifier
+  error - Undefined name 'NavigationHelper' - Integration\integration_code_snippets.dart:505:23 - undefined_identifier
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:509:9 - undefined_identifier
+  error - The function 'setState' isn't defined - Integration\integration_code_snippets.dart:510:9 - undefined_function
+  error - Undefined name '_currentIndex' - Integration\integration_code_snippets.dart:510:24 - undefined_identifier
+  error - The function 'Drawer' isn't defined - Integration\integration_code_snippets.dart:513:13 - undefined_function
+  error - The function 'ListView' isn't defined - Integration\integration_code_snippets.dart:514:14 - undefined_function
+  error - The function 'DrawerHeader' isn't defined - Integration\integration_code_snippets.dart:516:11 - undefined_function
+  error - The function 'BoxDecoration' isn't defined - Integration\integration_code_snippets.dart:517:25 - undefined_function
+  error - Undefined name 'Theme' - Integration\integration_code_snippets.dart:518:22 - undefined_identifier
+  error - The function 'Column' isn't defined - Integration\integration_code_snippets.dart:520:20 - undefined_function
+  error - Undefined name 'CrossAxisAlignment' - Integration\integration_code_snippets.dart:521:35 - undefined_identifier
+  error - Undefined name 'MainAxisAlignment' - Integration\integration_code_snippets.dart:522:34 - undefined_identifier
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:524:23 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:524:28 - undefined_identifier
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:524:59 - undefined_identifier
+  error - The name 'SizedBox' isn't a class - Integration\integration_code_snippets.dart:525:23 - creation_with_non_type
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:526:17 - undefined_function
+  error - The name 'TextStyle' isn't a class - Integration\integration_code_snippets.dart:528:32 - creation_with_non_type
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:528:49 - undefined_identifier
+  error - The function 'Text' isn't defined - Integration\integration_code_snippets.dart:530:17 - undefined_function
+  error - The name 'TextStyle' isn't a class - Integration\integration_code_snippets.dart:532:32 - creation_with_non_type
+  error - Undefined name 'Colors' - Integration\integration_code_snippets.dart:532:49 - undefined_identifier
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:537:11 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:538:28 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:538:33 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:539:26 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:541:25 - undefined_identifier
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:545:11 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:546:28 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:546:33 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:547:26 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:548:26 - undefined_identifier
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:550:11 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:551:28 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:551:33 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:552:26 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:553:26 - undefined_identifier
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:555:11 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:556:28 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:556:33 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:557:26 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:558:26 - undefined_identifier
+  error - The name 'Divider' isn't a class - Integration\integration_code_snippets.dart:561:19 - creation_with_non_type
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:562:13 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:563:30 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:563:35 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:564:28 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:565:28 - undefined_identifier
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:567:13 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:568:30 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:568:35 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:569:28 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:570:28 - undefined_identifier
+  error - The name 'Divider' isn't a class - Integration\integration_code_snippets.dart:573:17 - creation_with_non_type
+  error - The function 'ListTile' isn't defined - Integration\integration_code_snippets.dart:574:11 - undefined_function
+  error - The name 'Icon' isn't a class - Integration\integration_code_snippets.dart:575:28 - creation_with_non_type
+  error - Undefined name 'Icons' - Integration\integration_code_snippets.dart:575:33 - undefined_identifier
+  error - The name 'Text' isn't a class - Integration\integration_code_snippets.dart:576:26 - creation_with_non_type
+  error - Undefined name 'Navigator' - Integration\integration_code_snippets.dart:579:15 - undefined_identifier
+  error - Undefined name 'await' in function body not marked with 'async' - Integration\integration_code_snippets.dart:597:1 - undefined_identifier_await
+  error - Functions must have an explicit list of parameters - Integration\integration_code_snippets.dart:597:7 - missing_function_parameters
+  error - A function body must be provided - Integration\integration_code_snippets.dart:597:9 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:597:9 - expected_executable
+  error - Expected an identifier - Integration\integration_code_snippets.dart:597:18 - missing_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:599:5 - missing_function_body
+  error - Undefined name 'await' in function body not marked with 'async' - Integration\integration_code_snippets.dart:601:1 - undefined_identifier_await
+  error - Functions must have an explicit list of parameters - Integration\integration_code_snippets.dart:601:7 - missing_function_parameters
+  error - The name 'db' is already defined - Integration\integration_code_snippets.dart:601:7 - duplicate_definition
+  error - A function body must be provided - Integration\integration_code_snippets.dart:601:9 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:601:9 - expected_executable
+  error - The name 'execute' is already defined - Integration\integration_code_snippets.dart:601:10 - duplicate_definition
+  error - Expected an identifier - Integration\integration_code_snippets.dart:601:18 - missing_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:603:5 - missing_function_body
+  error - Undefined name 'await' in function body not marked with 'async' - Integration\integration_code_snippets.dart:605:1 - undefined_identifier_await
+  error - Functions must have an explicit list of parameters - Integration\integration_code_snippets.dart:605:7 - missing_function_parameters
+  error - The name 'db' is already defined - Integration\integration_code_snippets.dart:605:7 - duplicate_definition
+  error - A function body must be provided - Integration\integration_code_snippets.dart:605:9 - missing_function_body
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:605:9 - expected_executable
+  error - The name 'execute' is already defined - Integration\integration_code_snippets.dart:605:10 - duplicate_definition
+  error - Expected an identifier - Integration\integration_code_snippets.dart:605:18 - missing_identifier
+  error - A function body must be provided - Integration\integration_code_snippets.dart:607:5 - missing_function_body
+  error - ALTER isn't a type - Integration\integration_code_snippets.dart:610:1 - not_a_type
+   info - The variable name 'TABLE' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:610:7 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:610:7 - expected_token
+  error - sales isn't a type - Integration\integration_code_snippets.dart:610:13 - not_a_type
+   info - The variable name 'ADD' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:610:19 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:610:19 - expected_token
+  error - COLUMN isn't a type - Integration\integration_code_snippets.dart:610:23 - not_a_type
+   info - The variable name 'discount_percent' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:610:30 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:610:30 - expected_token
+  error - Undefined class 'REAL' - Integration\integration_code_snippets.dart:610:47 - undefined_class
+   info - The variable name 'DEFAULT' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:610:52 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:610:52 - expected_token
+  error - Expected a method, getter, setter or operator declaration - Integration\integration_code_snippets.dart:610:60 - expected_executable
+  error - ALTER isn't a type - Integration\integration_code_snippets.dart:611:1 - not_a_type
+   info - The variable name 'TABLE' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:611:7 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:611:7 - expected_token
+  error - The name 'TABLE' is already defined - Integration\integration_code_snippets.dart:611:7 - duplicate_definition
+  error - sales isn't a type - Integration\integration_code_snippets.dart:611:13 - not_a_type
+   info - The variable name 'ADD' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:611:19 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:611:19 - expected_token
+  error - The name 'ADD' is already defined - Integration\integration_code_snippets.dart:611:19 - duplicate_definition
+  error - COLUMN isn't a type - Integration\integration_code_snippets.dart:611:23 - not_a_type
+   info - The variable name 'coupon_code' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:611:30 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:611:30 - expected_token
+  error - Undefined class 'TEXT' - Integration\integration_code_snippets.dart:611:42 - undefined_class
+   info - The variable name 'ALTER' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:612:1 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:612:1 - expected_token
+  error - TABLE isn't a type - Integration\integration_code_snippets.dart:612:7 - not_a_type
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:612:13 - expected_token
+  error - ADD isn't a type - Integration\integration_code_snippets.dart:612:19 - not_a_type
+   info - The variable name 'COLUMN' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:612:23 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:612:23 - expected_token
+  error - Undefined class 'customer_id' - Integration\integration_code_snippets.dart:612:30 - undefined_class
+   info - The variable name 'INTEGER' isn't a lowerCamelCase identifier - Integration\integration_code_snippets.dart:612:42 - non_constant_identifier_names
+  error - Expected to find ';' - Integration\integration_code_snippets.dart:612:42 - expected_token
+  error - The name 'DashboardPage' isn't a class - lib\core\core\routes\app_router.dart:35:40 - creation_with_non_type
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:110:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:131:15 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:135:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:138:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:150:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:172:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:175:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:223:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:226:7 - avoid_print
+  error - The name 'Category' isn't a type, so it can't be used as a type argument - lib\core\database\database_helper.dart:236:15 - non_type_as_type_argument
+  error - Undefined name 'Category' - lib\core\database\database_helper.dart:239:30 - undefined_identifier
+  error - Undefined class 'Category' - lib\core\database\database_helper.dart:257:3 - undefined_class
+  error - Undefined name 'Category' - lib\core\database\database_helper.dart:265:14 - undefined_identifier
+  error - The name 'Customer' isn't a type, so it can't be used as a type argument - lib\core\database\database_helper.dart:275:15 - non_type_as_type_argument
+  error - Undefined name 'Customer' - lib\core\database\database_helper.dart:278:30 - undefined_identifier
+  error - Undefined class 'Customer' - lib\core\database\database_helper.dart:296:3 - undefined_class
+  error - Undefined name 'Customer' - lib\core\database\database_helper.dart:304:14 - undefined_identifier
+  error - The name 'Coupon' isn't a type, so it can't be used as a type argument - lib\core\database\database_helper.dart:314:15 - non_type_as_type_argument
+  error - Undefined name 'Coupon' - lib\core\database\database_helper.dart:317:30 - undefined_identifier
+  error - Undefined class 'Coupon' - lib\core\database\database_helper.dart:335:3 - undefined_class
+  error - Undefined name 'Coupon' - lib\core\database\database_helper.dart:343:14 - undefined_identifier
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:359:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:363:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:366:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:381:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:391:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:410:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:425:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:62:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:66:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:109:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:113:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:170:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:174:7 - avoid_print
+  error - The argument type 'CardTheme' can't be assigned to the parameter type 'CardThemeData?'.  - lib\core\theme\app_theme.dart:26:16 - argument_type_not_assignable
+  error - The argument type 'CardTheme' can't be assigned to the parameter type 'CardThemeData?'.  - lib\core\theme\app_theme.dart:74:16 - argument_type_not_assignable
+   info - Don't invoke 'print' in production code - lib\core\theme\theme_provider.dart:24:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\theme\theme_provider.dart:35:7 - avoid_print
+   info - Parameter 'key' could be a super parameter - lib\features\admin\presentation\pages\user_management_page.dart:8:9 - use_super_parameters
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:201:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:202:53 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:203:38 - use_build_context_synchronously
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\pages\user_management_page.dart:324:17 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\pages\user_management_page.dart:551:17 - deprecated_member_use
+   info - Parameters ''id', 'name', 'email', 'role', 'createdAt', and 'updatedAt'' could be super parameters - lib\features\auth\data\models\user_model.dart:5:3 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\auth\presentation\pages\login_page.dart:9:9 - use_super_parameters
+   info - The private field _rememberMe could be 'final' - lib\features\auth\presentation\pages\login_page.dart:19:8 - prefer_final_fields
+warning - The value of the field '_rememberMe' isn't used - lib\features\auth\presentation\pages\login_page.dart:19:8 - unused_field
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\login_page.dart:38:33 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\login_page.dart:55:21 - prefer_const_constructors
+   info - Parameter 'key' could be a super parameter - lib\features\auth\presentation\pages\register_page.dart:8:9 - use_super_parameters
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:133:35 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:164:35 - prefer_const_constructors
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\presentation\pages\register_page.dart:190:21 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:262:32 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:264:34 - prefer_const_constructors
+warning - The value of the field '_repository' isn't used - lib\features\auth\presentation\providers\auth_provider.dart:7:28 - unused_field
+  error - The name 'CategoryProvider' isn't a type, so it can't be used as a type argument - lib\features\categories\presentation\pages\categories_page.dart:18:20 - non_type_as_type_argument
+  error - The name 'CategoryProvider' isn't a type, so it can't be used as a type argument - lib\features\categories\presentation\pages\categories_page.dart:29:22 - non_type_as_type_argument
+  error - The property 'isLoading' can't be unconditionally accessed because the receiver can be 'null' - lib\features\categories\presentation\pages\categories_page.dart:31:24 - unchecked_use_of_nullable_value
+  error - The property 'categories' can't be unconditionally accessed because the receiver can be 'null' - lib\features\categories\presentation\pages\categories_page.dart:35:39 - unchecked_use_of_nullable_value
+  error - Undefined class 'Category' - lib\features\categories\presentation\pages\categories_page.dart:91:37 - undefined_class
+  error - The name 'CategoryProvider' isn't a type, so it can't be used as a type argument - lib\features\categories\presentation\pages\categories_page.dart:141:45 - non_type_as_type_argument
+  error - The method 'Category' isn't defined for the type '_CategoriesPageState' - lib\features\categories\presentation\pages\categories_page.dart:142:35 - undefined_method
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\categories\presentation\pages\categories_page.dart:158:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\categories\presentation\pages\categories_page.dart:159:38 - use_build_context_synchronously
+  error - Undefined class 'Category' - lib\features\categories\presentation\pages\categories_page.dart:178:32 - undefined_class
+  error - The name 'CategoryProvider' isn't a type, so it can't be used as a type argument - lib\features\categories\presentation\pages\categories_page.dart:201:42 - non_type_as_type_argument
+  error - Undefined class 'DatabaseHelper' - lib\features\categories\presentation\providers\category_provider.dart:6:9 - undefined_class
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:27:7 - avoid_print
+  error - The method 'toMap' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:36:52 - undefined_method
+  error - The method 'copyWith' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:37:32 - undefined_method
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:42:7 - avoid_print
+  error - The method 'toMap' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:49:41 - undefined_method
+  error - The getter 'id' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:50:53 - undefined_getter
+  error - The getter 'id' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:50:68 - undefined_getter
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:58:7 - avoid_print
+  error - The getter 'id' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:66:40 - undefined_getter
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:71:7 - avoid_print
+  error - The getter 'id' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:78:46 - undefined_getter
+  error - The getter 'id' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:86:46 - undefined_getter
+  error - The getter 'name' isn't defined for the type 'Category' - lib\features\categories\presentation\providers\category_provider.dart:86:56 - undefined_getter
+  error - Undefined class 'DatabaseHelper' - lib\features\coupons\presentation\providers\coupon_provider.dart:6:9 - undefined_class
+  error - The name 'Coupon' isn't a type, so it can't be used as a type argument - lib\features\coupons\presentation\providers\coupon_provider.dart:7:8 - non_type_as_type_argument
+  error - The name 'Coupon' isn't a type, so it can't be used as a type argument - lib\features\coupons\presentation\providers\coupon_provider.dart:13:8 - non_type_as_type_argument
+  error - The name 'Coupon' isn't a type, so it can't be used as a type argument - lib\features\coupons\presentation\providers\coupon_provider.dart:14:8 - non_type_as_type_argument
+  error - The property 'isValid' can't be unconditionally accessed because the receiver can be 'null' - lib\features\coupons\presentation\providers\coupon_provider.dart:14:60 - unchecked_use_of_nullable_value
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:28:7 - avoid_print
+  error - Undefined class 'Coupon' - lib\features\coupons\presentation\providers\coupon_provider.dart:35:26 - undefined_class
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:43:7 - avoid_print
+  error - Undefined class 'Coupon' - lib\features\coupons\presentation\providers\coupon_provider.dart:48:29 - undefined_class
+  error - The property 'id' can't be unconditionally accessed because the receiver can be 'null' - lib\features\coupons\presentation\providers\coupon_provider.dart:51:50 - unchecked_use_of_nullable_value
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:59:7 - avoid_print
+  error - The property 'id' can't be unconditionally accessed because the receiver can be 'null' - lib\features\coupons\presentation\providers\coupon_provider.dart:67:37 - unchecked_use_of_nullable_value
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:72:7 - avoid_print
+  error - Undefined class 'Coupon' - lib\features\coupons\presentation\providers\coupon_provider.dart:77:3 - undefined_class
+  error - The property 'code' can't be unconditionally accessed because the receiver can be 'null' - lib\features\coupons\presentation\providers\coupon_provider.dart:80:22 - unchecked_use_of_nullable_value
+  error - The property 'isValid' can't be unconditionally accessed because the receiver can be 'null' - lib\features\coupons\presentation\providers\coupon_provider.dart:80:68 - unchecked_use_of_nullable_value
+   info - Parameters ''id', 'name', 'email', 'phone', and 'address'' could be super parameters - lib\features\customers\data\models\customer_model.dart:5:3 - use_super_parameters
+  error - The named parameter 'loyaltyPoints' isn't defined - lib\features\customers\data\models\customer_model.dart:20:11 - undefined_named_parameter
+  error - Undefined name 'loyaltyPoints' - lib\features\customers\data\models\customer_model.dart:45:25 - undefined_identifier
+  error - The getter 'loyaltyPoints' isn't defined for the type 'Customer' - lib\features\customers\data\repositories\customer_repository_impl.dart:24:34 - undefined_getter
+  error - The getter 'loyaltyPoints' isn't defined for the type 'Customer' - lib\features\customers\data\repositories\customer_repository_impl.dart:41:36 - undefined_getter
+  error - The name 'CustomerProvider' isn't a type, so it can't be used as a type argument - lib\features\customers\presentation\pages\customers_page.dart:18:20 - non_type_as_type_argument
+  error - The name 'CustomerProvider' isn't a type, so it can't be used as a type argument - lib\features\customers\presentation\pages\customers_page.dart:29:22 - non_type_as_type_argument
+  error - The property 'isLoading' can't be unconditionally accessed because the receiver can be 'null' - lib\features\customers\presentation\pages\customers_page.dart:31:24 - unchecked_use_of_nullable_value
+  error - The property 'customers' can't be unconditionally accessed because the receiver can be 'null' - lib\features\customers\presentation\pages\customers_page.dart:35:38 - unchecked_use_of_nullable_value
+  error - Undefined class 'Customer' - lib\features\customers\presentation\pages\customers_page.dart:99:37 - undefined_class
+  error - The name 'CustomerProvider' isn't a type, so it can't be used as a type argument - lib\features\customers\presentation\pages\customers_page.dart:173:45 - non_type_as_type_argument
+  error - The method 'Customer' isn't defined for the type '_CustomersPageState' - lib\features\customers\presentation\pages\customers_page.dart:174:35 - undefined_method
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\customers\presentation\pages\customers_page.dart:190:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\customers\presentation\pages\customers_page.dart:191:38 - use_build_context_synchronously
+  error - Undefined class 'Customer' - lib\features\customers\presentation\pages\customers_page.dart:210:32 - undefined_class
+  error - The name 'CustomerProvider' isn't a type, so it can't be used as a type argument - lib\features\customers\presentation\pages\customers_page.dart:233:42 - non_type_as_type_argument
+  error - Undefined class 'DatabaseHelper' - lib\features\customers\presentation\providers\customer_provider.dart:6:9 - undefined_class
+  error - The name 'Customer' isn't a type, so it can't be used as a type argument - lib\features\customers\presentation\providers\customer_provider.dart:7:8 - non_type_as_type_argument
+  error - The name 'Customer' isn't a type, so it can't be used as a type argument - lib\features\customers\presentation\providers\customer_provider.dart:13:8 - non_type_as_type_argument
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:27:7 - avoid_print
+  error - Undefined class 'Customer' - lib\features\customers\presentation\providers\customer_provider.dart:34:28 - undefined_class
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:42:7 - avoid_print
+  error - Undefined class 'Customer' - lib\features\customers\presentation\providers\customer_provider.dart:47:31 - undefined_class
+  error - The property 'id' can't be unconditionally accessed because the receiver can be 'null' - lib\features\customers\presentation\providers\customer_provider.dart:50:52 - unchecked_use_of_nullable_value
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:58:7 - avoid_print
+  error - The property 'id' can't be unconditionally accessed because the receiver can be 'null' - lib\features\customers\presentation\providers\customer_provider.dart:66:39 - unchecked_use_of_nullable_value
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:71:7 - avoid_print
+  error - Undefined class 'Customer' - lib\features\customers\presentation\providers\customer_provider.dart:76:3 - undefined_class
+  error - Undefined name 'Customer' - lib\features\customers\presentation\providers\customer_provider.dart:77:39 - undefined_identifier
+  error - The property 'id' can't be unconditionally accessed because the receiver can be 'null' - lib\features\customers\presentation\providers\customer_provider.dart:79:45 - unchecked_use_of_nullable_value
+  error - The property 'id' can't be unconditionally accessed because the receiver can be 'null' - lib\features\customers\presentation\providers\customer_provider.dart:88:45 - unchecked_use_of_nullable_value
+  error - Expected a method, getter, setter or operator declaration - lib\features\dashboard\presentation\pages\dashboard_page.dart:1:1 - expected_executable
+warning - The declaration '_DashboardPageState' isn't referenced - lib\features\dashboard\presentation\pages\dashboard_page.dart:3:7 - unused_element
+  error - Classes can only extend other classes - lib\features\dashboard\presentation\pages\dashboard_page.dart:3:35 - extends_non_class
+  error - The name 'DashboardPage' isn't a type, so it can't be used as a type argument - lib\features\dashboard\presentation\pages\dashboard_page.dart:3:41 - non_type_as_type_argument
+warning - The method doesn't override an inherited method - lib\features\dashboard\presentation\pages\dashboard_page.dart:5:8 - override_on_non_overriding_member
+  error - The method 'initState' isn't defined in a superclass of '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:6:11 - undefined_super_member
+  error - Undefined name 'WidgetsBinding' - lib\features\dashboard\presentation\pages\dashboard_page.dart:7:5 - undefined_identifier
+  error - Undefined name 'Provider' - lib\features\dashboard\presentation\pages\dashboard_page.dart:8:7 - undefined_identifier
+  error - The name 'DashboardProvider' isn't a type, so it can't be used as a type argument - lib\features\dashboard\presentation\pages\dashboard_page.dart:8:19 - non_type_as_type_argument
+  error - Undefined name 'context' - lib\features\dashboard\presentation\pages\dashboard_page.dart:8:38 - undefined_identifier
+  error - Undefined name 'Provider' - lib\features\dashboard\presentation\pages\dashboard_page.dart:9:7 - undefined_identifier
+  error - The name 'ProductProvider' isn't a type, so it can't be used as a type argument - lib\features\dashboard\presentation\pages\dashboard_page.dart:9:19 - non_type_as_type_argument
+  error - Undefined name 'context' - lib\features\dashboard\presentation\pages\dashboard_page.dart:9:36 - undefined_identifier
+  error - Undefined name 'Provider' - lib\features\dashboard\presentation\pages\dashboard_page.dart:10:7 - undefined_identifier
+  error - The name 'SalesProvider' isn't a type, so it can't be used as a type argument - lib\features\dashboard\presentation\pages\dashboard_page.dart:10:19 - non_type_as_type_argument
+  error - Undefined name 'context' - lib\features\dashboard\presentation\pages\dashboard_page.dart:10:34 - undefined_identifier
+  error - Undefined class 'Widget' - lib\features\dashboard\presentation\pages\dashboard_page.dart:15:3 - undefined_class
+warning - The method doesn't override an inherited method - lib\features\dashboard\presentation\pages\dashboard_page.dart:15:10 - override_on_non_overriding_member
+  error - Undefined class 'BuildContext' - lib\features\dashboard\presentation\pages\dashboard_page.dart:15:16 - undefined_class
+  error - The name 'AuthProvider' isn't a type, so it can't be used as a type argument - lib\features\dashboard\presentation\pages\dashboard_page.dart:16:40 - non_type_as_type_argument
+  error - The name 'POSPage' isn't a class - lib\features\dashboard\presentation\pages\dashboard_page.dart:20:20 - creation_with_non_type
+  error - The method 'Scaffold' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:23:12 - undefined_method
+  error - The method 'AppBar' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:24:15 - undefined_method
+  error - The name 'Text' isn't a class - lib\features\dashboard\presentation\pages\dashboard_page.dart:24:35 - creation_with_non_type
+  error - Undefined class 'Widget' - lib\features\dashboard\presentation\pages\dashboard_page.dart:29:3 - undefined_class
+  error - The method 'Consumer2' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:30:12 - undefined_method
+  error - The name 'SalesProvider' isn't a type, so it can't be used as a type argument - lib\features\dashboard\presentation\pages\dashboard_page.dart:30:22 - non_type_as_type_argument
+  error - The name 'ProductProvider' isn't a type, so it can't be used as a type argument - lib\features\dashboard\presentation\pages\dashboard_page.dart:30:37 - non_type_as_type_argument
+  error - The method 'GridView' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:35:16 - undefined_method
+  error - The name 'SliverGridDelegateWithFixedCrossAxisCount' isn't a class - lib\features\dashboard\presentation\pages\dashboard_page.dart:36:31 - creation_with_non_type
+  error - Undefined name 'EdgeInsets' - lib\features\dashboard\presentation\pages\dashboard_page.dart:42:26 - undefined_identifier
+  error - Undefined name 'Icons' - lib\features\dashboard\presentation\pages\dashboard_page.dart:47:15 - undefined_identifier
+  error - Undefined name 'Colors' - lib\features\dashboard\presentation\pages\dashboard_page.dart:48:15 - undefined_identifier
+  error - Undefined name 'Icons' - lib\features\dashboard\presentation\pages\dashboard_page.dart:53:15 - undefined_identifier
+  error - Undefined name 'Colors' - lib\features\dashboard\presentation\pages\dashboard_page.dart:54:15 - undefined_identifier
+  error - Undefined name 'Icons' - lib\features\dashboard\presentation\pages\dashboard_page.dart:59:15 - undefined_identifier
+  error - Undefined name 'Colors' - lib\features\dashboard\presentation\pages\dashboard_page.dart:60:15 - undefined_identifier
+  error - Undefined name 'Icons' - lib\features\dashboard\presentation\pages\dashboard_page.dart:68:15 - undefined_identifier
+  error - Undefined name 'Colors' - lib\features\dashboard\presentation\pages\dashboard_page.dart:69:15 - undefined_identifier
+  error - Undefined class 'Widget' - lib\features\dashboard\presentation\pages\dashboard_page.dart:77:3 - undefined_class
+  error - Undefined class 'IconData' - lib\features\dashboard\presentation\pages\dashboard_page.dart:77:48 - undefined_class
+  error - Undefined class 'Color' - lib\features\dashboard\presentation\pages\dashboard_page.dart:77:63 - undefined_class
+  error - The method 'Card' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:78:12 - undefined_method
+  error - The method 'Container' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:80:14 - undefined_method
+  error - The method 'BoxDecoration' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:81:21 - undefined_method
+  error - Undefined name 'BorderRadius' - lib\features\dashboard\presentation\pages\dashboard_page.dart:82:25 - undefined_identifier
+  error - Undefined name 'EdgeInsets' - lib\features\dashboard\presentation\pages\dashboard_page.dart:85:24 - undefined_identifier
+  error - The method 'Column' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:86:16 - undefined_method
+  error - Undefined name 'MainAxisAlignment' - lib\features\dashboard\presentation\pages\dashboard_page.dart:87:30 - undefined_identifier
+  error - The method 'Icon' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:89:13 - undefined_method
+  error - The name 'SizedBox' isn't a class - lib\features\dashboard\presentation\pages\dashboard_page.dart:90:19 - creation_with_non_type
+  error - The method 'Text' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:91:13 - undefined_method
+  error - The name 'TextStyle' isn't a class - lib\features\dashboard\presentation\pages\dashboard_page.dart:93:28 - creation_with_non_type
+  error - Undefined name 'FontWeight' - lib\features\dashboard\presentation\pages\dashboard_page.dart:93:64 - undefined_identifier
+  error - The name 'SizedBox' isn't a class - lib\features\dashboard\presentation\pages\dashboard_page.dart:95:19 - creation_with_non_type
+  error - The method 'Text' isn't defined for the type '_DashboardPageState' - lib\features\dashboard\presentation\pages\dashboard_page.dart:96:13 - undefined_method
+  error - The name 'TextStyle' isn't a class - lib\features\dashboard\presentation\pages\dashboard_page.dart:96:38 - creation_with_non_type
+  error - Undefined name 'Colors' - lib\features\dashboard\presentation\pages\dashboard_page.dart:96:55 - undefined_identifier
+   info - Use 'const' with the constructor to improve performance - lib\features\dashboard\presentation\providers\dashboard_provider.dart:61:26 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\dashboard\presentation\providers\dashboard_provider.dart:87:44 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\dashboard\presentation\providers\dashboard_provider.dart:94:44 - prefer_const_constructors
+  error - Target of URI doesn't exist: '../../auth/presentation/providers/auth_provider.dart' - lib\features\home\presentation\pages\home_page.dart:4:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../dashboard/presentation/pages/dashboard_page.dart' - lib\features\home\presentation\pages\home_page.dart:5:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../products/presentation/pages/products_page.dart' - lib\features\home\presentation\pages\home_page.dart:6:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../sales/presentation/pages/pos_page.dart' - lib\features\home\presentation\pages\home_page.dart:7:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../customers/presentation/pages/customers_page.dart' - lib\features\home\presentation\pages\home_page.dart:8:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../reports/presentation/pages/reports_page.dart' - lib\features\home\presentation\pages\home_page.dart:9:8 - uri_does_not_exist
+  error - Target of URI doesn't exist: '../../settings/presentation/pages/settings_page.dart' - lib\features\home\presentation\pages\home_page.dart:10:8 - uri_does_not_exist
+   info - Parameter 'key' could be a super parameter - lib\features\home\presentation\pages\home_page.dart:13:9 - use_super_parameters
+  error - The name 'AuthProvider' isn't a type, so it can't be used as a type argument - lib\features\home\presentation\pages\home_page.dart:24:40 - non_type_as_type_argument
+   info - The local variable '_pages' starts with an underscore - lib\features\home\presentation\pages\home_page.dart:28:24 - no_leading_underscores_for_local_identifiers
+  error - The name 'DashboardPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:30:19 - creation_with_non_type
+  error - The name 'ProductsPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:31:19 - creation_with_non_type
+  error - The name 'POSPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:32:19 - creation_with_non_type
+  error - The name 'CustomersPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:33:19 - creation_with_non_type
+  error - The name 'ReportsPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:34:19 - creation_with_non_type
+  error - The name 'SettingsPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:35:19 - creation_with_non_type
+  error - The name 'ProductsPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:38:19 - creation_with_non_type
+  error - The name 'POSPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:39:19 - creation_with_non_type
+  error - The name 'CustomersPage' isn't a class - lib\features\home\presentation\pages\home_page.dart:40:19 - creation_with_non_type
+   info - Parameters ''id', 'name', 'description', 'price', 'cost', 'stockQuantity', 'minStock', 'categoryId', 'barcode', 'imagePath', 'createdAt', and 'updatedAt'' could be super parameters - lib\features\products\data\models\product_model.dart:5:3 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\products\presentation\pages\products_page.dart:11:9 - use_super_parameters
+  error - Undefined name '_exportProductsToCSV' - lib\features\products\presentation\pages\products_page.dart:93:24 - undefined_identifier
+   info - The 'child' argument should be last in widget constructor invocations - lib\features\products\presentation\pages\products_page.dart:250:15 - sort_child_properties_last
+  error - The named parameter 'title' isn't defined - lib\features\products\presentation\pages\products_page.dart:253:17 - undefined_named_parameter
+  error - The named parameter 'subtitle' isn't defined - lib\features\products\presentation\pages\products_page.dart:257:17 - undefined_named_parameter
+  error - The named parameter 'trailing' isn't defined - lib\features\products\presentation\pages\products_page.dart:277:17 - undefined_named_parameter
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:311:15 - expected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:311:16 - missing_identifier
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:311:16 - unexpected_token
+  error - Expected to find '}' - lib\features\products\presentation\pages\products_page.dart:312:13 - expected_token
+  error - Expected a class member - lib\features\products\presentation\pages\products_page.dart:315:8 - expected_class_member
+  error - Expected a class member - lib\features\products\presentation\pages\products_page.dart:316:5 - expected_class_member
+  error - Expected a class member - lib\features\products\presentation\pages\products_page.dart:316:6 - expected_class_member
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:321:16 - undefined_identifier
+  error - The function '_ProductDialog' isn't defined - lib\features\products\presentation\pages\products_page.dart:323:11 - undefined_function
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:338:16 - undefined_identifier
+  error - The function '_ProductDialog' isn't defined - lib\features\products\presentation\pages\products_page.dart:340:11 - undefined_function
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:356:16 - undefined_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:379:16 - expected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:380:3 - missing_identifier
+  error - Expected to find ')' - lib\features\products\presentation\pages\products_page.dart:380:3 - expected_token
+  error - Expected to find ']' - lib\features\products\presentation\pages\products_page.dart:380:3 - expected_token
+warning - The value of the local variable 'onSave' isn't used - lib\features\products\presentation\pages\products_page.dart:380:35 - unused_local_variable
+  error - The name '_ProductDialog' isn't a class - lib\features\products\presentation\pages\products_page.dart:382:9 - creation_with_non_type
+  error - Invalid reference to 'this' expression - lib\features\products\presentation\pages\products_page.dart:383:5 - invalid_reference_to_this
+   info - 'required' is deprecated and shouldn't be used. In Dart 2.12 and later, use the built-in `required` keyword to mark a named parameter as required - lib\features\products\presentation\pages\products_page.dart:384:5 - deprecated_member_use
+  error - Expected to find ',' - lib\features\products\presentation\pages\products_page.dart:384:14 - expected_token
+  error - Invalid reference to 'this' expression - lib\features\products\presentation\pages\products_page.dart:384:14 - invalid_reference_to_this
+  error - The name '_ProductDialog' isn't a type, so it can't be used as a type argument - lib\features\products\presentation\pages\products_page.dart:388:9 - non_type_as_type_argument
+warning - The declaration 'createState' isn't referenced - lib\features\products\presentation\pages\products_page.dart:388:25 - unused_element
+  error - The name '_ProductDialog' isn't a type, so it can't be used as a type argument - lib\features\products\presentation\pages\products_page.dart:391:41 - non_type_as_type_argument
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\products\presentation\pages\products_page.dart:556:15 - deprecated_member_use
+  error - The name 'CategoryProvider' isn't a type, so it can't be used as a type argument - lib\features\products\presentation\pages\products_page.dart:563:34 - non_type_as_type_argument
+  error - The method '_showAddCategoryDialog' isn't defined for the type '_ProductDialogState' - lib\features\products\presentation\pages\products_page.dart:573:39 - undefined_method
+  error - Expected to find ']' - lib\features\products\presentation\pages\products_page.dart:581:14 - expected_token
+  error - Undefined class 'Sale' - lib\features\receipt\presentation\pages\receipt_page.dart:7:9 - undefined_class
+  error - The name 'SaleItem' isn't a type, so it can't be used as a type argument - lib\features\receipt\presentation\pages\receipt_page.dart:8:14 - non_type_as_type_argument
+  error - Undefined class 'Customer' - lib\features\receipt\presentation\pages\receipt_page.dart:9:9 - undefined_class
+  error - The property 'quantity' can't be unconditionally accessed because the receiver can be 'null' - lib\features\receipt\presentation\pages\receipt_page.dart:106:38 - unchecked_use_of_nullable_value
+  error - The property 'price' can't be unconditionally accessed because the receiver can be 'null' - lib\features\receipt\presentation\pages\receipt_page.dart:106:54 - unchecked_use_of_nullable_value
+  error - The property 'productName' can't be unconditionally accessed because the receiver can be 'null' - lib\features\receipt\presentation\pages\receipt_page.dart:117:34 - unchecked_use_of_nullable_value
+  error - The property 'price' can't be unconditionally accessed because the receiver can be 'null' - lib\features\receipt\presentation\pages\receipt_page.dart:125:37 - unchecked_use_of_nullable_value
+  error - The property 'quantity' can't be unconditionally accessed because the receiver can be 'null' - lib\features\receipt\presentation\pages\receipt_page.dart:133:30 - unchecked_use_of_nullable_value
+   info - Unnecessary use of 'toList' in a spread - lib\features\receipt\presentation\pages\receipt_page.dart:150:16 - unnecessary_to_list_in_spreads
+   info - Parameter 'key' could be a super parameter - lib\features\reports\presentation\pages\reports_page.dart:7:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\pages\reports_page.dart:104:32 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\reports\presentation\providers\reports_provider.dart:12:26 - prefer_const_constructors
+   info - Parameters ''id', 'customerId', 'userId', 'totalAmount', 'discountAmount', 'taxAmount', 'paymentMethod', 'status', 'createdAt', 'updatedAt', and 'items'' could be super parameters - lib\features\sales\data\models\sale_model.dart:7:3 - use_super_parameters
+  error - The name 'Sale' is defined in the libraries 'package:pos_app/core/database/database_helper.dart' and 'package:pos_app/features/sales/domain/entities/sale.dart' - lib\features\sales\data\repositories\sales_repository_impl.dart:8:15 - ambiguous_import
+  error - 'SalesRepositoryImpl.getAllSales' ('Future<List<dynamic>> Function()') isn't a valid override of 'SalesRepository.getAllSales' ('Future<List<Sale>> Function()') - lib\features\sales\data\repositories\sales_repository_impl.dart:8:22 - invalid_override
+  error - The name 'Sale' is defined in the libraries 'package:pos_app/core/database/database_helper.dart' and 'package:pos_app/features/sales/domain/entities/sale.dart' - lib\features\sales\data\repositories\sales_repository_impl.dart:12:10 - ambiguous_import
+  error - The name 'Sale' is defined in the libraries 'package:pos_app/core/database/database_helper.dart' and 'package:pos_app/features/sales/domain/entities/sale.dart' - lib\features\sales\data\repositories\sales_repository_impl.dart:29:24 - ambiguous_import
+warning - Unused import: 'package:pos_app/features/sales/domain/entities/sale_item.dart' - lib\features\sales\presentation\pages\pos_page.dart:9:8 - unused_import
+warning - Duplicate import - lib\features\sales\presentation\pages\pos_page.dart:13:8 - duplicate_import
+warning - Duplicate import - lib\features\sales\presentation\pages\pos_page.dart:14:8 - duplicate_import
+warning - Duplicate import - lib\features\sales\presentation\pages\pos_page.dart:15:8 - duplicate_import
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\pos_page.dart:19:9 - use_super_parameters
+  error - The method 'clearError' isn't defined for the type 'SalesProvider' - lib\features\sales\presentation\pages\pos_page.dart:57:21 - undefined_method
+   info - 'surfaceVariant' is deprecated and shouldn't be used. Use surfaceContainerHighest instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\sales\presentation\pages\pos_page.dart:73:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:73:67 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:76:64 - deprecated_member_use
+  error - The method 'addToCart' isn't defined for the type 'SalesProvider' - lib\features\sales\presentation\pages\pos_page.dart:150:62 - undefined_method
+  error - The method 'removeFromCart' isn't defined for the type 'SalesProvider' - lib\features\sales\presentation\pages\pos_page.dart:344:26 - undefined_method
+  error - The method 'updateCartItemQuantity' isn't defined for the type 'SalesProvider' - lib\features\sales\presentation\pages\pos_page.dart:360:30 - undefined_method
+  error - The method 'updateCartItemQuantity' isn't defined for the type 'SalesProvider' - lib\features\sales\presentation\pages\pos_page.dart:378:30 - undefined_method
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:415:58 - deprecated_member_use
+  error - The getter 'price' isn't defined for the type 'CartItem' - lib\features\sales\presentation\pages\pos_page.dart:422:32 - undefined_getter
+   info - Unnecessary braces in a string interpolation - lib\features\sales\presentation\pages\pos_page.dart:449:37 - unnecessary_brace_in_string_interps
+   info - Don't use 'BuildContext's across async gaps - lib\features\sales\presentation\pages\pos_page.dart:585:7 - use_build_context_synchronously
+  error - The property 'name' can't be unconditionally accessed because the receiver can be 'null' - lib\features\sales\presentation\pages\pos_page.dart:604:39 - unchecked_use_of_nullable_value
+  error - The property 'phone' can't be unconditionally accessed because the receiver can be 'null' - lib\features\sales\presentation\pages\pos_page.dart:605:37 - unchecked_use_of_nullable_value
+  error - The property 'phone' can't be unconditionally accessed because the receiver can be 'null' - lib\features\sales\presentation\pages\pos_page.dart:605:60 - unchecked_use_of_nullable_value
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\pos_page.dart:725:9 - use_super_parameters
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\sales\presentation\pages\pos_page.dart:749:15 - deprecated_member_use
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\features\sales\presentation\pages\pos_page.dart:855:22 - prefer_const_literals_to_create_immutables
+   info - The private field _cart could be 'final' - lib\features\sales\presentation\providers\sales_provider.dart:24:18 - prefer_final_fields
+  error - A value of type 'List<dynamic>' can't be assigned to a variable of type 'List<Sale>' - lib\features\sales\presentation\providers\sales_provider.dart:146:16 - invalid_assignment
+  error - The name 'ThemeProvider' isn't a type, so it can't be used as a type argument - lib\features\settings\presentation\pages\settings_page.dart:11:41 - non_type_as_type_argument
+  error - Target of URI doesn't exist: 'core/routes/app_router.dart' - lib\main.dart:7:8 - uri_does_not_exist
+  error - The class 'DatabaseHelper' doesn't have an unnamed constructor - lib\main.dart:18:20 - new_with_undefined_constructor_default
+  error - Too many positional arguments: 0 expected, but 1 found - lib\main.dart:34:60 - extra_positional_arguments
+  error - Too many positional arguments: 0 expected, but 1 found - lib\main.dart:35:63 - extra_positional_arguments
+  error - The argument type 'DatabaseHelper' can't be assigned to the parameter type 'ProductProvider'.  - lib\main.dart:36:61 - argument_type_not_assignable
+  error - Undefined name 'AppRouter' - lib\main.dart:49:21 - undefined_identifier
+  error - The method 'getCurrentUser' isn't defined for the type 'AuthProvider' - lib\main.dart:78:37 - undefined_method
+   info - Use 'const' with the constructor to improve performance - lib\main.dart:96:13 - prefer_const_constructors
+  error - The name 'DashboardPage' isn't a class - lib\shared\navigation\app_router.dart:50:48 - creation_with_non_type
+   info - Parameter 'key' could be a super parameter - lib\shared\widgets\main_layout.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\main_layout.dart:42:33 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\shared\widgets\sidebar_navigation.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\sidebar_navigation.dart:20:33 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\shared\widgets\sidebar_navigation.dart:42:19 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\sidebar_navigation.dart:158:46 - deprecated_member_use
+  error - The named parameter 'dbHelper' is required, but there's no corresponding argument - test\widget_test.dart:16:35 - missing_required_argument
+

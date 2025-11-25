@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:pos_app/features/sales/presentation/providers/sales_provider.dart';
-import 'package:pos_app/features/products/presentation/providers/product_provider.dart';
-import 'package:pos_app/features/customers/presentation/providers/customer_provider.dart';
-import 'package:pos_app/features/auth/presentation/providers/auth_provider.dart';
-import 'package:pos_app/core/constants/app_colors.dart';
-import 'package:pos_app/features/products/domain/entities/product.dart';
+import '../../../../core/constants/app_colors.dart';
+import '../../../../core/presentation/widgets/futuristic_header.dart';
+import '../../../../core/presentation/widgets/futuristic_card.dart';
+import '../../../../core/presentation/widgets/futuristic_button.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../products/presentation/providers/product_provider.dart';
+import '../../../customers/presentation/providers/customer_provider.dart';
+import '../../../coupons/presentation/providers/coupon_provider.dart';
+import '../providers/sales_provider.dart';
+import '../../../products/domain/entities/product.dart';
+import '../../../customers/domain/entities/customer.dart';
+import '../../../coupons/domain/entities/coupon.dart';
+import 'receipt_page.dart';
 
 class POSPage extends StatefulWidget {
   const POSPage({Key? key}) : super(key: key);
@@ -16,10 +23,8 @@ class POSPage extends StatefulWidget {
 
 class _POSPageState extends State<POSPage> {
   final TextEditingController _searchController = TextEditingController();
-  Customer? _selectedCustomer;
-  double _discountPercent = 0.0;
-  String _couponCode = '';
-  Coupon? _appliedCoupon;
+  final TextEditingController _barcodeController = TextEditingController();
+  final FocusNode _barcodeFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -27,88 +32,53 @@ class _POSPageState extends State<POSPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ProductProvider>(context, listen: false).loadProducts();
       Provider.of<CustomerProvider>(context, listen: false).loadCustomers();
-      final salesProvider = Provider.of<SalesProvider>(context, listen: false);
-      salesProvider.addListener(_onSalesProviderUpdate);
+      Provider.of<CouponProvider>(context, listen: false).loadCoupons();
     });
   }
 
   @override
   void dispose() {
+    _searchController.dispose();
+    _barcodeController.dispose();
+    _barcodeFocusNode.dispose();
     super.dispose();
-  }
-
-  void _onSalesProviderUpdate() {
-    final salesProvider = Provider.of<SalesProvider>(context, listen: false);
-    if (salesProvider.error != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(salesProvider.error!),
-          backgroundColor: AppColors.error,
-        ),
-      );
-      salesProvider.clearError();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+      body: Column(
         children: [
+          const FuturisticHeader(title: 'POS Terminal'),
           Expanded(
-            flex: 3,
-            child: _buildProductsSection(),
-          ),
-          Container(
-            width: 400,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
-              border: Border(
-                left: BorderSide(
-                  color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
-                ),
-              ),
-            ),
-            child: _buildCartSection(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProductsSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          _buildSearchBar(),
-          const SizedBox(height: 16),
-          Expanded(
-            child: Consumer<ProductProvider>(
-              builder: (context, productProvider, child) {
-                if (productProvider.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                final products = productProvider.products;
-                if (products.isEmpty) {
-                  return const Center(child: Text('No products found'));
-                }
-
-                return GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    childAspectRatio: 0.8,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        _buildSearchBar(),
+                        const SizedBox(height: 16),
+                        Expanded(child: _buildProductsGrid()),
+                      ],
+                    ),
                   ),
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[index];
-                    return _buildProductCard(product);
-                  },
-                );
-              },
+                ),
+                Container(
+                  width: 400,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
+                    border: Border(
+                      left: BorderSide(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                      ),
+                    ),
+                  ),
+                  child: _buildCartSection(),
+                ),
+              ],
             ),
           ),
         ],
@@ -117,364 +87,340 @@ class _POSPageState extends State<POSPage> {
   }
 
   Widget _buildSearchBar() {
-    return TextField(
-      controller: _searchController,
-      decoration: InputDecoration(
-        hintText: 'Search products...',
-        prefixIcon: const Icon(Icons.search),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'Search products...',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _searchController.text.isNotEmpty
+                  ? IconButton(
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        _searchController.clear();
+                        setState(() {});
+                      },
+                    )
+                  : null,
+            ),
+            onChanged: (value) => setState(() {}),
+          ),
         ),
-        filled: true,
-        fillColor: Theme.of(context).colorScheme.surface,
-      ),
-      onChanged: (value) {
-        Provider.of<ProductProvider>(context, listen: false).searchProducts(value);
-      },
+        const SizedBox(width: 16),
+        SizedBox(
+          width: 200,
+          child: TextField(
+            controller: _barcodeController,
+            focusNode: _barcodeFocusNode,
+            decoration: const InputDecoration(
+              hintText: 'Scan Barcode',
+              prefixIcon: Icon(Icons.qr_code_scanner),
+            ),
+            onSubmitted: (value) {
+              if (value.isNotEmpty) {
+                _scanBarcode(value);
+                _barcodeController.clear();
+                _barcodeFocusNode.requestFocus();
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildProductCard(Product product) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
-          Provider.of<SalesProvider>(context, listen: false).addToCart(product);
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(
-                width: double.infinity,
-                color: Colors.grey[200],
-                child: Icon(
-                  Icons.image,
-                  size: 48,
-                  color: Colors.grey[400],
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(8),
+  void _scanBarcode(String barcode) {
+    final productProvider = Provider.of<ProductProvider>(context, listen: false);
+    final product = productProvider.products.firstWhere(
+      (p) => p.barcode == barcode,
+      orElse: () => Product(
+        id: -1,
+        name: '',
+        description: '',
+        price: 0,
+        cost: 0,
+        stockQuantity: 0,
+        minStock: 0,
+        categoryId: 0,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      ),
+    );
+
+    if (product.id != -1) {
+      Provider.of<SalesProvider>(context, listen: false).addToCart(product);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Product not found')),
+      );
+    }
+  }
+
+  Widget _buildProductsGrid() {
+    return Consumer<ProductProvider>(
+      builder: (context, provider, child) {
+        if (provider.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final products = provider.products.where((p) {
+          final query = _searchController.text.toLowerCase();
+          return p.name.toLowerCase().contains(query) ||
+              (p.barcode?.contains(query) ?? false);
+        }).toList();
+
+        if (products.isEmpty) {
+          return const Center(child: Text('No products found'));
+        }
+
+        return GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            childAspectRatio: 0.8,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          itemCount: products.length,
+          itemBuilder: (context, index) {
+            final product = products[index];
+            return GestureDetector(
+              onTap: () => Provider.of<SalesProvider>(context, listen: false)
+                  .addToCart(product),
+              child: FuturisticCard(
+                padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          Icons.inventory_2,
+                          size: 48,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     Text(
                       product.name,
-                      style: Theme.of(context).textTheme.titleSmall,
-                      maxLines: 1,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${product.price.toStringAsFixed(2)} /-',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: AppColors.primary,
+                      '${product.price.toStringAsFixed(2)}/-',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       'Stock: ${product.stockQuantity}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: product.isLowStock
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: product.stockQuantity <= product.minStock
                             ? AppColors.error
-                            : Theme.of(context).colorScheme.onSurfaceVariant,
+                            : Colors.white70,
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCartSection() {
-    return Column(
-      children: [
-        _buildCartHeader(),
-        Expanded(child: _buildCartItems()),
-        _buildCartSummary(),
-        _buildCheckoutSection(),
-      ],
-    );
-  }
-
-  Widget _buildCartHeader() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(
-        color: AppColors.primary,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.shopping_cart, color: Colors.white),
-          const SizedBox(width: 8),
-          Text(
-            'Shopping Cart',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const Spacer(),
-          Consumer<SalesProvider>(
-            builder: (context, salesProvider, child) {
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  '${salesProvider.cart.length}',
-                  style: const TextStyle(
-                    color: AppColors.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCartItems() {
-    return Consumer<SalesProvider>(
-      builder: (context, salesProvider, child) {
-        final cartItems = salesProvider.cart;
-
-        if (cartItems.isEmpty) {
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.shopping_cart_outlined,
-                  size: 64,
-                  color: Colors.grey[400],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  'Cart is empty',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          );
-        }
-
-        return ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: cartItems.length,
-          itemBuilder: (context, index) {
-            final cartItem = cartItems[index];
-            return _buildCartItem(cartItem);
+            );
           },
         );
       },
     );
   }
 
-  Widget _buildCartItem(CartItem cartItem) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildCartSection() {
+    return Consumer<SalesProvider>(
+      builder: (context, salesProvider, child) {
+        return Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    cartItem.product.name,
-                    style: Theme.of(context).textTheme.titleSmall,
-                    overflow: TextOverflow.ellipsis, // Add ellipsis for long text
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Current Order',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete, color: AppColors.error),
-                  onPressed: () {
-                    Provider.of<SalesProvider>(context, listen: false)
-                        .removeFromCart(cartItem.product.id);
-                  },
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    onPressed: salesProvider.cart.isEmpty
+                        ? null
+                        : () => _showClearCartConfirmation(context),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Text('${cartItem.product.price.toStringAsFixed(2)} /-'),
-                const Spacer(),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.remove),
-                      onPressed: cartItem.quantity > 1 ? () {
-                        Provider.of<SalesProvider>(context, listen: false)
-                            .updateCartItemQuantity(
-                          cartItem.product.id,
-                          cartItem.quantity - 1,
-                        );
-                      } : null,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]!),
-                        borderRadius: BorderRadius.circular(4),
+            Expanded(
+              child: salesProvider.cart.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'Cart is empty',
+                        style: TextStyle(color: Colors.white54),
                       ),
-                      child: Text('${cartItem.quantity}'),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        Provider.of<SalesProvider>(context, listen: false)
-                            .updateCartItemQuantity(
-                          cartItem.product.id,
-                          cartItem.quantity + 1,
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      itemCount: salesProvider.cart.length,
+                      itemBuilder: (context, index) {
+                        final item = salesProvider.cart[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: FuturisticCard(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.product.name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        '${item.product.price.toStringAsFixed(2)} x ${item.quantity}',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.remove_circle_outline, size: 20),
+                                      color: Colors.white70,
+                                      onPressed: () => salesProvider.updateCartItemQuantity(
+                                          item, item.quantity - 1),
+                                    ),
+                                    Text(
+                                      '${item.quantity}',
+                                      style: const TextStyle(color: Colors.white),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(Icons.add_circle_outline, size: 20),
+                                      color: Colors.white70,
+                                      onPressed: () => salesProvider.updateCartItemQuantity(
+                                          item, item.quantity + 1),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  item.subtotal.toStringAsFixed(2),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       },
                     ),
-                  ],
-                ),
-              ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Subtotal:'),
-                Text(
-                  '${cartItem.subtotal.toStringAsFixed(2)} /-',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.primary,
-                  ),
-                ),
-              ],
-            ),
+            _buildCartSummary(salesProvider),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildCartSummary() {
+  Widget _buildCartSummary(SalesProvider salesProvider) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         border: Border(
           top: BorderSide(
-            color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
           ),
         ),
       ),
-      child: Consumer<SalesProvider>(
-        builder: (context, salesProvider, child) {
-          return Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Subtotal:'),
-                  Text('${salesProvider.cartSubtotal.toStringAsFixed(2)} /-'),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Discount:'),
-                  Text('- ${salesProvider.discountAmount.toStringAsFixed(2)} /-'),
-                ],
-              ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total:',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    '${salesProvider.cartTotal.toStringAsFixed(2)} /-',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildCheckoutSection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          Consumer<SalesProvider>(
-            builder: (context, salesProvider, child) {
-              return ElevatedButton(
-                onPressed: salesProvider.cart.isEmpty ? null : _showCheckoutDialog,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size.fromHeight(48),
-                ),
-                child: const Text(
-                  'Checkout',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              );
-            },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Subtotal', style: TextStyle(color: Colors.white70)),
+              Text(
+                '${salesProvider.cartSubtotal.toStringAsFixed(2)}/-',
+                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          OutlinedButton(
-            onPressed: () {
-              Provider.of<SalesProvider>(context, listen: false).clearCart();
-            },
-            style: OutlinedButton.styleFrom(
-              minimumSize: const Size.fromHeight(48),
+          const SizedBox(height: 16),
+            SizedBox(
+            width: double.infinity,
+            child: FuturisticButton(
+              onPressed: salesProvider.cart.isEmpty
+                  ? null
+                  : () => _showCheckoutDialog(context),
+              label: 'Checkout',
             ),
-            child: const Text('Clear Cart'),
           ),
         ],
       ),
     );
   }
 
-  void _showCheckoutDialog() {
+  void _showClearCartConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Cart'),
+        content: const Text('Are you sure you want to clear the cart?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Provider.of<SalesProvider>(context, listen: false).clearCart();
+              Navigator.pop(context);
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            child: const Text('Clear', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showCheckoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => const _CheckoutDialog(),
     );
   }
-
 }
 
 class _CheckoutDialog extends StatefulWidget {
@@ -485,100 +431,357 @@ class _CheckoutDialog extends StatefulWidget {
 }
 
 class _CheckoutDialogState extends State<_CheckoutDialog> {
-  final _discountController = TextEditingController();
-  String _selectedPaymentMethod = 'Cash';
+  Customer? _selectedCustomer;
+  Coupon? _appliedCoupon;
+  String _paymentMethod = 'Cash';
 
   @override
   Widget build(BuildContext context) {
+    final salesProvider = Provider.of<SalesProvider>(context);
+    final subtotal = salesProvider.cartSubtotal;
+    
+    double discountAmount = 0;
+    if (_appliedCoupon != null) {
+      discountAmount = _appliedCoupon!.calculateDiscount(subtotal);
+    }
+    
+    final total = subtotal - discountAmount;
+
     return AlertDialog(
       title: const Text('Checkout'),
       content: SizedBox(
-        width: 400,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _discountController,
-              decoration: const InputDecoration(
-                labelText: 'Discount Amount',
-                suffixText: '/-',
-                border: OutlineInputBorder(),
+        width: 500,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildCustomerSelection(),
+              const SizedBox(height: 16),
+              _buildCouponSection(),
+              const SizedBox(height: 16),
+              const Text('Payment Method', style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _buildPaymentMethodChip('Cash'),
+                  const SizedBox(width: 8),
+                  _buildPaymentMethodChip('Card'),
+                  const SizedBox(width: 8),
+                  _buildPaymentMethodChip('Online'),
+                ],
               ),
-              keyboardType: TextInputType.number,
-              onChanged: (value) {
-                final discount = double.tryParse(value) ?? 0;
-                Provider.of<SalesProvider>(context, listen: false)
-                    .setDiscountAmount(discount);
-              },
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              value: _selectedPaymentMethod,
-              decoration: const InputDecoration(
-                labelText: 'Payment Method',
-                border: OutlineInputBorder(),
-              ),
-              items: ['Cash', 'Card', 'Digital']
-                  .map((method) => DropdownMenuItem(
-                value: method,
-                child: Text(method),
-              ))
-                  .toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedPaymentMethod = value;
-                  });
-                  Provider.of<SalesProvider>(context, listen: false)
-                      .setPaymentMethod(value);
-                }
-              },
-            ),
-          ],
+              const SizedBox(height: 24),
+              const Divider(),
+              const SizedBox(height: 16),
+              _buildSummaryRow('Subtotal', subtotal),
+              if (discountAmount > 0)
+                _buildSummaryRow(
+                  'Discount (${_appliedCoupon?.code ?? ''})',
+                  -discountAmount,
+                  isDiscount: true,
+                ),
+              const SizedBox(height: 8),
+              _buildSummaryRow('Total', total, isTotal: true),
+            ],
+          ),
         ),
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.pop(context),
           child: const Text('Cancel'),
         ),
-        Consumer<SalesProvider>(
-          builder: (context, salesProvider, child) {
-            return ElevatedButton(
-              onPressed: salesProvider.isLoading ? null : _completeSale,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                foregroundColor: Colors.white,
-              ),
-              child: salesProvider.isLoading
-                  ? const SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-                  : const Text('Complete Sale'),
-            );
-          },
+        FuturisticButton(
+          onPressed: () => _completeSale(context, discountAmount),
+          label: 'Complete Sale',
         ),
       ],
     );
   }
 
-  Future<void> _completeSale() async {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final salesProvider = Provider.of<SalesProvider>(context, listen: false);
+  Widget _buildCustomerSelection() {
+    return Consumer<CustomerProvider>(
+      builder: (context, customerProvider, child) {
+        return Row(
+          children: [
+            Expanded(
+              child: DropdownButtonFormField<Customer>(
+                value: _selectedCustomer,
+                decoration: const InputDecoration(
+                  labelText: 'Customer (Optional)',
+                  prefixIcon: Icon(Icons.person),
+                ),
+                items: [
+                  const DropdownMenuItem<Customer>(
+                    value: null,
+                    child: Text('Guest Customer'),
+                  ),
+                  ...customerProvider.customers.map((c) => DropdownMenuItem(
+                        value: c,
+                        child: Text(c.name),
+                      )),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCustomer = value;
+                    Provider.of<SalesProvider>(context, listen: false)
+                        .setSelectedCustomer(value);
+                  });
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            IconButton(
+              onPressed: () => _showAddCustomerDialog(context),
+              icon: const Icon(Icons.person_add),
+              tooltip: 'Add New Customer',
+              style: IconButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Colors.white,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-    final success = await salesProvider.completeSale(authProvider.currentUser!.id);
+  Future<void> _showAddCustomerDialog(BuildContext context) async {
+    final nameController = TextEditingController();
+    final phoneController = TextEditingController();
+    final emailController = TextEditingController();
+    bool isWalkIn = false;
+
+    await showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Add New Customer'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: phoneController,
+                decoration: const InputDecoration(
+                  labelText: 'Phone',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.phone,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: emailController,
+                decoration: const InputDecoration(
+                  labelText: 'Email',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.emailAddress,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (nameController.text.trim().isEmpty) {
+                ScaffoldMessenger.of(ctx).showSnackBar(
+                  const SnackBar(content: Text('Name is required')),
+                );
+                return;
+              }
+
+              final customerProvider = Provider.of<CustomerProvider>(context, listen: false);
+              final newCustomer = Customer(
+                id: 0,
+                name: nameController.text.trim(),
+                phone: phoneController.text.trim(),
+                email: emailController.text.trim(),
+                isWalkIn: isWalkIn,
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+              );
+
+              await customerProvider.addCustomer(newCustomer);
+              
+              // Refresh list and select the new customer
+              if (mounted) {
+                // The provider should have reloaded, but we need to find the new customer
+                // Since we don't get the ID back directly from addCustomer in the current implementation,
+                // we'll just pick the last one or search by name.
+                // Ideally addCustomer should return the ID.
+                // For now, let's assume it's the last one added.
+                final updatedList = customerProvider.customers;
+                if (updatedList.isNotEmpty) {
+                   setState(() {
+                    _selectedCustomer = updatedList.last;
+                     Provider.of<SalesProvider>(context, listen: false)
+                        .setSelectedCustomer(_selectedCustomer);
+                   });
+                }
+                Navigator.pop(ctx);
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCouponSection() {
+    return Consumer<CouponProvider>(
+      builder: (context, couponProvider, child) {
+        return Row(
+          children: [
+            Expanded(
+              child: DropdownButtonFormField<Coupon>(
+                value: _appliedCoupon,
+                decoration: const InputDecoration(
+                  labelText: 'Apply Coupon',
+                  prefixIcon: Icon(Icons.local_offer),
+                ),
+                items: [
+                  const DropdownMenuItem<Coupon>(
+                    value: null,
+                    child: Text('No Coupon'),
+                  ),
+                  ...couponProvider.validCoupons.map((c) {
+                    final label = c.discountType == 'percentage'
+                        ? '${c.code} (${c.discountValue}%)'
+                        : '${c.code} (\$${c.discountValue})';
+                    return DropdownMenuItem(
+                      value: c,
+                      child: Text(label),
+                    );
+                  }),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _appliedCoupon = value;
+                  });
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildPaymentMethodChip(String method) {
+    final isSelected = _paymentMethod == method;
+    return ChoiceChip(
+      label: Text(method),
+      selected: isSelected,
+      onSelected: (selected) {
+        if (selected) {
+          setState(() {
+            _paymentMethod = method;
+            Provider.of<SalesProvider>(context, listen: false)
+                .setPaymentMethod(method);
+          });
+        }
+      },
+      selectedColor: Theme.of(context).colorScheme.primary,
+      labelStyle: TextStyle(
+        color: isSelected ? Colors.black : Colors.white,
+        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+      ),
+    );
+  }
+
+  Widget _buildSummaryRow(String label, double amount,
+      {bool isTotal = false, bool isDiscount = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontSize: isTotal ? 18 : 14,
+              color: isDiscount ? Colors.greenAccent : Colors.white,
+            ),
+          ),
+          Text(
+            '${amount.toStringAsFixed(2)}/-',
+            style: TextStyle(
+              fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
+              fontSize: isTotal ? 18 : 14,
+              color: isDiscount ? Colors.greenAccent : Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _completeSale(BuildContext context, double discountAmount) async {
+    final salesProvider = Provider.of<SalesProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    // Capture items before they are cleared
+    final cartItems = salesProvider.cart.map((item) => ReceiptItemDisplay(
+      productName: item.product.name,
+      quantity: item.quantity,
+      price: item.product.price,
+      total: item.subtotal,
+    )).toList();
+
+    salesProvider.setDiscountAmount(discountAmount);
+    // Calculate approximate percent for backward compatibility or receipt display if needed
+    // But for now we just set 0 or calculate it if needed. 
+    // The ReceiptPage might expect discountPercent, so let's calculate it.
+    final subtotal = salesProvider.cartSubtotal;
+    final discountPercent = subtotal > 0 ? (discountAmount / subtotal) * 100 : 0.0;
+    
+    salesProvider.setDiscountPercent(discountPercent);
+    salesProvider.setCouponCode(_appliedCoupon?.code);
+    salesProvider.setSelectedCustomer(_selectedCustomer);
+    salesProvider.setPaymentMethod(_paymentMethod);
+
+    final success = await salesProvider.completeSale(
+      authProvider.currentUser!.id,
+    );
 
     if (success && mounted) {
-      Navigator.of(context).pop();
+      final completedSale = salesProvider.lastSale;
+      
+      Navigator.of(context).pop(); // Close dialog
+
+      if (completedSale != null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ReceiptPage(
+              sale: completedSale,
+              items: cartItems,
+              customer: _selectedCustomer,
+              cashierName: authProvider.currentUser?.name ?? 'Unknown',
+            ),
+          ),
+        );
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Sale completed successfully!'),
-          backgroundColor: AppColors.success,
+          backgroundColor: Colors.green,
         ),
       );
     }

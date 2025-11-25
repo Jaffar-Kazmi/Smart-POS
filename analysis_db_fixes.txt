@@ -1,0 +1,231 @@
+Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  crypto 3.0.6 (3.0.7 available)
+  csv 5.1.1 (6.0.0 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  go_router 12.1.3 (17.0.0 available)
+  http 1.5.0 (1.6.0 available)
+  intl 0.18.1 (0.20.2 available)
+  lints 3.0.0 (6.0.0 available)
+  matcher 0.12.17 (0.12.18 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  path_provider_android 2.2.19 (2.2.22 available)
+  path_provider_foundation 2.4.2 (2.4.4 available)
+  screen_retriever 0.1.9 (0.2.0 available)
+  shared_preferences_android 2.4.16 (2.4.17 available)
+  sqflite_common_ffi 2.3.6 (2.4.0 available)
+  sqlite3 2.9.3 (3.1.0 available)
+  test_api 0.7.7 (0.7.8 available)
+  uuid 4.5.1 (4.5.2 available)
+  window_manager 0.3.9 (0.5.1 available)
+Got dependencies!
+19 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing Smart-POS...                                          
+
+  error - Target of URI doesn't exist: '../../../features/coupons/presentation/pages/coupons_page.dart' - lib\core\core\routes\app_router.dart:14:8 - uri_does_not_exist
+  error - The name 'CouponsPage' isn't a class - lib\core\core\routes\app_router.dart:38:38 - creation_with_non_type
+warning - Unused import: '../../features/sales/domain/entities/sale.dart' - lib\core\database\database_helper.dart:7:8 - unused_import
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:55:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:71:15 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:81:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:86:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:92:12 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:96:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:98:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:107:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:116:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:120:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:122:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:134:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:156:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:159:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:207:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:210:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:343:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:347:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:350:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:365:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:375:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:394:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:409:7 - avoid_print
+   info - Parameter 'key' could be a super parameter - lib\core\presentation\widgets\futuristic_button.dart:9:9 - use_super_parameters
+   info - The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' - lib\core\presentation\widgets\futuristic_card.dart:2:8 - unnecessary_import
+   info - Parameter 'key' could be a super parameter - lib\core\presentation\widgets\futuristic_card.dart:14:9 - use_super_parameters
+  error - Classes can only extend other classes - lib\core\presentation\widgets\futuristic_header.dart:4:32 - extends_non_class
+  error - Classes and mixins can only implement other classes and mixins - lib\core\presentation\widgets\futuristic_header.dart:4:59 - implements_non_class
+  error - The name 'Widget' isn't a type, so it can't be used as a type argument - lib\core\presentation\widgets\futuristic_header.dart:6:14 - non_type_as_type_argument
+  error - Undefined class 'Key' - lib\core\presentation\widgets\futuristic_header.dart:10:5 - undefined_class
+  error - The named parameter 'key' isn't defined - lib\core\presentation\widgets\futuristic_header.dart:14:14 - undefined_named_parameter
+  error - Undefined class 'Widget' - lib\core\presentation\widgets\futuristic_header.dart:17:3 - undefined_class
+warning - The method doesn't override an inherited method - lib\core\presentation\widgets\futuristic_header.dart:17:10 - override_on_non_overriding_member
+  error - Undefined class 'BuildContext' - lib\core\presentation\widgets\futuristic_header.dart:17:16 - undefined_class
+  error - Undefined name 'Navigator' - lib\core\presentation\widgets\futuristic_header.dart:18:20 - undefined_identifier
+  error - The method 'AppBar' isn't defined for the type 'FuturisticHeader' - lib\core\presentation\widgets\futuristic_header.dart:20:12 - undefined_method
+  error - The method 'Text' isn't defined for the type 'FuturisticHeader' - lib\core\presentation\widgets\futuristic_header.dart:21:14 - undefined_method
+  error - The method 'IconButton' isn't defined for the type 'FuturisticHeader' - lib\core\presentation\widgets\futuristic_header.dart:24:13 - undefined_method
+  error - The name 'Icon' isn't a class - lib\core\presentation\widgets\futuristic_header.dart:25:27 - creation_with_non_type
+  error - Undefined name 'Icons' - lib\core\presentation\widgets\futuristic_header.dart:25:32 - undefined_identifier
+  error - Undefined name 'Navigator' - lib\core\presentation\widgets\futuristic_header.dart:26:32 - undefined_identifier
+  error - The method 'IconButton' isn't defined for the type 'FuturisticHeader' - lib\core\presentation\widgets\futuristic_header.dart:31:9 - undefined_method
+  error - The name 'Icon' isn't a class - lib\core\presentation\widgets\futuristic_header.dart:32:23 - creation_with_non_type
+  error - Undefined name 'Icons' - lib\core\presentation\widgets\futuristic_header.dart:32:28 - undefined_identifier
+  error - Undefined name 'Navigator' - lib\core\presentation\widgets\futuristic_header.dart:36:13 - undefined_identifier
+  error - Undefined class 'Size' - lib\core\presentation\widgets\futuristic_header.dart:44:3 - undefined_class
+warning - The getter doesn't override an inherited getter - lib\core\presentation\widgets\futuristic_header.dart:44:12 - override_on_non_overriding_member
+  error - Undefined name 'Size' - lib\core\presentation\widgets\futuristic_header.dart:44:35 - undefined_identifier
+  error - Undefined name 'kToolbarHeight' - lib\core\presentation\widgets\futuristic_header.dart:44:51 - undefined_identifier
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:62:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:66:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:109:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:113:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:170:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:174:7 - avoid_print
+warning - The value of the field '_accentColor' isn't used - lib\core\theme\app_theme.dart:7:22 - unused_field
+   info - Don't invoke 'print' in production code - lib\core\theme\theme_provider.dart:24:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\theme\theme_provider.dart:35:7 - avoid_print
+   info - Parameter 'key' could be a super parameter - lib\features\admin\presentation\pages\user_management_page.dart:8:9 - use_super_parameters
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:201:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:202:53 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:203:38 - use_build_context_synchronously
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\pages\user_management_page.dart:324:17 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\pages\user_management_page.dart:551:17 - deprecated_member_use
+   info - Parameters ''id', 'name', 'email', 'role', 'createdAt', and 'updatedAt'' could be super parameters - lib\features\auth\data\models\user_model.dart:5:3 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\auth\presentation\pages\login_page.dart:9:9 - use_super_parameters
+   info - The private field _rememberMe could be 'final' - lib\features\auth\presentation\pages\login_page.dart:19:8 - prefer_final_fields
+warning - The value of the field '_rememberMe' isn't used - lib\features\auth\presentation\pages\login_page.dart:19:8 - unused_field
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\login_page.dart:38:33 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\login_page.dart:55:21 - prefer_const_constructors
+   info - Parameter 'key' could be a super parameter - lib\features\auth\presentation\pages\register_page.dart:8:9 - use_super_parameters
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:133:35 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:164:35 - prefer_const_constructors
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\presentation\pages\register_page.dart:190:21 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:262:32 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:264:34 - prefer_const_constructors
+warning - Unused import: '../../../../core/presentation/widgets/futuristic_button.dart' - lib\features\auth\presentation\pages\user_management_page.dart:5:8 - unused_import
+  error - The element type 'FuturisticHeader' can't be assigned to the list type 'Widget' - lib\features\auth\presentation\pages\user_management_page.dart:38:11 - list_element_type_not_assignable
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:61:84 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:71:82 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:76:76 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:76:108 - deprecated_member_use
+  error - The getter 'username' isn't defined for the type 'User' - lib\features\auth\presentation\pages\user_management_page.dart:180:68 - undefined_getter
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\presentation\pages\user_management_page.dart:241:19 - deprecated_member_use
+  error - The named parameter 'email' is required, but there's no corresponding argument - lib\features\auth\presentation\pages\user_management_page.dart:277:32 - missing_required_argument
+  error - The named parameter 'name' is required, but there's no corresponding argument - lib\features\auth\presentation\pages\user_management_page.dart:277:32 - missing_required_argument
+  error - The named parameter 'password' is required, but there's no corresponding argument - lib\features\auth\presentation\pages\user_management_page.dart:277:32 - missing_required_argument
+  error - The named parameter 'role' is required, but there's no corresponding argument - lib\features\auth\presentation\pages\user_management_page.dart:277:32 - missing_required_argument
+  error - The named parameter 'username' is required, but there's no corresponding argument - lib\features\auth\presentation\pages\user_management_page.dart:277:32 - missing_required_argument
+  error - Too many positional arguments: 0 expected, but 5 found - lib\features\auth\presentation\pages\user_management_page.dart:278:15 - extra_positional_arguments_could_be_named
+  error - The method 'copyWith' isn't defined for the type 'User' - lib\features\auth\presentation\pages\user_management_page.dart:285:28 - undefined_method
+warning - The value of the field '_repository' isn't used - lib\features\auth\presentation\providers\auth_provider.dart:7:28 - unused_field
+  error - The named parameter 'username' isn't defined - lib\features\auth\presentation\providers\auth_provider.dart:122:9 - undefined_named_parameter
+  error - The getter 'username' isn't defined for the type 'User' - lib\features\auth\presentation\providers\auth_provider.dart:154:26 - undefined_getter
+warning - The library 'package:flutter/material.dart' doesn't export a member with the hidden name 'Category' - lib\features\categories\presentation\pages\categories_page.dart:3:45 - undefined_hidden_name
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\categories\presentation\pages\categories_page.dart:160:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\categories\presentation\pages\categories_page.dart:161:38 - use_build_context_synchronously
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:29:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:46:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:62:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:75:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:30:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:45:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:61:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:74:7 - avoid_print
+   info - Parameters ''id', 'name', 'email', 'phone', and 'address'' could be super parameters - lib\features\customers\data\models\customer_model.dart:5:3 - use_super_parameters
+  error - The named parameter 'loyaltyPoints' isn't defined - lib\features\customers\data\models\customer_model.dart:20:11 - undefined_named_parameter
+  error - Undefined name 'loyaltyPoints' - lib\features\customers\data\models\customer_model.dart:45:25 - undefined_identifier
+  error - The getter 'loyaltyPoints' isn't defined for the type 'Customer' - lib\features\customers\data\repositories\customer_repository_impl.dart:24:34 - undefined_getter
+  error - The getter 'loyaltyPoints' isn't defined for the type 'Customer' - lib\features\customers\data\repositories\customer_repository_impl.dart:41:36 - undefined_getter
+  error - The element type 'FuturisticHeader' can't be assigned to the list type 'Widget' - lib\features\customers\presentation\pages\customers_page.dart:29:11 - list_element_type_not_assignable
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:40:26 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:41:28 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\features\customers\presentation\pages\customers_page.dart:43:33 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:44:25 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\customers\presentation\pages\customers_page.dart:66:74 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:90:37 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:101:37 - prefer_const_constructors
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\customers\presentation\pages\customers_page.dart:226:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\customers\presentation\pages\customers_page.dart:227:38 - use_build_context_synchronously
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:29:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:46:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:62:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:75:7 - avoid_print
+   info - Parameter 'key' could be a super parameter - lib\features\dashboard\presentation\pages\dashboard_page.dart:11:9 - use_super_parameters
+   info - Use 'const' with the constructor to improve performance - lib\features\dashboard\presentation\pages\dashboard_page.dart:32:14 - prefer_const_constructors
+  error - The element type 'FuturisticHeader' can't be assigned to the list type 'Widget' - lib\features\dashboard\presentation\pages\dashboard_page.dart:38:11 - list_element_type_not_assignable
+   info - Unnecessary use of string interpolation - lib\features\dashboard\presentation\pages\dashboard_page.dart:94:11 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\dashboard\presentation\pages\dashboard_page.dart:288:21 - unnecessary_string_interpolations
+   info - Don't invoke 'print' in production code - lib\features\dashboard\presentation\providers\dashboard_provider.dart:137:7 - avoid_print
+warning - Unused import: '../../../../core/constants/app_colors.dart' - lib\features\home\presentation\pages\home_page.dart:11:8 - unused_import
+   info - Parameter 'key' could be a super parameter - lib\features\home\presentation\pages\home_page.dart:14:9 - use_super_parameters
+   info - The local variable '_pages' starts with an underscore - lib\features\home\presentation\pages\home_page.dart:29:24 - no_leading_underscores_for_local_identifiers
+   info - Use 'const' with the constructor to improve performance - lib\features\home\presentation\pages\home_page.dart:33:13 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\home\presentation\pages\home_page.dart:40:13 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:50:60 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:58:66 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:59:65 - deprecated_member_use
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\home\presentation\pages\home_page.dart:67:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:77:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:78:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:83:66 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:101:72 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:175:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:198:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:233:60 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:236:62 - deprecated_member_use
+   info - Parameters ''id', 'name', 'description', 'price', 'cost', 'stockQuantity', 'minStock', 'categoryId', 'barcode', 'imagePath', 'createdAt', and 'updatedAt'' could be super parameters - lib\features\products\data\models\product_model.dart:5:3 - use_super_parameters
+warning - Unused import: '../../../../core/presentation/widgets/futuristic_button.dart' - lib\features\products\presentation\pages\products_page.dart:10:8 - unused_import
+   info - Parameter 'key' could be a super parameter - lib\features\products\presentation\pages\products_page.dart:13:9 - use_super_parameters
+warning - The value of the field '_categories' isn't used - lib\features\products\presentation\pages\products_page.dart:23:22 - unused_field
+  error - The element type 'FuturisticHeader' can't be assigned to the list type 'Widget' - lib\features\products\presentation\pages\products_page.dart:55:11 - list_element_type_not_assignable
+warning - The declaration '_onSearchChanged' isn't referenced - lib\features\products\presentation\pages\products_page.dart:221:8 - unused_element
+warning - The declaration '_getCategoryId' isn't referenced - lib\features\products\presentation\pages\products_page.dart:231:7 - unused_element
+  error - The method 'deleteProduct' isn't defined for the type 'ProductProvider' - lib\features\products\presentation\pages\products_page.dart:287:20 - undefined_method
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\products\presentation\pages\products_page.dart:475:23 - deprecated_member_use
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'FutureOr<bool>', is a potentially non-nullable type - lib\features\products\presentation\providers\product_provider.dart:74:16 - body_might_complete_normally
+  error - Expected to find '}' - lib\features\products\presentation\providers\product_provider.dart:82:3 - expected_token
+   info - Unnecessary use of 'toList' in a spread - lib\features\receipt\presentation\pages\receipt_page.dart:167:16 - unnecessary_to_list_in_spreads
+   info - Parameter 'key' could be a super parameter - lib\features\reports\presentation\pages\reports_page.dart:7:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\reports\presentation\pages\reports_page.dart:104:32 - deprecated_member_use
+warning - The value of the field '_db' isn't used - lib\features\reports\presentation\providers\reports_provider.dart:5:24 - unused_field
+   info - Use 'const' with the constructor to improve performance - lib\features\reports\presentation\providers\reports_provider.dart:17:26 - prefer_const_constructors
+   info - Parameters ''id', 'customerId', 'userId', 'totalAmount', 'discountAmount', 'taxAmount', 'paymentMethod', 'status', 'createdAt', 'updatedAt', and 'items'' could be super parameters - lib\features\sales\data\models\sale_model.dart:7:3 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\pos_page.dart:18:9 - use_super_parameters
+  error - The element type 'FuturisticHeader' can't be assigned to the list type 'Widget' - lib\features\sales\presentation\pages\pos_page.dart:52:11 - list_element_type_not_assignable
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:81:66 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:84:70 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:209:72 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:372:58 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\pos_page.dart:436:9 - use_super_parameters
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\sales\presentation\pages\pos_page.dart:512:11 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\sales\presentation\pages\pos_page.dart:546:17 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\sales\presentation\pages\pos_page.dart:653:20 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\sales\presentation\pages\pos_page.dart:657:11 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\sales\presentation\pages\pos_page.dart:669:28 - use_build_context_synchronously
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\receipt_page.dart:29:9 - use_super_parameters
+  error - The element type 'FuturisticHeader' can't be assigned to the list type 'Widget' - lib\features\sales\presentation\pages\receipt_page.dart:44:11 - list_element_type_not_assignable
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:103:37 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:113:29 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:122:38 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:136:31 - unnecessary_string_interpolations
+   info - The private field _cart could be 'final' - lib\features\sales\presentation\providers\sales_provider.dart:24:18 - prefer_final_fields
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:17:74 - deprecated_member_use
+  error - The element type 'FuturisticHeader' can't be assigned to the list type 'Widget' - lib\features\settings\presentation\pages\settings_page.dart:22:11 - list_element_type_not_assignable
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\features\settings\presentation\pages\settings_page.dart:39:21 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:58:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:68:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:97:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:146:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:153:60 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\main.dart:120:13 - prefer_const_constructors
+warning - Unused import: 'package:flutter/material.dart' - lib\shared\navigation\app_router.dart:1:8 - unused_import
+   info - Parameter 'key' could be a super parameter - lib\shared\widgets\main_layout.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\main_layout.dart:42:33 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\shared\widgets\sidebar_navigation.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\sidebar_navigation.dart:20:33 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\shared\widgets\sidebar_navigation.dart:42:19 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\sidebar_navigation.dart:158:46 - deprecated_member_use
+warning - Unused import: 'package:flutter/material.dart' - test\widget_test.dart:8:8 - unused_import
+warning - Unused import: 'package:pos_app/main.dart' - test\widget_test.dart:11:8 - unused_import
+

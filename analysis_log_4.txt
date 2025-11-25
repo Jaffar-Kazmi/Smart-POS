@@ -1,0 +1,280 @@
+Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  crypto 3.0.6 (3.0.7 available)
+  csv 5.1.1 (6.0.0 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  go_router 12.1.3 (17.0.0 available)
+  http 1.5.0 (1.6.0 available)
+  intl 0.18.1 (0.20.2 available)
+  lints 3.0.0 (6.0.0 available)
+  matcher 0.12.17 (0.12.18 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  path_provider_android 2.2.19 (2.2.22 available)
+  path_provider_foundation 2.4.2 (2.4.4 available)
+  screen_retriever 0.1.9 (0.2.0 available)
+  shared_preferences_android 2.4.16 (2.4.17 available)
+  sqflite_common_ffi 2.3.6 (2.4.0 available)
+  sqlite3 2.9.3 (3.1.0 available)
+  test_api 0.7.7 (0.7.8 available)
+  uuid 4.5.1 (4.5.2 available)
+  window_manager 0.3.9 (0.5.1 available)
+Got dependencies!
+19 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing Smart-POS...                                          
+
+warning - Unused import: '../../features/sales/domain/entities/sale.dart' - lib\core\database\database_helper.dart:7:8 - unused_import
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:55:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:71:15 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:81:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:86:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:92:12 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:96:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:98:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:107:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:116:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:125:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:129:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:131:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:142:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:144:11 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:147:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:149:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:155:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:157:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:159:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:171:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:193:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:196:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:244:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:247:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:380:9 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:384:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:387:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:402:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:412:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:431:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\database\database_helper.dart:446:7 - avoid_print
+   info - Parameter 'key' could be a super parameter - lib\core\presentation\widgets\futuristic_button.dart:9:9 - use_super_parameters
+   info - The import of 'dart:ui' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' - lib\core\presentation\widgets\futuristic_card.dart:2:8 - unnecessary_import
+   info - Parameter 'key' could be a super parameter - lib\core\presentation\widgets\futuristic_card.dart:14:9 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\core\presentation\widgets\futuristic_header.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\core\presentation\widgets\futuristic_header.dart:32:62 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:62:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:66:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:109:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:113:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:170:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\services\export_service.dart:174:7 - avoid_print
+warning - The value of the field '_accentColor' isn't used - lib\core\theme\app_theme.dart:7:22 - unused_field
+   info - Don't invoke 'print' in production code - lib\core\theme\theme_provider.dart:24:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\core\theme\theme_provider.dart:35:7 - avoid_print
+   info - Parameter 'key' could be a super parameter - lib\features\admin\presentation\pages\user_management_page.dart:8:9 - use_super_parameters
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:201:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:202:53 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\admin\presentation\pages\user_management_page.dart:203:38 - use_build_context_synchronously
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\pages\user_management_page.dart:324:17 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\admin\presentation\pages\user_management_page.dart:551:17 - deprecated_member_use
+   info - Parameters ''id', 'name', 'email', 'role', 'createdAt', and 'updatedAt'' could be super parameters - lib\features\auth\data\models\user_model.dart:5:3 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\auth\presentation\pages\login_page.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\login_page.dart:40:37 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\login_page.dart:57:25 - prefer_const_constructors
+   info - Parameter 'key' could be a super parameter - lib\features\auth\presentation\pages\register_page.dart:8:9 - use_super_parameters
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:133:35 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:164:35 - prefer_const_constructors
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\presentation\pages\register_page.dart:190:21 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:262:32 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\auth\presentation\pages\register_page.dart:264:34 - prefer_const_constructors
+warning - Unused import: '../../../../core/presentation/widgets/futuristic_button.dart' - lib\features\auth\presentation\pages\user_management_page.dart:5:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:61:84 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:71:82 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:76:76 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\auth\presentation\pages\user_management_page.dart:76:108 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\auth\presentation\pages\user_management_page.dart:241:19 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps - lib\features\auth\presentation\pages\user_management_page.dart:298:23 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps - lib\features\auth\presentation\pages\user_management_page.dart:299:30 - use_build_context_synchronously
+warning - The value of the field '_repository' isn't used - lib\features\auth\presentation\providers\auth_provider.dart:7:28 - unused_field
+warning - The library 'package:flutter/material.dart' doesn't export a member with the hidden name 'Category' - lib\features\categories\presentation\pages\categories_page.dart:3:45 - undefined_hidden_name
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\categories\presentation\pages\categories_page.dart:160:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\categories\presentation\pages\categories_page.dart:161:38 - use_build_context_synchronously
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:29:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:46:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:62:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\categories\presentation\providers\category_provider.dart:75:7 - avoid_print
+warning - Unused import: '../../../../core/presentation/widgets/futuristic_button.dart' - lib\features\coupons\presentation\pages\coupons_page.dart:5:8 - unused_import
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\coupons\presentation\pages\coupons_page.dart:63:88 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\coupons\presentation\pages\coupons_page.dart:74:71 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\coupons\presentation\pages\coupons_page.dart:79:111 - deprecated_member_use
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\coupons\presentation\pages\coupons_page.dart:211:19 - deprecated_member_use
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:37:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:52:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:68:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\coupons\presentation\providers\coupon_provider.dart:81:7 - avoid_print
+   info - Parameters ''id', 'name', 'email', 'phone', and 'address'' could be super parameters - lib\features\customers\data\models\customer_model.dart:5:3 - use_super_parameters
+  error - The named parameter 'loyaltyPoints' isn't defined - lib\features\customers\data\models\customer_model.dart:20:11 - undefined_named_parameter
+  error - Undefined name 'loyaltyPoints' - lib\features\customers\data\models\customer_model.dart:45:25 - undefined_identifier
+  error - The getter 'loyaltyPoints' isn't defined for the type 'Customer' - lib\features\customers\data\repositories\customer_repository_impl.dart:24:34 - undefined_getter
+  error - The getter 'loyaltyPoints' isn't defined for the type 'Customer' - lib\features\customers\data\repositories\customer_repository_impl.dart:41:36 - undefined_getter
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:40:26 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:41:28 - prefer_const_constructors
+   info - Use 'const' literals as arguments to constructors of '@immutable' classes - lib\features\customers\presentation\pages\customers_page.dart:43:33 - prefer_const_literals_to_create_immutables
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:44:25 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\customers\presentation\pages\customers_page.dart:66:74 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:90:37 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\customers\presentation\pages\customers_page.dart:101:37 - prefer_const_constructors
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\customers\presentation\pages\customers_page.dart:226:31 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\customers\presentation\pages\customers_page.dart:227:38 - use_build_context_synchronously
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:29:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:46:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:62:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\customers\presentation\providers\customer_provider.dart:75:7 - avoid_print
+   info - Parameter 'key' could be a super parameter - lib\features\dashboard\presentation\pages\dashboard_page.dart:11:9 - use_super_parameters
+   info - Use 'const' with the constructor to improve performance - lib\features\dashboard\presentation\pages\dashboard_page.dart:32:14 - prefer_const_constructors
+   info - Don't invoke 'print' in production code - lib\features\dashboard\presentation\providers\dashboard_provider.dart:137:7 - avoid_print
+warning - Unused import: '../../../../core/constants/app_colors.dart' - lib\features\home\presentation\pages\home_page.dart:11:8 - unused_import
+   info - Parameter 'key' could be a super parameter - lib\features\home\presentation\pages\home_page.dart:14:9 - use_super_parameters
+   info - The local variable '_pages' starts with an underscore - lib\features\home\presentation\pages\home_page.dart:29:24 - no_leading_underscores_for_local_identifiers
+   info - Use 'const' with the constructor to improve performance - lib\features\home\presentation\pages\home_page.dart:33:13 - prefer_const_constructors
+   info - Use 'const' with the constructor to improve performance - lib\features\home\presentation\pages\home_page.dart:40:13 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:55:60 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:63:66 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:64:65 - deprecated_member_use
+   info - 'background' is deprecated and shouldn't be used. Use surface instead. This feature was deprecated after v3.18.0-0.1.pre - lib\features\home\presentation\pages\home_page.dart:72:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:82:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:83:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:88:66 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:106:72 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:180:52 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:203:50 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:238:60 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\home\presentation\pages\home_page.dart:241:62 - deprecated_member_use
+   info - Parameters ''id', 'name', 'description', 'price', 'cost', 'stockQuantity', 'minStock', 'categoryId', 'barcode', 'imagePath', 'createdAt', and 'updatedAt'' could be super parameters - lib\features\products\data\models\product_model.dart:5:3 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\products\presentation\pages\products_page.dart:13:9 - use_super_parameters
+  error - The body might complete normally, causing 'null' to be returned, but the return type, 'Widget', is a potentially non-nullable type - lib\features\products\presentation\pages\products_page.dart:185:50 - body_might_complete_normally
+warning - Dead code - lib\features\products\presentation\pages\products_page.dart:224:25 - dead_code
+warning - The label 'color' isn't used - lib\features\products\presentation\pages\products_page.dart:224:25 - unused_label
+  error - Undefined name 'product' - lib\features\products\presentation\pages\products_page.dart:224:32 - undefined_identifier
+  error - Undefined name 'product' - lib\features\products\presentation\pages\products_page.dart:224:57 - undefined_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:226:38 - expected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:226:43 - missing_identifier
+  error - Unexpected text ',' - lib\features\products\presentation\pages\products_page.dart:226:43 - unexpected_token
+warning - The label 'fontWeight' isn't used - lib\features\products\presentation\pages\products_page.dart:227:25 - unused_label
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:227:48 - expected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:227:52 - missing_identifier
+  error - Unexpected text ',' - lib\features\products\presentation\pages\products_page.dart:227:52 - unexpected_token
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:228:23 - expected_token
+  error - Expected to find '}' - lib\features\products\presentation\pages\products_page.dart:228:23 - expected_token
+warning - Dead code - lib\features\products\presentation\pages\products_page.dart:228:24 - dead_code
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:228:24 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:228:24 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:228:24 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:229:21 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:229:21 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:229:21 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:229:22 - missing_identifier
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:229:22 - unexpected_token
+  error - Undefined name 'product' - lib\features\products\presentation\pages\products_page.dart:230:25 - undefined_identifier
+   info - Statements in an if should be enclosed in a block - lib\features\products\presentation\pages\products_page.dart:231:23 - curly_braces_in_flow_control_structures
+  error - Undefined name 'product' - lib\features\products\presentation\pages\products_page.dart:232:37 - undefined_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:234:23 - expected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:234:24 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:234:24 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:234:24 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:235:19 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:235:19 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:235:19 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:235:20 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:235:20 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:235:20 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:236:17 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:236:17 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:236:17 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:236:18 - missing_identifier
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:236:18 - unexpected_token
+warning - The label 'trailing' isn't used - lib\features\products\presentation\pages\products_page.dart:237:17 - unused_label
+  error - Undefined name 'product' - lib\features\products\presentation\pages\products_page.dart:241:52 - undefined_identifier
+  error - Undefined name 'product' - lib\features\products\presentation\pages\products_page.dart:243:53 - undefined_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:269:64 - expected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:269:65 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:269:65 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:269:65 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:270:15 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:270:15 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:270:15 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:270:16 - missing_identifier
+  error - Expected to find ';' - lib\features\products\presentation\pages\products_page.dart:270:16 - expected_token
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:270:16 - unexpected_token
+  error - Expected an identifier - lib\features\products\presentation\pages\products_page.dart:271:13 - missing_identifier
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:271:13 - unexpected_token
+   info - Unnecessary empty statement - lib\features\products\presentation\pages\products_page.dart:271:14 - empty_statements
+  error - Expected a class member - lib\features\products\presentation\pages\products_page.dart:272:12 - expected_class_member
+  error - Expected a class member - lib\features\products\presentation\pages\products_page.dart:273:9 - expected_class_member
+  error - Expected a class member - lib\features\products\presentation\pages\products_page.dart:273:10 - expected_class_member
+  error - Expected a method, getter, setter or operator declaration - lib\features\products\presentation\pages\products_page.dart:274:8 - expected_executable
+  error - Expected a method, getter, setter or operator declaration - lib\features\products\presentation\pages\products_page.dart:275:5 - expected_executable
+  error - Unexpected text ';' - lib\features\products\presentation\pages\products_page.dart:275:6 - unexpected_token
+  error - Expected a method, getter, setter or operator declaration - lib\features\products\presentation\pages\products_page.dart:276:3 - expected_executable
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:280:16 - undefined_identifier
+  error - Undefined name 'mounted' - lib\features\products\presentation\pages\products_page.dart:285:15 - undefined_identifier
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\products\presentation\pages\products_page.dart:286:34 - use_build_context_synchronously
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:297:16 - undefined_identifier
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:313:16 - undefined_identifier
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:340:60 - undefined_identifier
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:344:30 - undefined_identifier
+   info - Don't invoke 'print' in production code - lib\features\products\presentation\pages\products_page.dart:350:7 - avoid_print
+   info - Don't invoke 'print' in production code - lib\features\products\presentation\pages\products_page.dart:354:7 - avoid_print
+  error - Undefined name 'mounted' - lib\features\products\presentation\pages\products_page.dart:356:11 - undefined_identifier
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:357:30 - undefined_identifier
+   info - Don't invoke 'print' in production code - lib\features\products\presentation\pages\products_page.dart:366:7 - avoid_print
+  error - Undefined name 'mounted' - lib\features\products\presentation\pages\products_page.dart:368:11 - undefined_identifier
+  error - Undefined name 'context' - lib\features\products\presentation\pages\products_page.dart:369:30 - undefined_identifier
+  error - Expected a method, getter, setter or operator declaration - lib\features\products\presentation\pages\products_page.dart:378:1 - expected_executable
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\products\presentation\pages\products_page.dart:566:19 - deprecated_member_use
+   info - Unnecessary use of 'toList' in a spread - lib\features\receipt\presentation\pages\receipt_page.dart:167:16 - unnecessary_to_list_in_spreads
+   info - Use 'const' with the constructor to improve performance - lib\features\reports\presentation\pages\reports_page.dart:13:13 - prefer_const_constructors
+warning - The value of the field '_dbHelper' isn't used - lib\features\reports\presentation\providers\reports_provider.dart:5:24 - unused_field
+   info - Parameters ''id', 'customerId', 'userId', 'totalAmount', 'discountAmount', 'taxAmount', 'paymentMethod', 'status', 'createdAt', 'updatedAt', and 'items'' could be super parameters - lib\features\sales\data\models\sale_model.dart:7:3 - use_super_parameters
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\pos_page.dart:18:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:72:66 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:75:70 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:200:72 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\sales\presentation\pages\pos_page.dart:363:58 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\pos_page.dart:427:9 - use_super_parameters
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\sales\presentation\pages\pos_page.dart:510:17 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\sales\presentation\pages\pos_page.dart:634:31 - use_build_context_synchronously
+   info - 'value' is deprecated and shouldn't be used. Use initialValue instead. This will set the initial value for the form field. This feature was deprecated after v3.33.0-1.0.pre - lib\features\sales\presentation\pages\pos_page.dart:651:17 - deprecated_member_use
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\sales\presentation\pages\pos_page.dart:765:20 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\sales\presentation\pages\pos_page.dart:769:11 - use_build_context_synchronously
+   info - Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check - lib\features\sales\presentation\pages\pos_page.dart:781:28 - use_build_context_synchronously
+  error - Directives must appear before any declarations - lib\features\sales\presentation\pages\receipt_page.dart:23:1 - directive_after_declaration
+  error - Directives must appear before any declarations - lib\features\sales\presentation\pages\receipt_page.dart:24:1 - directive_after_declaration
+  error - Directives must appear before any declarations - lib\features\sales\presentation\pages\receipt_page.dart:25:1 - directive_after_declaration
+   info - Parameter 'key' could be a super parameter - lib\features\sales\presentation\pages\receipt_page.dart:33:9 - use_super_parameters
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:112:37 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:122:29 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:131:36 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:145:31 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:226:33 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:235:31 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:251:33 - unnecessary_string_interpolations
+   info - Unnecessary use of string interpolation - lib\features\sales\presentation\pages\receipt_page.dart:260:31 - unnecessary_string_interpolations
+   info - The private field _cart could be 'final' - lib\features\sales\presentation\providers\sales_provider.dart:24:18 - prefer_final_fields
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:17:74 - deprecated_member_use
+   info - 'activeColor' is deprecated and shouldn't be used. Use activeThumbColor instead. This feature was deprecated after v3.31.0-2.0.pre - lib\features\settings\presentation\pages\settings_page.dart:39:21 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:58:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:68:61 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:97:59 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:146:56 - deprecated_member_use
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\features\settings\presentation\pages\settings_page.dart:153:60 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\main.dart:120:13 - prefer_const_constructors
+warning - Unused import: 'package:flutter/material.dart' - lib\shared\navigation\app_router.dart:1:8 - unused_import
+   info - Parameter 'key' could be a super parameter - lib\shared\widgets\main_layout.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\main_layout.dart:42:33 - deprecated_member_use
+   info - Parameter 'key' could be a super parameter - lib\shared\widgets\sidebar_navigation.dart:10:9 - use_super_parameters
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\sidebar_navigation.dart:20:33 - deprecated_member_use
+   info - Use 'const' with the constructor to improve performance - lib\shared\widgets\sidebar_navigation.dart:42:19 - prefer_const_constructors
+   info - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss - lib\shared\widgets\sidebar_navigation.dart:158:46 - deprecated_member_use
+warning - Unused import: 'package:flutter/material.dart' - test\widget_test.dart:8:8 - unused_import
+warning - Unused import: 'package:pos_app/main.dart' - test\widget_test.dart:11:8 - unused_import
+

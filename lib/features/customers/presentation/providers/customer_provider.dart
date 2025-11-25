@@ -1,6 +1,8 @@
 // lib/features/customers/presentation/providers/customer_provider.dart
 
 import 'package:flutter/foundation.dart';
+import '../../../../core/database/database_helper.dart';
+import '../../domain/entities/customer.dart';
 
 class CustomerProvider extends ChangeNotifier {
   final DatabaseHelper _db;
@@ -33,7 +35,9 @@ class CustomerProvider extends ChangeNotifier {
 
   Future<bool> addCustomer(Customer customer) async {
     try {
-      final id = await _db.insertCustomer(customer.toMap());
+      final map = customer.toMap();
+      map.remove('id'); // Remove ID to allow auto-increment
+      final id = await _db.insertCustomer(map);
       _customers.add(customer.copyWith(id: id));
       notifyListeners();
       return true;

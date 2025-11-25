@@ -1,6 +1,8 @@
 // lib/features/coupons/presentation/providers/coupon_provider.dart
 
 import 'package:flutter/foundation.dart';
+import '../../../../core/database/database_helper.dart';
+import '../../domain/entities/coupon.dart';
 
 class CouponProvider extends ChangeNotifier {
   final DatabaseHelper _db;
@@ -11,7 +13,14 @@ class CouponProvider extends ChangeNotifier {
   CouponProvider(this._db);
 
   List<Coupon> get coupons => _coupons;
-  List<Coupon> get validCoupons => _coupons.where((c) => c.isValid).toList();
+  List<Coupon> get validCoupons => _coupons.where((c) {
+    final now = DateTime.now();
+    return c.isActive &&
+        !now.isBefore(c.validFrom) &&
+        !now.isAfter(c.validUntil) &&
+        (c.usageLimit == null || c.usedCount < c.usageLimit!);
+  }).toList();
+
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -76,8 +85,13 @@ class CouponProvider extends ChangeNotifier {
 
   Coupon? validateCoupon(String code) {
     try {
+      final now = DateTime.now();
       final coupon = _coupons.firstWhere(
-            (c) => c.code.toUpperCase() == code.toUpperCase() && c.isValid,
+            (c) => c.code.toUpperCase() == code.toUpperCase() &&
+            c.isActive &&
+            now.isAfter(c.validFrom) &&
+            now.isBefore(c.validUntil) &&
+            (c.usageLimit == null || c.usedCount < c.usageLimit!),
       );
       return coupon;
     } catch (e) {

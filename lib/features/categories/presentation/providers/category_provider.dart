@@ -1,6 +1,8 @@
 // lib/features/categories/presentation/providers/category_provider.dart
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart' hide Category;
+import '../../../../core/database/database_helper.dart';
+import '../../domain/entities/category.dart';
 
 class CategoryProvider extends ChangeNotifier {
   final DatabaseHelper _db;
@@ -33,7 +35,9 @@ class CategoryProvider extends ChangeNotifier {
 
   Future<bool> addCategory(Category category) async {
     try {
-      final id = await _db.insertCategory(category.toMap());
+      final map = category.toMap();
+      map.remove('id'); // Remove ID to allow auto-increment
+      final id = await _db.insertCategory(map);
       _categories.add(category.copyWith(id: id));
       notifyListeners();
       return true;

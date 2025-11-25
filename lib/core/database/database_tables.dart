@@ -3,6 +3,7 @@ class DatabaseTables {
     CREATE TABLE users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       email TEXT UNIQUE NOT NULL,
+      username TEXT UNIQUE NOT NULL,
       password TEXT NOT NULL,
       role TEXT NOT NULL,
       name TEXT NOT NULL,
@@ -47,6 +48,25 @@ class DatabaseTables {
       phone TEXT,
       address TEXT,
       loyalty_points INTEGER DEFAULT 0,
+      is_walk_in INTEGER DEFAULT 0,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    )
+  ''';
+
+  static const String createCouponsTable = '''
+    CREATE TABLE coupons (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      code TEXT UNIQUE NOT NULL,
+      discount_type TEXT NOT NULL,
+      discount_value REAL NOT NULL,
+      min_purchase REAL DEFAULT 0,
+      max_discount REAL,
+      valid_from TEXT NOT NULL,
+      valid_until TEXT NOT NULL,
+      is_active INTEGER DEFAULT 1,
+      usage_limit INTEGER,
+      used_count INTEGER DEFAULT 0,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     )

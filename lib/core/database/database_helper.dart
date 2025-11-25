@@ -1,6 +1,10 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'database_tables.dart';
+import '../../features/categories/domain/entities/category.dart';
+import '../../features/customers/domain/entities/customer.dart';
+import '../../features/coupons/domain/entities/coupon.dart';
+import '../../features/sales/domain/entities/sale.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -16,110 +20,46 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'smartpos.db');
+    String path = join(await getDatabasesPath(), 'smartpos_v2.db');
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 6,
       onCreate: _createTables,
       onUpgrade: _onUpgrade,
     );
   }
 
   Future<void> _createTables(Database db, int version) async {
-    // Create users table with ALL columns including username
-    await db.execute('''
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT UNIQUE NOT NULL,
-        username TEXT UNIQUE NOT NULL,
-        password TEXT NOT NULL,
-        role TEXT NOT NULL,
-        name TEXT NOT NULL,
-        created_at TEXT NOT NULL,
-        updated_at TEXT NOT NULL
-      )
-    ''');
-
-    await db.execute('''
-  CREATE TABLE IF NOT EXISTS categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT UNIQUE NOT NULL,
-    description TEXT,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-  )
-''');
-
-    await db.execute('''
-  CREATE TABLE IF NOT EXISTS customers (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    phone TEXT,
-    email TEXT,
-    address TEXT,
-    is_walk_in INTEGER DEFAULT 0,
-    created_at TEXT NOT NULL,
-    updated_at TEXT NOT NULL
-  )
-''');
-
-    await db.execute('''
-  CREATE TABLE IF NOT EXISTS coupons (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    code TEXT UNIQUE NOT NULL,
-    discount_percent REAL NOT NULL,
-    is_active INTEGER DEFAULT 1,
-    expiry_date TEXT,
-    created_at TEXT NOT NULL
-  )
-''');
-
-
-
-    // Create other tables
+    // Create users table
+    await db.execute(DatabaseTables.createUsersTable);
     await db.execute(DatabaseTables.createCategoriesTable);
     await db.execute(DatabaseTables.createProductsTable);
     await db.execute(DatabaseTables.createCustomersTable);
+    await db.execute(DatabaseTables.createCouponsTable);
     await db.execute(DatabaseTables.createSalesTable);
     await db.execute(DatabaseTables.createSaleItemsTable);
-    await db.execute('''
-  ALTER TABLE sales ADD COLUMN discount_percent REAL DEFAULT 0
-''');
-
-    await db.execute('''
-  ALTER TABLE sales ADD COLUMN coupon_code TEXT
-''');
-
-    await db.execute('''
-  ALTER TABLE sales ADD COLUMN customer_id INTEGER
-''');
 
     // Insert initial/mock data
     await _insertMockData(db);
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2 && newVersion >= 2) {
+    if (oldVersion < 3) {
       try {
-        // Check if username column exists
-        final info = await db.rawQuery("PRAGMA table_info(users)");
-        final columnNames = info.map((col) => col['name']).toList();
+        // Check if username column exists in users table
+        final userInfo = await db.rawQuery("PRAGMA table_info(users)");
+        final userColumns = userInfo.map((col) => col['name']).toList();
 
-        if (!columnNames.contains('username')) {
+        if (!userColumns.contains('username')) {
           print('Adding username column to users table...');
-
-          // Add username column
           await db.execute('ALTER TABLE users ADD COLUMN username TEXT UNIQUE');
 
-          // Get all existing users
+          // Get all existing users and update usernames
           final users = await db.query('users');
-
-          // Generate usernames from emails and update
           for (var user in users) {
             final email = user['email'] as String? ?? '';
             final username = email.split('@')[0].toLowerCase();
-
             try {
               await db.update(
                 'users',
@@ -131,11 +71,92 @@ class DatabaseHelper {
               print('Error updating user: $e');
             }
           }
-
-          print('Migration completed successfully');
         }
+
+        // Check for missing columns in sales table
+        final salesInfo = await db.rawQuery("PRAGMA table_info(sales)");
+        final salesColumns = salesInfo.map((col) => col['name']).toList();
+
+        if (!salesColumns.contains('discount_percent')) {
+          print('Adding discount_percent to sales table...');
+          await db.execute('ALTER TABLE sales ADD COLUMN discount_percent REAL DEFAULT 0');
+        }
+
+        if (!salesColumns.contains('coupon_code')) {
+          print('Adding coupon_code to sales table...');
+          await db.execute('ALTER TABLE sales ADD COLUMN coupon_code TEXT');
+        }
+        
+        // customer_id should already be there from v1, but check just in case
+        if (!salesColumns.contains('customer_id')) {
+           print('Adding customer_id to sales table...');
+           await db.execute('ALTER TABLE sales ADD COLUMN customer_id INTEGER');
+        }
+
+        print('Migration to v3 completed successfully');
       } catch (e) {
-        print('Error during migration: $e');
+        print('Error during migration to v3: $e');
+      }
+    }
+
+    if (oldVersion < 4) {
+      try {
+        // Check if coupons table exists
+        final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='coupons'");
+        if (tables.isEmpty) {
+          print('Creating coupons table...');
+          await db.execute(DatabaseTables.createCouponsTable);
+        }
+
+        // Check for is_walk_in in customers table
+        final customerInfo = await db.rawQuery("PRAGMA table_info(customers)");
+        final customerColumns = customerInfo.map((col) => col['name']).toList();
+
+        if (!customerColumns.contains('is_walk_in')) {
+          print('Adding is_walk_in to customers table...');
+          await db.execute('ALTER TABLE customers ADD COLUMN is_walk_in INTEGER DEFAULT 0');
+        }
+
+        // Check for expiry_date in coupons table
+        final couponInfo = await db.rawQuery("PRAGMA table_info(coupons)");
+        final couponColumns = couponInfo.map((col) => col['name']).toList();
+
+        if (!couponColumns.contains('expiry_date')) {
+          print('Adding expiry_date to coupons table...');
+          await db.execute('ALTER TABLE coupons ADD COLUMN expiry_date TEXT');
+        }
+
+        print('Migration to v4 completed successfully');
+      } catch (e) {
+        print('Error during migration to v4: $e');
+      }
+    }
+
+    if (oldVersion < 5) {
+      try {
+        // Ensure expiry_date column exists in coupons table
+        final couponInfo = await db.rawQuery("PRAGMA table_info(coupons)");
+        final couponColumns = couponInfo.map((col) => col['name']).toList();
+
+        if (!couponColumns.contains('expiry_date')) {
+          print('V5: Adding expiry_date to coupons table...');
+          await db.execute('ALTER TABLE coupons ADD COLUMN expiry_date TEXT');
+          print('V5: expiry_date column added successfully');
+        }
+
+        print('Migration to v5 completed successfully');
+      } catch (e) {
+        print('Error during migration to v5: $e');
+      }
+    }
+
+    if (oldVersion < 6) {
+      try {
+        print('V6: Ensuring default users exist...');
+        await _insertMockData(db);
+        print('Migration to v6 completed successfully');
+      } catch (e) {
+        print('Error during migration to v6: $e');
       }
     }
   }
@@ -254,7 +275,7 @@ class DatabaseHelper {
     return await db.delete('categories', where: 'id = ?', whereArgs: [id]);
   }
 
-  Category? getCategoryById(int id) async {
+  Future<Category?> getCategoryById(int id) async {
     final db = await database;
     final maps = await db.query(
       'categories',
@@ -293,7 +314,7 @@ class DatabaseHelper {
     return await db.delete('customers', where: 'id = ?', whereArgs: [id]);
   }
 
-  Customer? getCustomerById(int id) async {
+  Future<Customer?> getCustomerById(int id) async {
     final db = await database;
     final maps = await db.query(
       'customers',
@@ -332,7 +353,7 @@ class DatabaseHelper {
     return await db.delete('coupons', where: 'id = ?', whereArgs: [id]);
   }
 
-  Coupon? getCouponByCode(String code) async {
+  Future<Coupon?> getCouponByCode(String code) async {
     final db = await database;
     final maps = await db.query(
       'coupons',
@@ -427,6 +448,52 @@ class DatabaseHelper {
     }
   }
 
+  Future<Map<String, dynamic>> getSalesStats(DateTime start, DateTime end) async {
+    final db = await database;
+    final startStr = start.toIso8601String();
+    final endStr = end.toIso8601String();
+
+    final result = await db.rawQuery('''
+      SELECT 
+        COUNT(*) as count,
+        SUM(total_amount) as total
+      FROM sales 
+      WHERE date BETWEEN ? AND ?
+    ''', [startStr, endStr]);
+
+    if (result.isNotEmpty) {
+      return {
+        'count': result.first['count'] ?? 0,
+        'total': result.first['total'] ?? 0.0,
+      };
+    }
+    return {'count': 0, 'total': 0.0};
+  }
+
+  Future<List<Map<String, dynamic>>> getTopSellingProducts(int limit) async {
+    final db = await database;
+    return await db.rawQuery('''
+      SELECT 
+        p.name,
+        SUM(si.quantity) as total_quantity
+      FROM sale_items si
+      JOIN products p ON si.product_id = p.id
+      GROUP BY p.id
+      ORDER BY total_quantity DESC
+      LIMIT ?
+    ''', [limit]);
+  }
+
+  Future<List<Map<String, dynamic>>> getLowStockProducts(int limit) async {
+    final db = await database;
+    return await db.query(
+      'products',
+      where: 'stock_quantity <= min_stock',
+      orderBy: 'stock_quantity ASC',
+      limit: limit,
+    );
+  }
+
   Future<void> close() async {
     if (_database != null) {
       await _database!.close();
@@ -435,63 +502,6 @@ class DatabaseHelper {
   }
 }
 
-class Sale {
-  final int id;
-  final int userId;
-  final double subtotal;
-  final double discountPercent;  // NEW
-  final String? couponCode;      // NEW
-  final int? customerId;         // NEW
-  final double total;
-  final String paymentMethod;
-  final String cashierName;
-  final DateTime createdAt;
-  final DateTime updatedAt;
 
-  Sale({
-    required this.id,
-    required this.userId,
-    required this.subtotal,
-    required this.total,
-    required this.paymentMethod,
-    required this.cashierName,
-    this.discountPercent = 0.0,
-    this.couponCode,
-    this.customerId,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-  })  : createdAt = createdAt ?? DateTime.now(),
-        updatedAt = updatedAt ?? DateTime.now();
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'user_id': userId,
-      'subtotal': subtotal,
-      'discount_percent': discountPercent,
-      'coupon_code': couponCode,
-      'customer_id': customerId,
-      'total': total,
-      'payment_method': paymentMethod,
-      'cashier_name': cashierName,
-      'created_at': createdAt.toIso8601String(),
-      'updated_at': updatedAt.toIso8601String(),
-    };
-  }
 
-  factory Sale.fromMap(Map<String, dynamic> map) {
-    return Sale(
-      id: map['id'] as int,
-      userId: map['user_id'] as int,
-      subtotal: (map['subtotal'] as num).toDouble(),
-      discountPercent: (map['discount_percent'] as num?)?.toDouble() ?? 0.0,
-      couponCode: map['coupon_code'] as String?,
-      customerId: map['customer_id'] as int?,
-      total: (map['total'] as num).toDouble(),
-      paymentMethod: map['payment_method'] as String,
-      cashierName: map['cashier_name'] as String,
-      createdAt: DateTime.parse(map['created_at'] as String),
-      updatedAt: DateTime.parse(map['updated_at'] as String),
-    );
-  }
-}

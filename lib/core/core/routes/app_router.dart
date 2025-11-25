@@ -1,6 +1,17 @@
 // lib/core/routes/app_router.dart - Updated with new routes
 
 import 'package:flutter/material.dart';
+import '../../../features/auth/presentation/pages/login_page.dart';
+import '../../../features/home/presentation/pages/home_page.dart';
+import '../../../features/products/presentation/pages/products_page.dart';
+import '../../../features/sales/presentation/pages/pos_page.dart';
+import '../../../features/customers/presentation/pages/customers_page.dart';
+import '../../../features/settings/presentation/pages/settings_page.dart';
+import '../../../features/categories/presentation/pages/categories_page.dart';
+import '../../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../../features/reports/presentation/pages/reports_page.dart';
+import '../../../features/auth/presentation/pages/user_management_page.dart';
+import '../../../features/coupons/presentation/pages/coupons_page.dart';
 
 class AppRouter {
   static const String loginRoute = '/login';
@@ -14,6 +25,7 @@ class AppRouter {
   static const String dashboardRoute = '/dashboard';
   static const String reportsRoute = '/reports';
   static const String receiptRoute = '/receipt';
+  static const String userManagementRoute = '/user_management';
 
   static Map<String, WidgetBuilder> get routes => {
     loginRoute: (context) => const LoginPage(),
@@ -23,8 +35,10 @@ class AppRouter {
     customersRoute: (context) => const CustomersPage(),
     settingsRoute: (context) => const SettingsPage(),
     categoriesRoute: (context) => const CategoriesPage(),
+    couponsRoute: (context) => const CouponsPage(),
     dashboardRoute: (context) => const DashboardPage(),
     reportsRoute: (context) => const ReportsPage(),
+    userManagementRoute: (context) => const UserManagementPage(),
   };
 
   static Future<void> navigateTo(BuildContext context, String routeName) {

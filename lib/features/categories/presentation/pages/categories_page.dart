@@ -1,7 +1,9 @@
 // lib/features/categories/presentation/pages/categories_page.dart
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Category;
 import 'package:provider/provider.dart';
+import '../../domain/entities/category.dart';
+import '../providers/category_provider.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});

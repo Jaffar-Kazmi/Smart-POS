@@ -1,7 +1,9 @@
-// lib/features/customers/presentation/pages/customers_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../domain/entities/customer.dart';
+import '../providers/customer_provider.dart';
+import '../../../../core/presentation/widgets/futuristic_header.dart';
+import '../../../../core/presentation/widgets/futuristic_card.dart';
 
 class CustomersPage extends StatefulWidget {
   const CustomersPage({super.key});
@@ -22,76 +24,114 @@ class _CustomersPageState extends State<CustomersPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Customers'),
-        elevation: 0,
-      ),
-      body: Consumer<CustomerProvider>(
-        builder: (context, provider, _) {
-          if (provider.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Column(
+        children: [
+          const FuturisticHeader(title: 'Customers'),
+          Expanded(
+            child: Consumer<CustomerProvider>(
+              builder: (context, provider, _) {
+                if (provider.isLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
 
-          final customers = provider.customers;
+                final customers = provider.customers;
 
-          if (customers.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.people_outline, size: 64, color: Colors.grey[400]),
-                  const SizedBox(height: 16),
-                  const Text('No customers found'),
-                  const SizedBox(height: 8),
-                  const Text('Tap + to add a new customer', style: TextStyle(color: Colors.grey)),
-                ],
-              ),
-            );
-          }
+                if (customers.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.people_outline, size: 64, color: Colors.white24),
+                        const SizedBox(height: 16),
+                        const Text('No customers found', style: TextStyle(color: Colors.white54)),
+                        const SizedBox(height: 8),
+                        const Text('Tap + to add a new customer', style: TextStyle(color: Colors.white38)),
+                      ],
+                    ),
+                  );
+                }
 
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: customers.length,
-            itemBuilder: (context, index) {
-              final customer = customers[index];
-              return Card(
-                margin: const EdgeInsets.only(bottom: 8),
-                child: ListTile(
-                  leading: Icon(
-                    Icons.person,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  title: Text(customer.name),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (customer.phone != null) Text(customer.phone!),
-                      if (customer.email != null) Text(customer.email!, style: const TextStyle(fontSize: 12)),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () => _showCustomerDialog(customer: customer),
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: customers.length,
+                  itemBuilder: (context, index) {
+                    final customer = customers[index];
+                    return FuturisticCard(
+                      padding: EdgeInsets.zero,
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        leading: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.person,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        title: Text(
+                          customer.name,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (customer.phone != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.phone, size: 14, color: Colors.white38),
+                                    const SizedBox(width: 4),
+                                    Text(customer.phone!, style: const TextStyle(color: Colors.white70)),
+                                  ],
+                                ),
+                              ),
+                            if (customer.email != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.email, size: 14, color: Colors.white38),
+                                    const SizedBox(width: 4),
+                                    Text(customer.email!, style: const TextStyle(fontSize: 12, color: Colors.white54)),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                              onPressed: () => _showCustomerDialog(customer: customer),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.redAccent),
+                              onPressed: () => _deleteCustomer(customer),
+                            ),
+                          ],
+                        ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteCustomer(customer),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showCustomerDialog(),
-        child: const Icon(Icons.add),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.add, color: Colors.black),
       ),
     );
   }
@@ -117,7 +157,6 @@ class _CustomersPageState extends State<CustomersPage> {
                   controller: nameController,
                   decoration: const InputDecoration(
                     labelText: 'Customer Name',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {
@@ -132,7 +171,6 @@ class _CustomersPageState extends State<CustomersPage> {
                   controller: phoneController,
                   decoration: const InputDecoration(
                     labelText: 'Phone (Optional)',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.phone),
                   ),
                   keyboardType: TextInputType.phone,
@@ -142,7 +180,6 @@ class _CustomersPageState extends State<CustomersPage> {
                   controller: emailController,
                   decoration: const InputDecoration(
                     labelText: 'Email (Optional)',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.email),
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -152,7 +189,6 @@ class _CustomersPageState extends State<CustomersPage> {
                   controller: addressController,
                   decoration: const InputDecoration(
                     labelText: 'Address (Optional)',
-                    border: OutlineInputBorder(),
                     prefixIcon: Icon(Icons.location_on),
                   ),
                   maxLines: 2,
@@ -200,6 +236,10 @@ class _CustomersPageState extends State<CustomersPage> {
                 );
               }
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.black,
+            ),
             child: Text(customer == null ? 'Add' : 'Save'),
           ),
         ],
@@ -223,7 +263,7 @@ class _CustomersPageState extends State<CustomersPage> {
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: const Text('Delete', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

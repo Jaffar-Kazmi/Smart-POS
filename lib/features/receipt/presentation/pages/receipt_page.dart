@@ -2,15 +2,33 @@
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import '../../../sales/domain/entities/sale.dart';
+import '../../../customers/domain/entities/customer.dart';
+
+class ReceiptItemDisplay {
+  final String productName;
+  final int quantity;
+  final double price;
+  final double total;
+
+  ReceiptItemDisplay({
+    required this.productName,
+    required this.quantity,
+    required this.price,
+    required this.total,
+  });
+}
 
 class ReceiptPage extends StatelessWidget {
   final Sale sale;
-  final List<SaleItem> items;
+  final List<ReceiptItemDisplay> items;
   final Customer? customer;
+  final String cashierName;
 
   const ReceiptPage({
     required this.sale,
     required this.items,
+    required this.cashierName,
     this.customer,
     super.key,
   });
@@ -57,7 +75,7 @@ class ReceiptPage extends StatelessWidget {
               'Date',
               DateFormat('dd MMM yyyy, hh:mm a').format(sale.createdAt),
             ),
-            _infoRow('Cashier', sale.cashierName),
+            _infoRow('Cashier', cashierName),
             _infoRow(
               'Customer',
               customer?.name ?? 'Walk-in Customer',
@@ -103,7 +121,6 @@ class ReceiptPage extends StatelessWidget {
 
             // Items List
             ...items.map((item) {
-              final itemTotal = item.quantity * item.price;
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Row(
@@ -137,7 +154,7 @@ class ReceiptPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        '${itemTotal.toStringAsFixed(2)}/-',
+                        '${item.total.toStringAsFixed(2)}/-',
                         textAlign: TextAlign.right,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
@@ -161,7 +178,7 @@ class ReceiptPage extends StatelessWidget {
             if (sale.discountPercent > 0) ...[
               const SizedBox(height: 8),
               _totalRow(
-                context,
+              context,
                 'Discount (${sale.discountPercent}%):',
                 '-${discountAmount.toStringAsFixed(2)}/-',
                 isDiscount: true,
@@ -172,7 +189,7 @@ class ReceiptPage extends StatelessWidget {
               _totalRow(
                 context,
                 'Coupon (${sale.couponCode}):',
-                '-${discountAmount.toStringAsFixed(2)}/-',
+                '-${discountAmount.toStringAsFixed(2)}/-', // This might need adjustment if coupon logic is different
                 isDiscount: true,
               ),
             ],
@@ -192,7 +209,7 @@ class ReceiptPage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  '${sale.total.toStringAsFixed(2)}/-',
+                  '${sale.totalAmount.toStringAsFixed(2)}/-',
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).primaryColor,

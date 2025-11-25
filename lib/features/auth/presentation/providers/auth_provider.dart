@@ -106,6 +106,79 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  List<User> _allUsers = [];
+  List<User> get allUsers => _allUsers;
+
+  Future<void> loadAllUsers() async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      final usersData = await DatabaseHelper.instance.getAllUsers();
+      _allUsers = usersData.map((data) => User(
+        id: data['id'],
+        email: data['email'],
+        role: data['role'],
+        name: data['name'],
+        username: data['username'] ?? '',
+        createdAt: DateTime.parse(data['created_at']),
+        updatedAt: DateTime.parse(data['updated_at']),
+      )).toList();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<bool> deleteUser(int id) async {
+    try {
+      final success = await DatabaseHelper.instance.deleteUser(id);
+      if (success) {
+        _allUsers.removeWhere((u) => u.id == id);
+        notifyListeners();
+      }
+      return success;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> updateUser(User user, String? password) async {
+    try {
+      final Map<String, dynamic> values = {
+        'name': user.name,
+        'email': user.email,
+        'username': user.username,
+        'role': user.role,
+      };
+      if (password != null && password.isNotEmpty) {
+        values['password'] = password;
+      }
+
+      final success = await DatabaseHelper.instance.updateUser(user.id, values);
+      if (success) {
+        final index = _allUsers.indexWhere((u) => u.id == user.id);
+        if (index != -1) {
+          _allUsers[index] = user;
+          notifyListeners();
+        }
+        // Update current user if it's the same user
+        if (_currentUser?.id == user.id) {
+          _currentUser = user;
+          notifyListeners();
+        }
+      }
+      return success;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
   void logout() {
     _currentUser = null;
     _error = null;

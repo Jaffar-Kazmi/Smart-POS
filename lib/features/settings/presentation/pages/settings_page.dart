@@ -1,7 +1,9 @@
-// lib/features/settings/presentation/pages/settings_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../../core/theme/theme_provider.dart';
+import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../../core/presentation/widgets/futuristic_header.dart';
+import '../../../../core/presentation/widgets/futuristic_card.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -9,85 +11,147 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
+    final authProvider = context.watch<AuthProvider>();
     final isDark = themeProvider.isDark;
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final subtitleColor = Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        elevation: 0,
-      ),
-      body: ListView(
+      body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              'Appearance',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
+          const FuturisticHeader(title: 'Settings'),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                _buildSectionHeader(context, 'Appearance'),
+                FuturisticCard(
+                  padding: EdgeInsets.zero,
+                  child: SwitchListTile(
+                    title: Text('Dark Theme', style: TextStyle(color: textColor)),
+                    subtitle: Text('Enable dark mode for better visibility', style: TextStyle(color: subtitleColor)),
+                    value: isDark,
+                    onChanged: (_) => themeProvider.toggleTheme(),
+                    secondary: Icon(
+                      isDark ? Icons.dark_mode : Icons.light_mode,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    activeColor: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 24),
+                if (authProvider.isAdmin) ...[
+                  _buildSectionHeader(context, 'Management'),
+                  FuturisticCard(
+                    padding: EdgeInsets.zero,
+                    child: Column(
+                      children: [
+                        _buildListTile(
+                          context,
+                          icon: Icons.category,
+                          title: 'Product Categories',
+                          subtitle: 'Add, edit, or delete product categories',
+                          onTap: () => Navigator.pushNamed(context, '/categories'),
+                          textColor: textColor,
+                          subtitleColor: subtitleColor,
+                        ),
+                        Divider(height: 1, color: textColor.withOpacity(0.1)),
+                        _buildListTile(
+                          context,
+                          icon: Icons.local_offer,
+                          title: 'Manage Coupons',
+                          subtitle: 'Create and manage discount coupons',
+                          onTap: () => Navigator.pushNamed(context, '/coupons'),
+                          textColor: textColor,
+                          subtitleColor: subtitleColor,
+                        ),
+                        Divider(height: 1, color: textColor.withOpacity(0.1)),
+                        _buildListTile(
+                          context,
+                          icon: Icons.people_alt,
+                          title: 'User Management',
+                          subtitle: 'Manage users and roles',
+                          onTap: () => Navigator.pushNamed(context, '/user_management'),
+                          textColor: textColor,
+                          subtitleColor: subtitleColor,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+                _buildSectionHeader(context, 'About'),
+                FuturisticCard(
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    children: [
+                      _buildListTile(
+                        context,
+                        icon: Icons.info,
+                        title: 'About SmartPOS',
+                        subtitle: 'Version 2.0.0',
+                        onTap: () => _showAboutDialog(context),
+                        textColor: textColor,
+                        subtitleColor: subtitleColor,
+                      ),
+                      Divider(height: 1, color: textColor.withOpacity(0.1)),
+                      _buildListTile(
+                        context,
+                        icon: Icons.privacy_tip,
+                        title: 'Privacy Policy',
+                        onTap: () => _showPrivacyDialog(context),
+                        textColor: textColor,
+                        subtitleColor: subtitleColor,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ],
             ),
           ),
-          SwitchListTile(
-            title: const Text('Dark Theme'),
-            subtitle: const Text('Enable dark mode for better visibility'),
-            value: isDark,
-            onChanged: (_) => themeProvider.toggleTheme(),
-            secondary: Icon(
-              isDark ? Icons.dark_mode : Icons.light_mode,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-          const Divider(height: 24),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              'Management',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.category, color: Theme.of(context).primaryColor),
-            title: const Text('Product Categories'),
-            subtitle: const Text('Add, edit, or delete product categories'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.pushNamed(context, '/categories'),
-          ),
-          ListTile(
-            leading: Icon(Icons.local_offer, color: Theme.of(context).primaryColor),
-            title: const Text('Manage Coupons'),
-            subtitle: const Text('Create and manage discount coupons'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => Navigator.pushNamed(context, '/coupons'),
-          ),
-          const Divider(height: 24),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: Text(
-              'About',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.info, color: Theme.of(context).primaryColor),
-            title: const Text('About SmartPOS'),
-            subtitle: const Text('Version 2.0.0'),
-            onTap: () => _showAboutDialog(context),
-          ),
-          ListTile(
-            leading: Icon(Icons.privacy_tip, color: Theme.of(context).primaryColor),
-            title: const Text('Privacy Policy'),
-            onTap: () => _showPrivacyDialog(context),
-          ),
-          const SizedBox(height: 32),
         ],
       ),
+    );
+  }
+
+  Widget _buildSectionHeader(BuildContext context, String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8, left: 4),
+      child: Text(
+        title,
+        style: TextStyle(
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.bold,
+          fontSize: 16,
+          letterSpacing: 1.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListTile(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    String? subtitle,
+    required VoidCallback onTap,
+    required Color textColor,
+    required Color subtitleColor,
+  }) {
+    return ListTile(
+      leading: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, color: Theme.of(context).colorScheme.primary),
+      ),
+      title: Text(title, style: TextStyle(color: textColor, fontWeight: FontWeight.w500)),
+      subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: subtitleColor, fontSize: 12)) : null,
+      trailing: Icon(Icons.chevron_right, color: textColor.withOpacity(0.3)),
+      onTap: onTap,
     );
   }
 
