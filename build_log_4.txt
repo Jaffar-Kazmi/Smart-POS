@@ -1,0 +1,30 @@
+Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  crypto 3.0.6 (3.0.7 available)
+  csv 5.1.1 (6.0.0 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  go_router 12.1.3 (17.0.0 available)
+  http 1.5.0 (1.6.0 available)
+  intl 0.18.1 (0.20.2 available)
+  lints 3.0.0 (6.0.0 available)
+  matcher 0.12.17 (0.12.18 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  path_provider_android 2.2.19 (2.2.22 available)
+  path_provider_foundation 2.4.2 (2.4.4 available)
+  screen_retriever 0.1.9 (0.2.0 available)
+  shared_preferences_android 2.4.16 (2.4.17 available)
+  sqflite_common_ffi 2.3.6 (2.4.0 available)
+  sqlite3 2.9.3 (3.1.0 available)
+  test_api 0.7.7 (0.7.8 available)
+  uuid 4.5.1 (4.5.2 available)
+  window_manager 0.3.9 (0.5.1 available)
+Got dependencies!
+19 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Launching lib\main.dart on Windows in debug mode...
+Building Windows application...                                 
+lib/features/products/presentation/pages/products_page.dart(659,43): error GE5CFE876: The method '_showAddCategoryDialog' isn't defined for the type '_ProductDialogState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\CMakeFiles\2aad4af9402cd69ec5006b436361d689\flutter_windows.dll.rule;C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\CMakeFiles\7e92b7a80a920ace5120e34457324b7a\flutter_assemble.rule' exited with code 1. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+Building Windows application...                                    14.1s
+Error: Build process failed.

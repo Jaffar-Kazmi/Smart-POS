@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../../../core/database/database_helper.dart';
+import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 
 class DashboardStats {
   final double todaysSales;
@@ -43,10 +46,13 @@ class Transaction {
 }
 
 class DashboardProvider extends ChangeNotifier {
+  final DatabaseHelper _db;
   bool _isLoading = false;
   DashboardStats? _dashboardStats;
   List<WeeklySalesData> _weeklySalesData = [];
   List<Transaction> _recentTransactions = [];
+
+  DashboardProvider(this._db);
 
   bool get isLoading => _isLoading;
   DashboardStats? get dashboardStats => _dashboardStats;
@@ -57,45 +63,81 @@ class DashboardProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    // Simulate API call
-    await Future.delayed(Duration(seconds: 2));
+    try {
+      final db = await _db.database;
 
-    // Mock data
-    _dashboardStats = DashboardStats(
-      todaysSales: 1250.75,
-      totalProducts: 47,
-      totalCustomers: 23,
-      lowStockCount: 3,
-    );
+      // 1. Get Today's Sales
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day).toIso8601String();
+      final todayEnd = DateTime(now.year, now.month, now.day, 23, 59, 59).toIso8601String();
+      
+      final todaySalesResult = await db.rawQuery('''
+        SELECT SUM(total_amount) as total 
+        FROM sales 
+        WHERE created_at BETWEEN ? AND ?
+      ''', [todayStart, todayEnd]);
+      
+      final todaysSales = (todaySalesResult.first['total'] as num?)?.toDouble() ?? 0.0;
 
-    _weeklySalesData = [
-      WeeklySalesData(date: '2025-10-08', revenue: 245.50, transactions: 8),
-      WeeklySalesData(date: '2025-10-09', revenue: 180.25, transactions: 5),
-      WeeklySalesData(date: '2025-10-10', revenue: 320.75, transactions: 12),
-      WeeklySalesData(date: '2025-10-11', revenue: 290.40, transactions: 9),
-      WeeklySalesData(date: '2025-10-12', revenue: 410.20, transactions: 15),
-      WeeklySalesData(date: '2025-10-13', revenue: 195.30, transactions: 7),
-      WeeklySalesData(date: '2025-10-14', revenue: 189.96, transactions: 6),
-    ];
+      // 2. Get Total Products
+      final productsResult = await db.rawQuery('SELECT COUNT(*) as count FROM products');
+      final totalProducts = Sqflite.firstIntValue(productsResult) ?? 0;
 
-    _recentTransactions = [
-      Transaction(
-        id: 1,
-        totalAmount: 89.99,
-        paymentMethod: 'Card',
-        status: 'Completed',
-        createdAt: DateTime.now().subtract(Duration(hours: 1)),
-      ),
-      Transaction(
-        id: 2,
-        totalAmount: 45.50,
-        paymentMethod: 'Cash',
-        status: 'Completed',
-        createdAt: DateTime.now().subtract(Duration(hours: 2)),
-      ),
-    ];
+      // 3. Get Total Customers
+      final customersResult = await db.rawQuery('SELECT COUNT(*) as count FROM customers');
+      final totalCustomers = Sqflite.firstIntValue(customersResult) ?? 0;
 
-    _isLoading = false;
-    notifyListeners();
+      // 4. Get Low Stock Count
+      final lowStockResult = await db.rawQuery('SELECT COUNT(*) as count FROM products WHERE stock_quantity <= min_stock');
+      final lowStockCount = Sqflite.firstIntValue(lowStockResult) ?? 0;
+
+      _dashboardStats = DashboardStats(
+        todaysSales: todaysSales,
+        totalProducts: totalProducts,
+        totalCustomers: totalCustomers,
+        lowStockCount: lowStockCount,
+      );
+
+      // 5. Get Weekly Sales Data (Last 7 days)
+      _weeklySalesData = [];
+      for (int i = 6; i >= 0; i--) {
+        final date = now.subtract(Duration(days: i));
+        final start = DateTime(date.year, date.month, date.day).toIso8601String();
+        final end = DateTime(date.year, date.month, date.day, 23, 59, 59).toIso8601String();
+        
+        final dayResult = await db.rawQuery('''
+          SELECT SUM(total_amount) as revenue, COUNT(*) as transactions 
+          FROM sales 
+          WHERE created_at BETWEEN ? AND ?
+        ''', [start, end]);
+
+        _weeklySalesData.add(WeeklySalesData(
+          date: DateFormat('MM-dd').format(date),
+          revenue: (dayResult.first['revenue'] as num?)?.toDouble() ?? 0.0,
+          transactions: (dayResult.first['transactions'] as num?)?.toInt() ?? 0,
+        ));
+      }
+
+      // 6. Get Recent Transactions
+      final recentResult = await db.query(
+        'sales',
+        orderBy: 'created_at DESC',
+        limit: 5,
+      );
+
+      _recentTransactions = recentResult.map((map) => Transaction(
+        id: map['id'] as int,
+        totalAmount: map['total_amount'] as double,
+        paymentMethod: map['payment_method'] as String,
+        status: map['status'] as String,
+        createdAt: DateTime.parse(map['created_at'] as String),
+      )).toList();
+
+    } catch (e) {
+      print('Error loading dashboard data: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }

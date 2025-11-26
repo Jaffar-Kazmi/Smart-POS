@@ -1,0 +1,623 @@
+// INTEGRATION CODE SNIPPETS - For updating existing files
+
+/*
+================================================================================
+SMARTPOS ENHANCED - CODE SNIPPETS FOR EXISTING FILES
+================================================================================
+
+Use these snippets to update your existing pages and features.
+
+================================================================================
+1. UPDATE products_page.dart
+================================================================================
+*/
+
+// ADD THIS IMPORT
+import 'package:provider/provider.dart';
+
+// REMOVE IMAGE FROM PRODUCT CARD - Update _buildProductsList() ListTile:
+// BEFORE:
+/*
+leading: CircleAvatar(
+  backgroundColor: AppColors.primary.withOpacity(0.1),
+  child: Icon(Icons.inventory_2, color: AppColors.primary),
+),
+*/
+
+// AFTER: (just use icon without image)
+leading: Icon(Icons.inventory_2, color: Theme.of(context).primaryColor),
+
+// ADD CATEGORY DROPDOWN WITH INLINE ADD - In _ProductDialog:
+DropdownButtonFormField<int>(
+  value: _selectedCategoryId,
+  decoration: const InputDecoration(
+    labelText: 'Category',
+    border: OutlineInputBorder(),
+    prefixIcon: Icon(Icons.category),
+  ),
+  items: [
+    ...context.watch<CategoryProvider>().categories.map(
+      (c) => DropdownMenuItem(value: c.id, child: Text(c.name)),
+    ),
+    const DropdownMenuItem<int>(
+      value: -1,
+      child: Text('+ Add new category'),
+    ),
+  ],
+  onChanged: (value) async {
+    if (value == -1) {
+      final newId = await _showAddCategoryDialog(context);
+      if (newId != null) {
+        setState(() => _selectedCategoryId = newId);
+      }
+    } else if (value != null) {
+      setState(() => _selectedCategoryId = value);
+    }
+  },
+);
+
+// ADD THIS METHOD IN _ProductsPageState:
+Future<int?> _showAddCategoryDialog(BuildContext context) async {
+  final nameController = TextEditingController();
+  return showDialog<int>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Add New Category'),
+      content: TextField(
+        controller: nameController,
+        decoration: const InputDecoration(
+          labelText: 'Category name',
+          border: OutlineInputBorder(),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            if (nameController.text.trim().isEmpty) {
+              ScaffoldMessenger.of(ctx).showSnackBar(
+                const SnackBar(content: Text('Please enter category name')),
+              );
+              return;
+            }
+            
+            final categoryProvider = ctx.read<CategoryProvider>();
+            final category = Category(
+              id: 0,
+              name: nameController.text.trim(),
+            );
+            
+            await categoryProvider.addCategory(category);
+            
+            if (ctx.mounted) {
+              final newId = categoryProvider.categories.last.id;
+              Navigator.pop(ctx, newId);
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    ),
+  );
+}
+
+/*
+================================================================================
+2. UPDATE pos_page.dart (Sales/POS Page)
+================================================================================
+*/
+
+// ADD THESE FIELDS IN POSPageState:
+Customer? _selectedCustomer;
+double _discountPercent = 0.0;
+String _couponCode = '';
+Coupon? _appliedCoupon;
+
+// ADD AT TOP - BEFORE CART BUILD - *********Not Added Yet Pending***********
+// Customer Selection:
+Padding(
+  padding: const EdgeInsets.all(16),
+  child: Card(
+    child: ListTile(
+      leading: Icon(Icons.person, color: Theme.of(context).primaryColor),
+      title: Text(_selectedCustomer?.name ?? 'Walk-in Customer'),
+      subtitle: _selectedCustomer?.phone != null
+          ? Text(_selectedCustomer!.phone!)
+          : null,
+      trailing: TextButton.icon(
+        icon: const Icon(Icons.person_search),
+        label: const Text('Change'),
+        onPressed: () => _showCustomerSelector(context),
+      ),
+    ),
+  ),
+)
+
+// DISCOUNT AND COUPON FIELDS - IN PAYMENT SECTION:
+TextField(
+  decoration: InputDecoration(
+    labelText: 'Discount %',
+    border: const OutlineInputBorder(),
+    prefixIcon: const Icon(Icons.discount),
+    suffixIcon: _discountPercent > 0
+        ? IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () => setState(() => _discountPercent = 0),
+          )
+        : null,
+  ),
+  keyboardType: TextInputType.number,
+  onChanged: (value) {
+    setState(() {
+      _discountPercent = double.tryParse(value) ?? 0;
+      if (_discountPercent > 100) _discountPercent = 100;
+      if (_discountPercent < 0) _discountPercent = 0;
+    });
+  },
+),
+
+// Coupon code input
+Row(
+  children: [
+    Expanded(
+      child: TextField(
+        decoration: InputDecoration(
+          labelText: 'Coupon Code',
+          border: const OutlineInputBorder(),
+          prefixIcon: const Icon(Icons.local_offer),
+        ),
+        onChanged: (value) => setState(() => _couponCode = value),
+      ),
+    ),
+    const SizedBox(width: 8),
+    ElevatedButton.icon(
+      onPressed: _applyCoupon,
+      icon: const Icon(Icons.check),
+      label: const Text('Apply'),
+    ),
+  ],
+),
+// Zain Done ***************************************************
+
+// TOTAL CALCULATION - REPLACE EXISTING:
+double subTotal = _cartItems.fold(0, (sum, item) {
+  return sum + (item.price * item.quantity);
+});
+
+double discountAmount = subTotal * (_discountPercent / 100);
+double totalAfterDiscount = subTotal - discountAmount;
+double finalTotal = totalAfterDiscount;
+
+// UPDATE TOTAL DISPLAY:
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    const Text('Subtotal:'),
+    Text('${subTotal.toStringAsFixed(2)}/-'),
+  ],
+),
+if (_discountPercent > 0)
+  Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text('Discount (${_discountPercent}%):'),
+      Text(
+        '-${discountAmount.toStringAsFixed(2)}/-',
+        style: const TextStyle(color: Colors.red),
+      ),
+    ],
+  ),
+if (_appliedCoupon != null)
+  Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Text('Coupon (${_appliedCoupon!.code}):'),
+      Text(
+        '-${(_appliedCoupon!.discountPercent / 100 * totalAfterDiscount).toStringAsFixed(2)}/-',
+        style: const TextStyle(color: Colors.red),
+      ),
+    ],
+  ),PAYMENT
+const Divider(),
+Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    const Text('Total:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+    Text(
+      '${finalTotal.toStringAsFixed(2)}/-',
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+    ),
+  ],
+)
+
+// ADD THESE METHODS:
+Future<void> _showCustomerSelector(BuildContext context) async {
+  await context.read<CustomerProvider>().loadCustomers();
+  
+  Customer? result = await showDialog<Customer>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Select Customer'),
+      content: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.person_outline),
+                    title: const Text('Walk-in Customer'),
+                    onTap: () => Navigator.pop(ctx, Customer.walkIn()),
+                  ),
+                  ...context.read<CustomerProvider>().customers.map(
+                    (c) => ListTile(
+                      leading: const Icon(Icons.person),
+                      title: Text(c.name),
+                      subtitle: c.phone != null ? Text(c.phone!) : null,
+                      onTap: () => Navigator.pop(ctx, c),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: () async {
+                final newCustomer = await _showAddCustomerDialog(ctx);
+                if (newCustomer != null && ctx.mounted) {
+                  Navigator.pop(ctx, newCustomer);
+                }
+              },
+              icon: const Icon(Icons.person_add),
+              label: const Text('Add New Customer'),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+
+  if (result != null) {
+    setState(() => _selectedCustomer = result);
+  }
+}
+
+Future<Customer?> _showAddCustomerDialog(BuildContext context) async {
+  final nameCtrl = TextEditingController();
+  final phoneCtrl = TextEditingController();
+  
+  return showDialog<Customer>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Add Customer'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: nameCtrl,
+            decoration: const InputDecoration(
+              labelText: 'Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: phoneCtrl,
+            decoration: const InputDecoration(
+              labelText: 'Phone (Optional)',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.phone,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            if (nameCtrl.text.trim().isEmpty) return;
+            
+            final customer = Customer(
+              id: 0,
+              name: nameCtrl.text.trim(),
+              phone: phoneCtrl.text.trim().isEmpty ? null : phoneCtrl.text.trim(),
+            );
+            
+            await context.read<CustomerProvider>().addCustomer(customer);
+            
+            if (ctx.mounted) {
+              Navigator.pop(ctx, customer);
+            }
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    ),
+  );
+}
+
+void _applyCoupon() {
+  if (_couponCode.trim().isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Please enter coupon code')),
+    );
+    return;
+  }
+
+  final coupon = context.read<CouponProvider>().validateCoupon(_couponCode.trim());
+  
+  if (coupon != null) {
+    setState(() => _appliedCoupon = coupon);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Coupon applied! ${coupon.discountPercent}% discount'),
+        backgroundColor: Colors.green,
+      ),
+    );
+  } else {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Invalid or expired coupon'),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+}
+
+// AFTER COMPLETING SALE - ADD THIS:
+if (mounted) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => ReceiptPage(
+        sale: completedSale,
+        items: _cartItems,
+        customer: _selectedCustomer,
+      ),
+    ),
+  );
+}
+
+/*
+================================================================================
+3. UPDATE dashboard_page.dart
+================================================================================
+*/
+
+// WRAP DASHBOARD IN ROLE CHECK:
+@override
+Widget build(BuildContext context) {
+  final authProvider = context.watch<AuthProvider>();
+  
+  // If not admin, redirect to POS
+  if (!authProvider.isAdmin) {
+    return const POSPage();
+  }
+
+  return Scaffold(
+    appBar: AppBar(title: const Text('Dashboard')),
+    body: _buildDashboard(),
+  );
+}
+
+// MAKE DASHBOARD REAL-TIME:
+Widget _buildDashboard() {
+  return Consumer2<SalesProvider, ProductProvider>(
+    builder: (context, salesProvider, productProvider, _) {
+      final totalSales = salesProvider.sales.length;
+      final totalRevenue = salesProvider.sales.fold(0.0, (sum, s) => sum + s.total);
+      
+      return GridView(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 1.5,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+        ),
+        padding: const EdgeInsets.all(16),
+        children: [
+          _statCard(
+            'Total Sales',
+            totalSales.toString(),
+            Icons.shopping_cart,
+            Colors.blue,
+          ),
+          _statCard(
+            'Total Revenue',
+            '${totalRevenue.toStringAsFixed(2)}/-',
+            Icons.trending_up,
+            Colors.green,
+          ),
+          _statCard(
+            'Products',
+            productProvider.products.length.toString(),
+            Icons.inventory,
+            Colors.orange,
+          ),
+          _statCard(
+            'Low Stock',
+            productProvider.products
+                .where((p) => p.stockQuantity <= p.minStock)
+                .length
+                .toString(),
+            Icons.warning,
+            Colors.red,
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Widget _statCard(String title, String value, IconData icon, Color color) {
+  return Card(
+    elevation: 4,
+    child: Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: color.withOpacity(0.1),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 48, color: color),
+          const SizedBox(height: 12),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 4),
+          Text(title, style: const TextStyle(color: Colors.grey)),
+        ],
+      ),
+    ),
+  );
+}
+
+/*
+================================================================================
+4. UPDATE MAIN NAVIGATION/HOME PAGE
+================================================================================
+*/
+
+// IN YOUR HOME/SHELL PAGE - UPDATE NAVIGATION ITEMS:
+
+@override
+Widget build(BuildContext context) {
+  final authProvider = context.watch<AuthProvider>();
+  final isAdmin = authProvider.isAdmin;
+  
+  return Scaffold(
+    body: _pages[_currentIndex],
+    bottomNavigationBar: NavigationBar(
+      selectedIndex: _currentIndex,
+      destinations: NavigationHelper.getNavigationDestinations(isAdmin: isAdmin),
+      onDestinationSelected: (index) {
+        final route = NavigationHelper.getRouteForIndex(
+          index: index,
+          isAdmin: isAdmin,
+        );
+        Navigator.pushNamed(context, route);
+        setState(() => _currentIndex = index);
+      },
+    ),
+    drawer: Drawer(
+      child: ListView(
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                const Icon(Icons.person, size: 48, color: Colors.white),
+                const SizedBox(height: 8),
+                Text(
+                  authProvider.currentUser?.username ?? 'User',
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+                Text(
+                  isAdmin ? 'Admin' : 'Cashier',
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.dashboard),
+            title: const Text('Dashboard'),
+            onTap: isAdmin
+                ? () => Navigator.pushNamed(context, '/dashboard')
+                : null,
+            enabled: isAdmin,
+          ),
+          ListTile(
+            leading: const Icon(Icons.inventory),
+            title: const Text('Products'),
+            onTap: () => Navigator.pushNamed(context, '/products'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.point_of_sale),
+            title: const Text('POS'),
+            onTap: () => Navigator.pushNamed(context, '/pos'),
+          ),
+          ListTile(
+            leading: const Icon(Icons.people),
+            title: const Text('Customers'),
+            onTap: () => Navigator.pushNamed(context, '/customers'),
+          ),
+          if (isAdmin) ...[
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.analytics),
+              title: const Text('Reports'),
+              onTap: () => Navigator.pushNamed(context, '/reports'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
+              onTap: () => Navigator.pushNamed(context, '/settings'),
+            ),
+          ],
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
+            onTap: () {
+              authProvider.logout();
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+/*
+================================================================================
+5. DATABASE ADDITIONS TO database_helper.dart
+================================================================================
+*/
+
+// Copy all code from database_helper_additions.dart [257] into your database_helper.dart
+
+// Key additions needed in _createTables():
+await db.execute('''
+  CREATE TABLE IF NOT EXISTS categories (...)
+''');
+
+await db.execute('''
+  CREATE TABLE IF NOT EXISTS customers (...)
+''');
+
+await db.execute('''
+  CREATE TABLE IF NOT EXISTS coupons (...)
+''');
+
+// Key additions needed in migration (_onUpgrade or _createTables):
+ALTER TABLE sales ADD COLUMN discount_percent REAL DEFAULT 0
+ALTER TABLE sales ADD COLUMN coupon_code TEXT
+ALTER TABLE sales ADD COLUMN customer_id INTEGER
+
+/*
+================================================================================
+END OF CODE SNIPPETS
+================================================================================
+
+All snippets are ready to use.
+Copy-paste into your corresponding files.
+Adjust as needed for your specific implementation.
+
+*/

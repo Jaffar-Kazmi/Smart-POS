@@ -1,0 +1,65 @@
+Resolving dependencies...
+Downloading packages...
+  characters 1.4.0 (1.4.1 available)
+  crypto 3.0.6 (3.0.7 available)
+  csv 5.1.1 (6.0.0 available)
+  flutter_lints 3.0.2 (6.0.0 available)
+  go_router 12.1.3 (17.0.0 available)
+  http 1.5.0 (1.6.0 available)
+  intl 0.18.1 (0.20.2 available)
+  lints 3.0.0 (6.0.0 available)
+  matcher 0.12.17 (0.12.18 available)
+  material_color_utilities 0.11.1 (0.13.0 available)
+  path_provider_android 2.2.19 (2.2.22 available)
+  path_provider_foundation 2.4.2 (2.4.4 available)
+  screen_retriever 0.1.9 (0.2.0 available)
+  shared_preferences_android 2.4.16 (2.4.17 available)
+  sqflite_common_ffi 2.3.6 (2.4.0 available)
+  sqlite3 2.9.3 (3.1.0 available)
+  test_api 0.7.7 (0.7.8 available)
+  uuid 4.5.1 (4.5.2 available)
+  window_manager 0.3.9 (0.5.1 available)
+Got dependencies!
+19 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Launching lib\main.dart on Windows in debug mode...
+Building Windows application...                                 
+lib/features/products/presentation/pages/products_page.dart(109,35): error G297C951C: Can't find ')' to match '('. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(106,34): error G297C951C: Can't find ')' to match '('. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(104,21): error G297C951C: Can't find ')' to match '('. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(19,54): error G297C951C: Can't find '}' to match '{'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(121,1): error G993C9AC0: Classes can't be declared inside other classes. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(121,27): error G6814800A: Expected a class member, but got 'extends'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(121,35): error G020FDE51: A method declaration needs an explicit list of parameters. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(61,13): error GE5CFE876: The method '_buildCategoryFilter' isn't defined for the type '_ProductsPageState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(64,22): error GE5CFE876: The method '_buildProductsList' isn't defined for the type '_ProductsPageState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(71,26): error GE5CFE876: The method '_showAddProductDialog' isn't defined for the type '_ProductsPageState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(95,24): error G4127D1E8: The getter '_exportProductsToCSV' isn't defined for the type '_ProductsPageState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(110,3): error G25387D61: Expected an identifier, but got 'final'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(109,35): error GA7C8A1BB: Too many positional arguments: 0 allowed, but 1 found. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(109,35): error G67247B7E: Expected ';' after this. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(114,14): error G67247B7E: Expected ',' before this. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(112,9): error G4020727C: Not a constant expression. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(118,9): error G29507A22: '_ProductDialog' isn't a type. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(118,3): error G6516464B: 'State' isn't a type. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(118,42): error GE5CFE876: The method '_ProductDialogState' isn't defined for the type '_ProductsPageState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(311,14): error G67247B7E: Expected ']' before this. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(323,42): error G7AA24C43: Local variable '_saveProduct' can't be referenced before it is declared. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(136,58): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(138,44): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(140,44): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(142,44): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(144,22): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(146,22): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(148,44): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(149,34): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(167,26): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(303,39): error GE5CFE876: The method '_showAddCategoryDialog' isn't defined for the type '_ProductsPageState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(323,42): error G4127D1E8: The getter '_saveProduct' isn't defined for the type '_ProductsPageState'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(337,29): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(348,20): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(357,27): error G4127D1E8: The getter 'product' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+lib/features/products/presentation/pages/products_page.dart(361,14): error GE5CFE876: The method 'onSave' isn't defined for the type 'ProductsPage'. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(254,5): error MSB8066: Custom build for 'C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\CMakeFiles\2aad4af9402cd69ec5006b436361d689\flutter_windows.dll.rule;C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\CMakeFiles\7e92b7a80a920ace5120e34457324b7a\flutter_assemble.rule' exited with code 1. [C:\Users\zainc\Desktop\HCI Project\Smart-POS\build\windows\x64\flutter\flutter_assemble.vcxproj]
+Building Windows application...                                    19.2s
+Error: Build process failed.

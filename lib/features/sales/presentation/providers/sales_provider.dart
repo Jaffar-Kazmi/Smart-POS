@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:pos_app/features/products/presentation/providers/product_provider.dart';
+import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entities/sale.dart';
 import '../../domain/entities/sale_item.dart';
 import '../../../products/domain/entities/product.dart';
@@ -24,9 +24,12 @@ class SalesProvider extends ChangeNotifier {
   List<CartItem> _cart = [];
   Customer? _selectedCustomer;
   double _discountAmount = 0;
+  double _discountPercent = 0;
+  String? _couponCode;
   String _paymentMethod = 'Cash';
   bool _isLoading = false;
   String? _error;
+  Sale? _lastSale;
 
   SalesProvider(this._productProvider);
 
@@ -34,79 +37,63 @@ class SalesProvider extends ChangeNotifier {
   List<CartItem> get cart => _cart;
   Customer? get selectedCustomer => _selectedCustomer;
   double get discountAmount => _discountAmount;
+  double get discountPercent => _discountPercent;
+  String? get couponCode => _couponCode;
   String get paymentMethod => _paymentMethod;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  Sale? get lastSale => _lastSale;
 
   double get cartSubtotal => _cart.fold(0, (sum, item) => sum + item.subtotal);
   double get cartTotal => cartSubtotal - _discountAmount;
 
   int getCartItemQuantity(int productId) {
-    try {
-      return _cart.firstWhere((item) => item.product.id == productId).quantity;
-    } catch (e) {
-      return 0;
-    }
+    final index = _cart.indexWhere((item) => item.product.id == productId);
+    return index >= 0 ? _cart[index].quantity : 0;
   }
 
   void addToCart(Product product) {
-    _error = null;
+    final index = _cart.indexWhere((item) => item.product.id == product.id);
+    int currentQuantity = index >= 0 ? _cart[index].quantity : 0;
 
-    final productInState = _productProvider.products.firstWhere((p) => p.id == product.id);
-    final cartQuantity = getCartItemQuantity(product.id);
-
-    if (cartQuantity >= productInState.stockQuantity) {
-      _error = 'Cannot add more items than available in stock.';
+    if (currentQuantity + 1 > product.stockQuantity) {
+      _error = 'Insufficient stock for ${product.name}. Available: ${product.stockQuantity}';
       notifyListeners();
       return;
     }
 
-    final existingIndex = _cart.indexWhere((item) => item.product.id == product.id);
-    if (existingIndex != -1) {
-      _cart[existingIndex].quantity++;
+    if (index >= 0) {
+      _cart[index].quantity++;
     } else {
-      _cart.add(CartItem(product: productInState));
+      _cart.add(CartItem(product: product));
     }
-
+    _error = null;
     notifyListeners();
   }
 
-  void removeFromCart(int productId) {
-    _cart.removeWhere((item) => item.product.id == productId);
+  void removeFromCart(CartItem item) {
+    _cart.remove(item);
     notifyListeners();
   }
 
-  void updateCartItemQuantity(int productId, int quantity) {
-    final index = _cart.indexWhere((item) => item.product.id == productId);
-    if (index != -1) {
-      final product = _cart[index].product;
-      final productInState = _productProvider.products.firstWhere((p) => p.id == product.id);
-
-      if (quantity > productInState.stockQuantity) {
-        _error = 'Cannot set quantity higher than available stock.';
+  void updateCartItemQuantity(CartItem item, int quantity) {
+    if (quantity <= 0) {
+      removeFromCart(item);
+    } else {
+      if (quantity > item.product.stockQuantity) {
+        _error = 'Insufficient stock for ${item.product.name}. Available: ${item.product.stockQuantity}';
         notifyListeners();
         return;
       }
-
-      if (quantity > 0) {
-        _cart[index].quantity = quantity;
-      } else {
-        _cart.removeAt(index);
-      }
+      item.quantity = quantity;
+      _error = null;
       notifyListeners();
     }
   }
 
-  void clearCart() {
-    _cart.clear();
-    _selectedCustomer = null;
-    _discountAmount = 0;
-    _paymentMethod = 'Cash';
-    notifyListeners();
-  }
-
   void clearError() {
     _error = null;
+    notifyListeners();
   }
 
   void setSelectedCustomer(Customer? customer) {
@@ -114,8 +101,28 @@ class SalesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearCart() {
+    _cart.clear();
+    _selectedCustomer = null;
+    _discountAmount = 0;
+    _discountPercent = 0;
+    _couponCode = null;
+    _paymentMethod = 'Cash';
+    notifyListeners();
+  }
+
   void setDiscountAmount(double amount) {
     _discountAmount = amount;
+    notifyListeners();
+  }
+
+  void setDiscountPercent(double percent) {
+    _discountPercent = percent;
+    notifyListeners();
+  }
+
+  void setCouponCode(String? code) {
+    _couponCode = code;
     notifyListeners();
   }
 
@@ -153,9 +160,12 @@ class SalesProvider extends ChangeNotifier {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         items: saleItems,
+        discountPercent: _discountPercent,
+        couponCode: _couponCode,
       );
 
       await _repository.addSale(sale);
+      _lastSale = sale; // Store last sale
 
       // Update product stock in the UI
       for (var item in sale.items) {

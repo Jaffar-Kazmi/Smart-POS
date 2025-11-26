@@ -13,6 +13,9 @@ class Sale {
   final DateTime updatedAt;
   final List<SaleItem> items;
 
+  final double discountPercent;
+  final String? couponCode;
+
   Sale({
     required this.id,
     this.customerId,
@@ -25,6 +28,8 @@ class Sale {
     required this.createdAt,
     required this.updatedAt,
     required this.items,
+    this.discountPercent = 0.0,
+    this.couponCode,
   });
 
   double get subtotal => items.fold(0, (sum, item) => sum + item.subtotal);

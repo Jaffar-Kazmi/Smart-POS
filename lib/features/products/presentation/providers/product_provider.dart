@@ -38,6 +38,15 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void filterProductsByCategory(int? categoryId) {
+    if (categoryId == null) {
+      _filteredProducts = List.from(_products);
+    } else {
+      _filteredProducts = _products.where((p) => p.categoryId == categoryId).toList();
+    }
+    notifyListeners();
+  }
+
   void _applyFilter() {
     if (_searchQuery.isEmpty) {
       _filteredProducts = List.from(_products);
