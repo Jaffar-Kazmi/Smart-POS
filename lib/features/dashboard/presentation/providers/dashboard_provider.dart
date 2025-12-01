@@ -6,15 +6,16 @@ import 'package:sqflite/sqflite.dart';
 class DashboardStats {
   final double todaysSales;
   final int totalProducts;
-  final int totalCustomers;
+  final int expiringSoonCount;
   final int lowStockCount;
 
   DashboardStats({
     required this.todaysSales,
     required this.totalProducts,
-    required this.totalCustomers,
+    required this.expiringSoonCount,
     required this.lowStockCount,
   });
+
 }
 
 class WeeklySalesData {
@@ -83,9 +84,8 @@ class DashboardProvider extends ChangeNotifier {
       final productsResult = await db.rawQuery('SELECT COUNT(*) as count FROM products');
       final totalProducts = Sqflite.firstIntValue(productsResult) ?? 0;
 
-      // 3. Get Total Customers
-      final customersResult = await db.rawQuery('SELECT COUNT(*) as count FROM customers');
-      final totalCustomers = Sqflite.firstIntValue(customersResult) ?? 0;
+      // 3. Get Expiring Soon Count
+      final expiringSoonCount = await _db.getExpiringSoonCount();
 
       // 4. Get Low Stock Count
       final lowStockResult = await db.rawQuery('SELECT COUNT(*) as count FROM products WHERE stock_quantity <= min_stock');
@@ -94,7 +94,7 @@ class DashboardProvider extends ChangeNotifier {
       _dashboardStats = DashboardStats(
         todaysSales: todaysSales,
         totalProducts: totalProducts,
-        totalCustomers: totalCustomers,
+        expiringSoonCount: expiringSoonCount,
         lowStockCount: lowStockCount,
       );
 

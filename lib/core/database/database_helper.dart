@@ -24,7 +24,7 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 6,
+      version: 7,
       onCreate: _createTables,
       onUpgrade: _onUpgrade,
     );
@@ -45,6 +45,18 @@ class DatabaseHelper {
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 7) {
+      try {
+        final productInfo = await db.rawQuery("PRAGMA table_info(products)");
+        final productColumns = productInfo.map((col) => col['name']).toList();
+        if (!productColumns.contains('expiry_date')) {
+          await db.execute('ALTER TABLE products ADD COLUMN expiry_date TEXT');
+        }
+      } catch (e) {
+        print('Error during migration to v7: $e');
+      }
+    }
+    
     if (oldVersion < 3) {
       try {
         // Check if username column exists in users table
@@ -448,27 +460,67 @@ class DatabaseHelper {
     }
   }
 
-  Future<Map<String, dynamic>> getSalesStats(DateTime start, DateTime end) async {
+  Future<double> getTodayRevenue() async {
     final db = await database;
-    final startStr = start.toIso8601String();
-    final endStr = end.toIso8601String();
+    final today = DateTime.now();
+    final startOfDay = DateTime(today.year, today.month, today.day).toIso8601String();
+    final endOfDay = DateTime(today.year, today.month, today.day, 23, 59, 59).toIso8601String();
 
     final result = await db.rawQuery('''
-      SELECT 
-        COUNT(*) as count,
-        SUM(total_amount) as total
-      FROM sales 
-      WHERE date BETWEEN ? AND ?
-    ''', [startStr, endStr]);
+      SELECT SUM(total_amount) as total
+      FROM sales
+      WHERE created_at BETWEEN ? AND ?
+    ''', [startOfDay, endOfDay]);
 
-    if (result.isNotEmpty) {
-      return {
-        'count': result.first['count'] ?? 0,
-        'total': result.first['total'] ?? 0.0,
-      };
-    }
-    return {'count': 0, 'total': 0.0};
+    return (result.first['total'] as double?) ?? 0.0;
   }
+
+  Future<double> getWeeklyRevenue() async {
+    final db = await database;
+    final now = DateTime.now();
+    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    final endOfWeek = startOfWeek.add(const Duration(days: 6));
+
+    final result = await db.rawQuery('''
+      SELECT SUM(total_amount) as total
+      FROM sales
+      WHERE created_at BETWEEN ? AND ?
+    ''', [startOfWeek.toIso8601String(), endOfWeek.toIso8601String()]);
+
+    return (result.first['total'] as double?) ?? 0.0;
+  }
+
+  Future<double> getMonthlyRevenue() async {
+    final db = await database;
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final endOfMonth = DateTime(now.year, now.month + 1, 0);
+
+    final result = await db.rawQuery('''
+      SELECT SUM(total_amount) as total
+      FROM sales
+      WHERE created_at BETWEEN ? AND ?
+    ''', [startOfMonth.toIso8601String(), endOfMonth.toIso8601String()]);
+
+    return (result.first['total'] as double?) ?? 0.0;
+  }
+
+  Future<int> getTotalCustomers() async {
+    final db = await database;
+    final result = await db.rawQuery('SELECT COUNT(*) as count FROM customers WHERE is_walk_in = 0');
+    return (result.first['count'] as int?) ?? 0;
+  }
+
+  Future<int> getExpiringSoonCount() async {
+    final db = await database;
+    final thirtyDaysFromNow = DateTime.now().add(const Duration(days: 30));
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) as count FROM products WHERE expiry_date IS NOT NULL AND expiry_date < ?',
+      [thirtyDaysFromNow.toIso8601String()],
+    );
+    return (result.first['count'] as int?) ?? 0;
+  }
+
 
   Future<List<Map<String, dynamic>>> getTopSellingProducts(int limit) async {
     final db = await database;
@@ -501,7 +553,3 @@ class DatabaseHelper {
     }
   }
 }
-
-
-
-

@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import '../../domain/entities/product.dart';
 import '../../data/repositories/product_repository_impl.dart';
 
+enum ProductFilterType {
+  none,
+  lowStock,
+  expiringSoon,
+}
+
 class ProductProvider extends ChangeNotifier {
   final ProductRepositoryImpl _repository = ProductRepositoryImpl();
 
@@ -10,6 +16,7 @@ class ProductProvider extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   String _searchQuery = '';
+  ProductFilterType _filterType = ProductFilterType.none;
 
   List<Product> get products => _filteredProducts;
   bool get isLoading => _isLoading;
@@ -38,6 +45,12 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setFilter(ProductFilterType filter) {
+    _filterType = filter;
+    _applyFilter();
+    notifyListeners();
+  }
+
   void filterProductsByCategory(int? categoryId) {
     if (categoryId == null) {
       _filteredProducts = List.from(_products);
@@ -48,15 +61,27 @@ class ProductProvider extends ChangeNotifier {
   }
 
   void _applyFilter() {
-    if (_searchQuery.isEmpty) {
-      _filteredProducts = List.from(_products);
-    } else {
-      _filteredProducts = _products.where((product) {
+    List<Product> tempProducts = List.from(_products);
+
+    if (_searchQuery.isNotEmpty) {
+      tempProducts = tempProducts.where((product) {
         return product.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
             (product.description?.toLowerCase().contains(_searchQuery.toLowerCase()) ?? false) ||
             (product.barcode?.contains(_searchQuery) ?? false);
       }).toList();
     }
+
+    if (_filterType == ProductFilterType.lowStock) {
+      tempProducts = tempProducts.where((p) => p.isLowStock).toList();
+    } else if (_filterType == ProductFilterType.expiringSoon) {
+      final thirtyDaysFromNow = DateTime.now().add(const Duration(days: 30));
+      tempProducts = tempProducts
+          .where((p) =>
+              p.expiryDate != null && p.expiryDate!.isBefore(thirtyDaysFromNow))
+          .toList();
+    }
+
+    _filteredProducts = tempProducts;
   }
 
   Future<bool> addProduct(Product product) async {

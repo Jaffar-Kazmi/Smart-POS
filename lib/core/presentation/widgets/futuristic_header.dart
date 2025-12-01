@@ -72,6 +72,7 @@ class FuturisticHeader extends StatelessWidget implements PreferredSizeWidget {
           ),
         IconButton(
           icon: const Icon(Icons.logout),
+          color: Colors.red,
           tooltip: 'Logout',
           onPressed: () {
             context.read<AuthProvider>().logout();

@@ -29,85 +29,94 @@ class _CouponsPageState extends State<CouponsPage> {
     final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showCouponDialog(context),
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
-          FuturisticHeader(
+          const FuturisticHeader(
             title: 'Manage Coupons',
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.add),
-                tooltip: 'Add Coupon',
-                onPressed: () => _showCouponDialog(context),
-              ),
-            ],
           ),
           Expanded(
             child: couponProvider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : coupons.isEmpty
-                    ? Center(child: Text('No coupons found', style: TextStyle(color: textColor)))
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: coupons.length,
-                        itemBuilder: (context, index) {
-                          final coupon = coupons[index];
-                          final now = DateTime.now();
-                          final isExpired = now.isAfter(coupon.validUntil);
-                          final notStarted = now.isBefore(coupon.validFrom);
-                          
-                          return FuturisticCard(
-                            padding: const EdgeInsets.all(16),
-                            child: ListTile(
-                              contentPadding: EdgeInsets.zero,
-                              leading: CircleAvatar(
-                                backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                                child: Icon(Icons.local_offer, color: Theme.of(context).colorScheme.primary),
-                              ),
-                              title: Text(coupon.code, style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    coupon.discountType == 'percentage' 
-                                      ? '${coupon.discountValue}% OFF' 
-                                      : '\$${coupon.discountValue} OFF',
-                                    style: TextStyle(color: textColor.withOpacity(0.7))
-                                  ),
-                                  Text(
-                                    'Valid: ${coupon.validFrom.toString().split(' ')[0]} - ${coupon.validUntil.toString().split(' ')[0]}',
-                                    style: TextStyle(
-                                      color: isExpired ? Colors.red : (notStarted ? Colors.orange : textColor.withOpacity(0.5)),
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Switch(
-                                    value: coupon.isActive,
-                                    onChanged: (value) {
-                                      context.read<CouponProvider>().updateCoupon(
-                                        coupon.copyWith(isActive: value),
-                                      );
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () => _confirmDelete(context, coupon),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                ? Center(
+              child: Text(
+                'No coupons found',
+                style: TextStyle(color: textColor),
+              ),
+            )
+                : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: coupons.length,
+              itemBuilder: (context, index) {
+                final coupon = coupons[index];
+                final now = DateTime.now();
+                final isExpired = now.isAfter(coupon.validUntil);
+                final notStarted = now.isBefore(coupon.validFrom);
+
+                return FuturisticCard(
+                  padding: const EdgeInsets.all(16),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      child: Icon(Icons.local_offer, color: Theme.of(context).colorScheme.primary),
+                    ),
+                    title: Text(
+                      coupon.code,
+                      style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          coupon.discountType == 'percentage'
+                              ? '${coupon.discountValue}% OFF'
+                              : '\$${coupon.discountValue} OFF',
+                          style: TextStyle(color: textColor.withOpacity(0.7)),
+                        ),
+                        Text(
+                          'Valid: ${coupon.validFrom.toString().split(' ')[0]} - ${coupon.validUntil.toString().split(' ')[0]}',
+                          style: TextStyle(
+                            color: isExpired
+                                ? Colors.red
+                                : (notStarted ? Colors.orange : textColor.withOpacity(0.5)),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Switch(
+                          value: coupon.isActive,
+                          onChanged: (value) {
+                            context.read<CouponProvider>().updateCoupon(
+                              coupon.copyWith(isActive: value),
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _confirmDelete(context, coupon),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ],
       ),
     );
   }
+
 
   void _showCouponDialog(BuildContext context, {Coupon? coupon}) {
     showDialog(
@@ -251,11 +260,20 @@ class _CouponDialogState extends State<_CouponDialog> {
                   subtitle: Text(_validFrom.toString().split(' ')[0]),
                   trailing: const Icon(Icons.calendar_today),
                   onTap: () async {
+                    final today = DateTime.now();
+                    final startToday = DateTime(today.year, today.month, today.day);
+
+                    final initial = _validFrom.isBefore(startToday) ? startToday : _validFrom;
+
                     final date = await showDatePicker(
                       context: context,
-                      initialDate: _validFrom,
-                      firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                      initialDate: initial,
+                      firstDate: startToday, // aaj se pehle disable
+                      lastDate: today.add(const Duration(days: 365 * 2)),
+                      selectableDayPredicate: (day) {
+                        final d = DateTime(day.year, day.month, day.day);
+                        return !d.isBefore(startToday); // sirf aaj/future
+                      },
                     );
                     if (date != null) setState(() => _validFrom = date);
                   },
@@ -265,11 +283,23 @@ class _CouponDialogState extends State<_CouponDialog> {
                   subtitle: Text(_validUntil.toString().split(' ')[0]),
                   trailing: const Icon(Icons.calendar_today),
                   onTap: () async {
+                    final start = DateTime(
+                      _validFrom.year,
+                      _validFrom.month,
+                      _validFrom.day,
+                    );
+
+                    final initial = _validUntil.isBefore(start) ? start : _validUntil;
+
                     final date = await showDatePicker(
                       context: context,
-                      initialDate: _validUntil,
-                      firstDate: _validFrom,
+                      initialDate: initial,
+                      firstDate: start, // from se pehle disable
                       lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                      selectableDayPredicate: (day) {
+                        final d = DateTime(day.year, day.month, day.day);
+                        return !d.isBefore(start);
+                      },
                     );
                     if (date != null) setState(() => _validUntil = date);
                   },
@@ -279,6 +309,7 @@ class _CouponDialogState extends State<_CouponDialog> {
                   value: _isActive,
                   onChanged: (value) => setState(() => _isActive = value),
                 ),
+
               ],
             ),
           ),

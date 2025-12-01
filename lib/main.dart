@@ -13,6 +13,7 @@ import 'features/customers/presentation/providers/customer_provider.dart';
 import 'features/coupons/presentation/providers/coupon_provider.dart';
 import 'features/dashboard/presentation/providers/dashboard_provider.dart';
 import 'features/reports/presentation/providers/reports_provider.dart';
+import 'features/settings/presentation/providers/settings_provider.dart';
 
 import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -20,7 +21,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS || Platform.isAndroid) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
   }
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CouponProvider(dbHelper)),
         ChangeNotifierProvider(create: (_) => DashboardProvider(dbHelper)),
         ChangeNotifierProvider(create: (_) => ReportsProvider(dbHelper)),
+        ChangeNotifierProvider(create: (_) => SettingsProvider(dbHelper)),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

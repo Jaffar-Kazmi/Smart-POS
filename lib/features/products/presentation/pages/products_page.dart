@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../providers/product_provider.dart';
 import '../../domain/entities/product.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -53,10 +54,13 @@ class _ProductsPageState extends State<ProductsPage> {
         ),
       ),
       floatingActionButton: isAdmin
-          ? FloatingActionButton(
-              onPressed: () => _showAddProductDialog(),
-              backgroundColor: AppColors.primary,
-              child: const Icon(Icons.add, color: Colors.white),
+          ? Tooltip(
+              message: 'Add new product',
+              child: FloatingActionButton(
+                onPressed: () => _showAddProductDialog(),
+                backgroundColor: AppColors.primary,
+                child: const Icon(Icons.add, color: Colors.white),
+              ),
             )
           : null,
     );
@@ -73,10 +77,13 @@ class _ProductsPageState extends State<ProductsPage> {
         ),
         const Spacer(),
         if (isAdmin)
-          OutlinedButton.icon(
-            onPressed: _exportProductsToCSV,
-            icon: const Icon(Icons.file_upload),
-            label: const Text('Export'),
+          Tooltip(
+            message: 'Export all products to CSV',
+            child: OutlinedButton.icon(
+              onPressed: _exportProductsToCSV,
+              icon: const Icon(Icons.file_upload),
+              label: const Text('Export'),
+            ),
           ),
       ],
     );
@@ -92,14 +99,17 @@ class _ProductsPageState extends State<ProductsPage> {
           borderRadius: BorderRadius.circular(8),
         ),
         suffixIcon: _searchController.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _searchController.clear();
-                  Provider.of<ProductProvider>(context, listen: false)
-                      .searchProducts('');
-                  setState(() {});
-                },
+            ? Tooltip(
+                message: 'Clear search',
+                child: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    Provider.of<ProductProvider>(context, listen: false)
+                        .searchProducts('');
+                    setState(() {});
+                  },
+                ),
               )
             : null,
       ),
@@ -123,7 +133,12 @@ class _ProductsPageState extends State<ProductsPage> {
         const SizedBox(height: 8),
         Consumer<CategoryProvider>(
           builder: (context, categoryProvider, child) {
-            final categories = ['All', ...categoryProvider.categories.map((c) => c.name)];
+            final specialFilters = ['Low Stock', 'Expiring Soon'];
+            final categories = [
+              'All',
+              ...specialFilters,
+              ...categoryProvider.categories.map((c) => c.name)
+            ];
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -161,10 +176,14 @@ class _ProductsPageState extends State<ProductsPage> {
     final provider = Provider.of<ProductProvider>(context, listen: false);
     final searchText = _searchController.text.toLowerCase();
 
-    // Get all products first
-    provider.loadProducts();
+    if (_selectedCategory == 'Low Stock') {
+      provider.setFilter(ProductFilterType.lowStock);
+    } else if (_selectedCategory == 'Expiring Soon') {
+      provider.setFilter(ProductFilterType.expiringSoon);
+    } else {
+      provider.setFilter(ProductFilterType.none);
+    }
 
-    // Apply search filter
     if (searchText.isNotEmpty) {
       provider.searchProducts(searchText);
     }
@@ -190,7 +209,9 @@ class _ProductsPageState extends State<ProductsPage> {
         final products = productProvider.products;
 
         // Apply category filter on the UI side if backend doesn't support it
-        final filteredProducts = _selectedCategory == 'All'
+        final filteredProducts = _selectedCategory == 'All' ||
+                _selectedCategory == 'Low Stock' ||
+                _selectedCategory == 'Expiring Soon'
             ? products
             : products
                 .where((p) => p.categoryId == _getCategoryId(_selectedCategory))
@@ -253,39 +274,52 @@ class _ProductsPageState extends State<ProductsPage> {
                         'Barcode: ${product.barcode}',
                         style: TextStyle(fontSize: 11, color: Colors.grey[600]),
                       ),
+                    if (product.expiryDate != null)
+                      Text(
+                        'Expiry: ${DateFormat.yMMMd().format(product.expiryDate!)}',
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: product.expiryDate!.isBefore(DateTime.now())
+                              ? Colors.red
+                              : Colors.grey[600],
+                        ),
+                      ),
                   ],
                 ),
                 trailing: isAdmin
-                    ? PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            _showEditProductDialog(product);
-                          } else if (value == 'delete') {
-                            _showDeleteConfirmation(product);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 20),
-                                SizedBox(width: 8),
-                                Text('Edit'),
-                              ],
+                    ? Tooltip(
+                        message: 'More options',
+                        child: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              _showEditProductDialog(product);
+                            } else if (value == 'delete') {
+                              _showDeleteConfirmation(product);
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, size: 20),
+                                  SizedBox(width: 8),
+                                  Text('Edit'),
+                                ],
+                              ),
                             ),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, color: Colors.red, size: 20),
-                                SizedBox(width: 8),
-                                Text('Delete', style: TextStyle(color: Colors.red)),
-                              ],
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, color: Colors.red, size: 20),
+                                  SizedBox(width: 8),
+                                  Text('Delete', style: TextStyle(color: Colors.red)),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       )
                     : const Icon(Icons.lock, color: Colors.grey),
               ),
@@ -420,6 +454,7 @@ class _ProductDialogState extends State<_ProductDialog> {
   late TextEditingController _stockController;
   late TextEditingController _minStockController;
   late TextEditingController _barcodeController;
+  late DateTime? _expiryDate;
   int _selectedCategoryId = 1;
   bool _isLoading = false;
 
@@ -439,7 +474,8 @@ class _ProductDialogState extends State<_ProductDialog> {
         text: widget.product?.minStock.toString() ?? '');
     _barcodeController =
         TextEditingController(text: widget.product?.barcode ?? '');
-    
+    _expiryDate = widget.product?.expiryDate;
+
     final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     if (widget.product != null) {
       _selectedCategoryId = widget.product!.categoryId ?? 1;
@@ -462,6 +498,20 @@ class _ProductDialogState extends State<_ProductDialog> {
     super.dispose();
   }
 
+  Future<void> _selectExpiryDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _expiryDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _expiryDate) {
+      setState(() {
+        _expiryDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -477,11 +527,15 @@ class _ProductDialogState extends State<_ProductDialog> {
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(
-                    labelText: 'Product Name',
+                    labelText: 'Product Name *',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Required' : null,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -499,14 +553,16 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _priceController,
                         decoration: const InputDecoration(
-                          labelText: 'Price',
+                          labelText: 'Price *',
                           border: OutlineInputBorder(),
                           suffixText: '/-',
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (double.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          if (double.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -518,14 +574,16 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _costController,
                         decoration: const InputDecoration(
-                          labelText: 'Cost',
+                          labelText: 'Cost *',
                           border: OutlineInputBorder(),
                           suffixText: '/-',
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (double.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          if (double.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -541,13 +599,15 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _stockController,
                         decoration: const InputDecoration(
-                          labelText: 'Stock Quantity',
+                          labelText: 'Stock Quantity *',
                           border: OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (int.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          if (int.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -559,13 +619,15 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _minStockController,
                         decoration: const InputDecoration(
-                          labelText: 'Min Stock',
+                          labelText: 'Min Stock *',
                           border: OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (int.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          if (int.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -580,6 +642,17 @@ class _ProductDialogState extends State<_ProductDialog> {
                   decoration: const InputDecoration(
                     labelText: 'Barcode',
                     border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Tooltip(
+                  message: 'Select the product\'s expiry date',
+                  child: ListTile(
+                    title: Text(_expiryDate == null
+                        ? 'Select Expiry Date'
+                        : DateFormat.yMMMd().format(_expiryDate!)),
+                    trailing: const Icon(Icons.calendar_today),
+                    onTap: () => _selectExpiryDate(context),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -655,6 +728,7 @@ class _ProductDialogState extends State<_ProductDialog> {
         minStock: int.parse(_minStockController.text),
         barcode: _barcodeController.text.trim(),
         categoryId: _selectedCategoryId,
+        expiryDate: _expiryDate,
         createdAt: widget.product?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
       );
@@ -667,15 +741,25 @@ class _ProductDialogState extends State<_ProductDialog> {
 
   Future<int?> _showAddCategoryDialog(BuildContext context) async {
     final nameController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
     return showDialog<int>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Add New Category'),
-        content: TextField(
-          controller: nameController,
-          decoration: const InputDecoration(
-            labelText: 'Category name',
-            border: OutlineInputBorder(),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: nameController,
+            decoration: const InputDecoration(
+              labelText: 'Category name *',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter category name';
+              }
+              return null;
+            },
           ),
         ),
         actions: [
@@ -685,24 +769,19 @@ class _ProductDialogState extends State<_ProductDialog> {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (nameController.text.trim().isEmpty) {
-                ScaffoldMessenger.of(ctx).showSnackBar(
-                  const SnackBar(content: Text('Please enter category name')),
+              if (formKey.currentState!.validate()) {
+                final categoryProvider = ctx.read<CategoryProvider>();
+                final category = Category(
+                  id: 0,
+                  name: nameController.text.trim(),
                 );
-                return;
-              }
 
-              final categoryProvider = ctx.read<CategoryProvider>();
-              final category = Category(
-                id: 0,
-                name: nameController.text.trim(),
-              );
+                await categoryProvider.addCategory(category);
 
-              await categoryProvider.addCategory(category);
-
-              if (ctx.mounted) {
-                final newId = categoryProvider.categories.last.id;
-                Navigator.pop(ctx, newId);
+                if (ctx.mounted) {
+                  final newId = categoryProvider.categories.last.id;
+                  Navigator.pop(ctx, newId);
+                }
               }
             },
             child: const Text('Save'),

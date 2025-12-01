@@ -30,80 +30,111 @@ class _UserManagementPageState extends State<UserManagementPage> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final users = authProvider.allUsers;
-    final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final textColor =
+        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showUserDialog(context),
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
-          FuturisticHeader(
+          const FuturisticHeader(
             title: 'User Management',
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.add),
-                tooltip: 'Add User',
-                onPressed: () => _showUserDialog(context),
-              ),
-            ],
           ),
           Expanded(
             child: authProvider.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : ListView.builder(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: users.length,
-                    itemBuilder: (context, index) {
-                      final user = users[index];
-                      return FuturisticCard(
-                        padding: const EdgeInsets.all(16),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: CircleAvatar(
-                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                            child: Text(
-                              user.name[0].toUpperCase(),
-                              style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                            ),
-                          ),
-                          title: Text(user.name, style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(user.email, style: TextStyle(color: textColor.withOpacity(0.7))),
-                              const SizedBox(height: 4),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: user.role == 'admin' ? Colors.red.withOpacity(0.1) : Colors.green.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Text(
-                                  user.role.toUpperCase(),
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: user.role == 'admin' ? Colors.red : Colors.green,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit, color: Colors.blue),
-                                onPressed: () => _showUserDialog(context, user: user),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => _confirmDelete(context, user),
-                              ),
-                            ],
+              padding: const EdgeInsets.all(16),
+              itemCount: users.length,
+              itemBuilder: (context, index) {
+                final user = users[index];
+                return FuturisticCard(
+                  padding: const EdgeInsets.all(16),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
+                      child: Text(
+                        user.name[0].toUpperCase(),
+                        style: TextStyle(
+                          color:
+                          Theme.of(context).colorScheme.primary,
+                        ),
+                      ),
+                    ),
+                    title: Text(
+                      user.name,
+                      style: TextStyle(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user.email,
+                          style: TextStyle(
+                            color: textColor.withOpacity(0.7),
                           ),
                         ),
-                      );
-                    },
+                        const SizedBox(height: 4),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: user.role == 'admin'
+                                ? Colors.red.withOpacity(0.1)
+                                : Colors.green.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            user.role.toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                              color: user.role == 'admin'
+                                  ? Colors.red
+                                  : Colors.green,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit,
+                            color: Colors.blue,
+                          ),
+                          onPressed: () =>
+                              _showUserDialog(context, user: user),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () =>
+                              _confirmDelete(context, user),
+                        ),
+                      ],
+                    ),
                   ),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -172,13 +203,16 @@ class _UserDialogState extends State<_UserDialog> {
   late String _role;
   bool _isLoading = false;
 
+  // NEW: password visibility flag
+  bool _obscurePassword = true;
+
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.user?.name ?? '');
     _emailController = TextEditingController(text: widget.user?.email ?? '');
     _usernameController = TextEditingController(text: widget.user?.username ?? '');
-    _passwordController = TextEditingController(); // Empty for security, or handle edit differently
+    _passwordController = TextEditingController();
     _role = widget.user?.role.toLowerCase() ?? 'cashier';
   }
 
@@ -223,12 +257,27 @@ class _UserDialogState extends State<_UserDialog> {
                   validator: (value) => value?.isEmpty ?? true ? 'Required' : null,
                 ),
                 const SizedBox(height: 16),
+
+                // UPDATED: password field with eye icon
                 TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: isEditing ? 'Password (leave blank to keep)' : 'Password',
+                    labelText:
+                    isEditing ? 'Password (leave blank to keep)' : 'Password',
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _obscurePassword,
                   validator: (value) {
                     if (!isEditing && (value?.isEmpty ?? true)) {
                       return 'Required';
@@ -236,6 +285,7 @@ class _UserDialogState extends State<_UserDialog> {
                     return null;
                   },
                 ),
+
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _role,
@@ -259,12 +309,18 @@ class _UserDialogState extends State<_UserDialog> {
         ElevatedButton(
           onPressed: _isLoading ? null : _saveUser,
           child: _isLoading
-              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+              ? const SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          )
               : Text(isEditing ? 'Update' : 'Add'),
         ),
       ],
     );
   }
+
+
 
   Future<void> _saveUser() async {
     if (!_formKey.currentState!.validate()) return;

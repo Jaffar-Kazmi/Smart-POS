@@ -41,11 +41,11 @@ class _CustomersPageState extends State<CustomersPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.people_outline, size: 64, color: Colors.white24),
+                        Icon(Icons.people_outline, size: 64, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3)),
                         const SizedBox(height: 16),
-                        const Text('No customers found', style: TextStyle(color: Colors.white54)),
+                        Text('No customers found', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
                         const SizedBox(height: 8),
-                        const Text('Tap + to add a new customer', style: TextStyle(color: Colors.white38)),
+                        Text('Tap + to add a new customer', style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5))),
                       ],
                     ),
                   );
@@ -73,9 +73,9 @@ class _CustomersPageState extends State<CustomersPage> {
                         ),
                         title: Text(
                           customer.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         subtitle: Column(
@@ -87,9 +87,9 @@ class _CustomersPageState extends State<CustomersPage> {
                                 padding: const EdgeInsets.only(top: 4),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.phone, size: 14, color: Colors.white38),
+                                    Icon(Icons.phone, size: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                                     const SizedBox(width: 4),
-                                    Text(customer.phone!, style: const TextStyle(color: Colors.white70)),
+                                    Text(customer.phone!, style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8))),
                                   ],
                                 ),
                               ),
@@ -98,9 +98,9 @@ class _CustomersPageState extends State<CustomersPage> {
                                 padding: const EdgeInsets.only(top: 2),
                                 child: Row(
                                   children: [
-                                    Icon(Icons.email, size: 14, color: Colors.white38),
+                                    Icon(Icons.email, size: 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5)),
                                     const SizedBox(width: 4),
-                                    Text(customer.email!, style: const TextStyle(fontSize: 12, color: Colors.white54)),
+                                    Text(customer.email!, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
                                   ],
                                 ),
                               ),
@@ -109,13 +109,19 @@ class _CustomersPageState extends State<CustomersPage> {
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.blueAccent),
-                              onPressed: () => _showCustomerDialog(customer: customer),
+                            Tooltip(
+                              message: 'Edit customer',
+                              child: IconButton(
+                                icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                                onPressed: () => _showCustomerDialog(customer: customer),
+                              ),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.redAccent),
-                              onPressed: () => _deleteCustomer(customer),
+                            Tooltip(
+                              message: 'Delete customer',
+                              child: IconButton(
+                                icon: const Icon(Icons.delete, color: Colors.redAccent),
+                                onPressed: () => _deleteCustomer(customer),
+                              ),
                             ),
                           ],
                         ),
@@ -128,10 +134,13 @@ class _CustomersPageState extends State<CustomersPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showCustomerDialog(),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.add, color: Colors.black),
+      floatingActionButton: Tooltip(
+        message: 'Add new customer',
+        child: FloatingActionButton(
+          onPressed: () => _showCustomerDialog(),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
     );
   }
@@ -156,7 +165,7 @@ class _CustomersPageState extends State<CustomersPage> {
                 TextFormField(
                   controller: nameController,
                   decoration: const InputDecoration(
-                    labelText: 'Customer Name',
+                    labelText: 'Customer Name *',
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {
@@ -238,7 +247,7 @@ class _CustomersPageState extends State<CustomersPage> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.black,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
             ),
             child: Text(customer == null ? 'Add' : 'Save'),
           ),

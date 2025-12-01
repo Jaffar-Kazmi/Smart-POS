@@ -9,6 +9,7 @@ class Product {
   final int? categoryId;
   final String? barcode;
   final String? imagePath;
+  final DateTime? expiryDate;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -23,6 +24,7 @@ class Product {
     this.categoryId,
     this.barcode,
     this.imagePath,
+    this.expiryDate,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -42,6 +44,7 @@ class Product {
     int? categoryId,
     String? barcode,
     String? imagePath,
+    DateTime? expiryDate,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -56,6 +59,7 @@ class Product {
       categoryId: categoryId ?? this.categoryId,
       barcode: barcode ?? this.barcode,
       imagePath: imagePath ?? this.imagePath,
+      expiryDate: expiryDate ?? this.expiryDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
