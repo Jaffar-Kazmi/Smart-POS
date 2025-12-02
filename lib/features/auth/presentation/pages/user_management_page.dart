@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
@@ -41,8 +42,13 @@ class _UserManagementPageState extends State<UserManagementPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
-          const FuturisticHeader(
+          FuturisticHeader(
             title: 'User Management',
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.pop(),
+            ),
+            actions: [],
           ),
           Expanded(
             child: authProvider.isLoading
@@ -163,12 +169,12 @@ class _UserManagementPageState extends State<UserManagementPage> {
         content: Text('Are you sure you want to delete ${user.name}?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
-              Navigator.pop(context);
+              context.pop();
               final success = await context.read<AuthProvider>().deleteUser(user.id);
               if (success && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -303,7 +309,7 @@ class _UserDialogState extends State<_UserDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           child: const Text('Cancel'),
         ),
         ElevatedButton(
@@ -351,7 +357,7 @@ class _UserDialogState extends State<_UserDialog> {
         // Reload users list to show the newly added/updated user
         await authProvider.loadAllUsers();
         
-        Navigator.pop(context);
+        context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(widget.user == null ? 'User added successfully' : 'User updated successfully'),

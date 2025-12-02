@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../providers/product_provider.dart';
@@ -8,6 +9,7 @@ import '../../../../core/services/export_service.dart';
 import '../../../categories/presentation/providers/category_provider.dart';
 import '../../../categories/domain/entities/category.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
+import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
 
 class ProductsPage extends StatefulWidget {
@@ -36,70 +38,49 @@ class _ProductsPageState extends State<ProductsPage> {
     final isAdmin = authProvider.isAdmin;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context, isAdmin),
-            const SizedBox(height: 16),
-            _buildSearchBar(),
-            const SizedBox(height: 12),
-            _buildCategoryFilter(),
-            const SizedBox(height: 16),
-            Expanded(
-              child: _buildProductsList(isAdmin),
-            ),
-          ],
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FuturisticHeader(
+            title: 'Products & Inventory',
+            actions: [
+              if (isAdmin)
+                Tooltip(
+                  message: 'Export all products to CSV',
+                  child: OutlinedButton.icon(
+                    onPressed: _exportProductsToCSV,
+                    icon: const Icon(Icons.file_upload),
+                    label: const Text('Export'),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _buildSearchBar(),
+          ),
+          const SizedBox(height: 12),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _buildCategoryFilter(),
+          ),
+          const SizedBox(height: 16),
+          Expanded(
+            child: _buildProductsList(isAdmin),
+          ),
+        ],
       ),
       floatingActionButton: isAdmin
           ? Tooltip(
               message: 'Add new product',
               child: FloatingActionButton(
                 onPressed: () => _showAddProductDialog(),
-                child: const Icon(Icons.add),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: const Icon(Icons.add, color: Colors.white),
               ),
             )
           : null,
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, bool isAdmin) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    return Row(
-      children: [
-        Text(
-          'Products & Inventory',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(width: 16),
-        Chip(
-          avatar: const Icon(Icons.person, size: 16),
-          label: Text(authProvider.currentUser?.name ?? 'System Administrator'),
-        ),
-        const Spacer(),
-        if (isAdmin)
-          Tooltip(
-            message: 'Export all products to CSV',
-            child: OutlinedButton.icon(
-              onPressed: _exportProductsToCSV,
-              icon: const Icon(Icons.file_upload),
-              label: const Text('Export'),
-            ),
-          ),
-        const SizedBox(width: 16),
-        IconButton(
-          icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
-          onPressed: () {
-            authProvider.logout();
-            Navigator.of(context).pushReplacementNamed('/login');
-          },
-          tooltip: 'Logout',
-        ),
-      ],
     );
   }
 
@@ -382,9 +363,11 @@ class _ProductsPageState extends State<ProductsPage> {
           final productProvider =
               Provider.of<ProductProvider>(context, listen: false);
           productProvider.updateProduct(updatedProduct);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Product updated successfully')),
-          );
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Product updated successfully')),
+            );
+          }
         },
       ),
     );
@@ -443,9 +426,11 @@ class _ProductsPageState extends State<ProductsPage> {
       final products = productProvider.products;
 
       if (products.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No products to export')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No products to export')),
+          );
+        }
         return;
       }
 

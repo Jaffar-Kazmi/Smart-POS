@@ -28,8 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
-    
-    // If not admin, redirect to POS
+
     if (!authProvider.isAdmin) {
       return POSPage();
     }
@@ -37,7 +36,7 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       body: Column(
         children: [
-          const FuturisticHeader(title: 'Dashboard'),
+          const FuturisticHeader(title: 'Dashboard', actions: []),
           Expanded(
             child: Consumer<DashboardProvider>(
               builder: (context, provider, child) {
@@ -83,6 +82,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildStatCards(DashboardStats stats) {
+    final homePageState = context.findAncestorStateOfType<HomePageState>();
     return GridView.count(
       crossAxisCount: 4,
       crossAxisSpacing: 16,
@@ -95,9 +95,8 @@ class _DashboardPageState extends State<DashboardPage> {
           'Today\'s Sales',
           'PKR ${stats.todaysSales.toStringAsFixed(2)}',
           Icons.point_of_sale_sharp,
-          Colors.green,
+          Theme.of(context).colorScheme.primary,
           () {
-            final homePageState = context.findAncestorStateOfType<HomePageState>();
             homePageState?.onItemTapped(4); // Navigate to reports page
           },
         ),
@@ -105,9 +104,8 @@ class _DashboardPageState extends State<DashboardPage> {
           'Total Products',
           stats.totalProducts.toString(),
           Icons.inventory_2,
-          Colors.blue,
+          Theme.of(context).colorScheme.primary,
           () {
-            final homePageState = context.findAncestorStateOfType<HomePageState>();
             homePageState?.onItemTapped(1); // Navigate to products page
           },
         ),
@@ -119,7 +117,6 @@ class _DashboardPageState extends State<DashboardPage> {
           () {
             final productProvider = context.read<ProductProvider>();
             productProvider.setFilter(ProductFilterType.expiringSoon);
-            final homePageState = context.findAncestorStateOfType<HomePageState>();
             homePageState?.onItemTapped(1); // Navigate to products page
           },
         ),
@@ -131,7 +128,6 @@ class _DashboardPageState extends State<DashboardPage> {
           () {
             final productProvider = context.read<ProductProvider>();
             productProvider.setFilter(ProductFilterType.lowStock);
-            final homePageState = context.findAncestorStateOfType<HomePageState>();
             homePageState?.onItemTapped(1); // Navigate to products page
           },
         ),
@@ -178,6 +174,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildSalesChart(List<WeeklySalesData> data) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return FuturisticCard(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -268,7 +265,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     barRods: [
                       BarChartRodData(
                         toY: entry.value.revenue,
-                        color: Theme.of(context).primaryColor,
+                        color: isDarkMode ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,
                         width: 16,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                       ),

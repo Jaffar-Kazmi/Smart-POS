@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' hide Category;
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/category.dart';
 import '../providers/category_provider.dart';
@@ -24,6 +25,10 @@ class _CategoriesPageState extends State<CategoriesPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
         elevation: 0,
       ),
       body: Consumer<CategoryProvider>(

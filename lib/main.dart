@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'core/theme/theme_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/database/database_helper.dart';
-import 'core/constants/app_colors.dart';
-import 'core/core/routes/app_router.dart';
+import 'core/routes/app_router.dart';
 import 'features/auth/presentation/providers/auth_provider.dart';
 import 'features/products/presentation/providers/product_provider.dart';
 import 'features/sales/presentation/providers/sales_provider.dart';
@@ -72,85 +72,15 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
-          return MaterialApp(
+          return MaterialApp.router(
             title: 'Smart POS',
             themeMode: themeProvider.themeMode,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            home: const SplashScreen(),
-            routes: AppRouter.routes,
+            routerConfig: AppRouter.router,
             debugShowCheckedModeBanner: false,
           );
         },
-      ),
-    );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _navigateToNextScreen();
-  }
-
-  void _navigateToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-
-    final authProvider = context.read<AuthProvider>();
-
-    dynamic userOrFuture = authProvider.currentUser;
-    dynamic user;
-    if (userOrFuture is Future) {
-      user = await userOrFuture;
-    } else {
-      user = userOrFuture;
-    }
-
-    if (mounted) {
-      if (user != null) {
-        Navigator.of(context).pushReplacementNamed('/home');
-      } else {
-        Navigator.of(context).pushReplacementNamed('/login');
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.shopping_cart,
-              size: 80,
-              color: AppColors.primary,
-            ),
-            const SizedBox(height: 24),
-            Text(
-              'Smart POS',
-              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: AppColors.primary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text('Professional Point of Sale System'),
-            const SizedBox(height: 48),
-            const CircularProgressIndicator(),
-          ],
-        ),
       ),
     );
   }

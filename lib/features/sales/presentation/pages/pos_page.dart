@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
 import '../../../../core/presentation/widgets/futuristic_button.dart';
@@ -49,7 +48,7 @@ class _POSPageState extends State<POSPage> {
     return Scaffold(
       body: Column(
         children: [
-          const FuturisticHeader(title: 'POS Terminal'),
+          const FuturisticHeader(title: 'POS Terminal', actions: []),
           Expanded(
             child: Row(
               children: [
@@ -230,7 +229,7 @@ class _POSPageState extends State<POSPage> {
                       style: TextStyle(
                         fontSize: 12,
                         color: product.stockQuantity <= product.minStock
-                            ? AppColors.error
+                            ? Theme.of(context).colorScheme.error
                             : Theme.of(context).textTheme.bodySmall?.color,
                       ),
                     ),

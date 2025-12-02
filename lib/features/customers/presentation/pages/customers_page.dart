@@ -26,7 +26,7 @@ class _CustomersPageState extends State<CustomersPage> {
     return Scaffold(
       body: Column(
         children: [
-          const FuturisticHeader(title: 'Customers'),
+          const FuturisticHeader(title: 'Customers', actions: []),
           Expanded(
             child: Consumer<CustomerProvider>(
               builder: (context, provider, _) {

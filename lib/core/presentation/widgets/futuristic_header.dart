@@ -1,88 +1,80 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../features/auth/presentation/providers/auth_provider.dart';
 
-class FuturisticHeader extends StatelessWidget implements PreferredSizeWidget {
+class FuturisticHeader extends StatelessWidget {
   final String title;
   final List<Widget>? actions;
-  final bool showBackButton;
+  final Widget? leading;
 
   const FuturisticHeader({
     Key? key,
     required this.title,
     this.actions,
-    this.showBackButton = true,
+    this.leading,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final canPop = Navigator.canPop(context);
     final authProvider = context.watch<AuthProvider>();
     final currentUser = authProvider.currentUser;
-    
-    return AppBar(
-      title: Row(
+
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
         children: [
-          Text(title),
-          if (currentUser != null) ...[
-            const SizedBox(width: 16),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.person,
-                    size: 16,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    currentUser.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
+          if (leading != null) ...[leading!, const SizedBox(width: 16)],
+          Text(
+            title,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          const SizedBox(width: 16),
+          if (currentUser != null)
+            Chip(
+              avatar: const Icon(Icons.person, size: 16),
+              label: Text(currentUser.name),
             ),
-          ],
+          const Spacer(),
+          if (actions != null) ...actions!,
+          const SizedBox(width: 16),
+          IconButton(
+            icon: const Icon(Icons.logout, color: Colors.red),
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Logout'),
+                  content: const Text('Are you sure you want to log out?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: const Text('Logout'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirm == true) {
+                if (!context.mounted) return;
+                authProvider.logout();
+                context.go('/login');
+              }
+            },
+            tooltip: 'Logout',
+          ),
         ],
       ),
-      centerTitle: false,
-      leading: (showBackButton && canPop)
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
-            )
-          : null,
-      actions: [
-        if (actions != null) ...actions!,
-        // Show settings only for cashiers (admins have it in navigation)
-        if (authProvider.isCashier)
-          IconButton(
-            icon: const Icon(Icons.settings),
-            tooltip: 'Settings',
-            onPressed: () => Navigator.of(context).pushNamed('/settings'),
-          ),
-        IconButton(
-          icon: const Icon(Icons.logout),
-          color: Colors.red,
-          tooltip: 'Logout',
-          onPressed: () {
-            context.read<AuthProvider>().logout();
-            Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
-          },
-        ),
-      ],
     );
   }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

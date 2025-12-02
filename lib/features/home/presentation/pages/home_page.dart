@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/core/routes/app_router.dart';
+import '../../../../core/routes/app_router.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../dashboard/presentation/pages/dashboard_page.dart';
 import '../../../products/presentation/pages/products_page.dart';
@@ -8,7 +9,6 @@ import '../../../sales/presentation/pages/pos_page.dart';
 import '../../../customers/presentation/pages/customers_page.dart';
 import '../../../reports/presentation/pages/reports_page.dart';
 import '../../../settings/presentation/pages/settings_page.dart';
-import '../../../../core/constants/app_colors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -30,9 +30,8 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
     final isAdmin = authProvider.isAdmin;
-    
-    // Define pages based on role to match NavigationHelper indices
-    final List<Widget> _pages = isAdmin
+
+    final List<Widget> pages = isAdmin
         ? [
             const DashboardPage(),
             const ProductsPage(),
@@ -47,13 +46,12 @@ class HomePageState extends State<HomePage> {
             const CustomersPage(),
           ];
 
-    // Ensure _currentIndex is valid for current role's page count
-    if (_currentIndex >= _pages.length) {
+    if (_currentIndex >= pages.length) {
       _currentIndex = 0;
     }
 
     return Scaffold(
-      body: _pages[_currentIndex],
+      body: pages[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
@@ -146,7 +144,7 @@ class HomePageState extends State<HomePage> {
               title: 'Dashboard',
               onTap: isAdmin
                   ? () {
-                      Navigator.pop(context);
+                      context.pop();
                       setState(() => _currentIndex = 0);
                     }
                   : null,
@@ -157,7 +155,7 @@ class HomePageState extends State<HomePage> {
               icon: Icons.inventory_2_outlined,
               title: 'Products',
               onTap: () {
-                Navigator.pop(context);
+                context.pop();
                 setState(() => _currentIndex = isAdmin ? 1 : 0);
               },
               selected: _currentIndex == (isAdmin ? 1 : 0),
@@ -166,7 +164,7 @@ class HomePageState extends State<HomePage> {
               icon: Icons.point_of_sale,
               title: 'POS Terminal',
               onTap: () {
-                Navigator.pop(context);
+                context.pop();
                 setState(() => _currentIndex = isAdmin ? 2 : 1);
               },
               selected: _currentIndex == (isAdmin ? 2 : 1),
@@ -175,7 +173,7 @@ class HomePageState extends State<HomePage> {
               icon: Icons.people_outline,
               title: 'Customers',
               onTap: () {
-                Navigator.pop(context);
+                context.pop();
                 setState(() => _currentIndex = isAdmin ? 3 : 2);
               },
               selected: _currentIndex == (isAdmin ? 3 : 2),
@@ -189,7 +187,7 @@ class HomePageState extends State<HomePage> {
                 icon: Icons.analytics_outlined,
                 title: 'Reports',
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   setState(() => _currentIndex = 4);
                 },
                 selected: _currentIndex == 4,
@@ -198,7 +196,7 @@ class HomePageState extends State<HomePage> {
                 icon: Icons.settings_outlined,
                 title: 'Settings',
                 onTap: () {
-                  Navigator.pop(context);
+                  context.pop();
                   setState(() => _currentIndex = 5);
                 },
                 selected: _currentIndex == 5,
@@ -213,7 +211,7 @@ class HomePageState extends State<HomePage> {
               title: 'Logout',
               onTap: () {
                 authProvider.logout();
-                Navigator.pushReplacementNamed(context, '/login');
+                context.go('/login');
               },
               isDestructive: true,
             ),

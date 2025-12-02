@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
@@ -35,8 +36,12 @@ class _CouponsPageState extends State<CouponsPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Column(
         children: [
-          const FuturisticHeader(
+          FuturisticHeader(
             title: 'Manage Coupons',
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => context.pop(),
+            ),
           ),
           Expanded(
             child: couponProvider.isLoading
@@ -132,12 +137,12 @@ class _CouponsPageState extends State<CouponsPage> {
         content: Text('Are you sure you want to delete ${coupon.code}?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => context.pop(),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () async {
-              Navigator.pop(context);
+              context.pop();
               final success = await context.read<CouponProvider>().deleteCoupon(coupon.id);
               if (success && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -316,7 +321,7 @@ class _CouponDialogState extends State<_CouponDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
           child: const Text('Cancel'),
         ),
         ElevatedButton(
@@ -354,7 +359,7 @@ class _CouponDialogState extends State<_CouponDialog> {
           : await couponProvider.updateCoupon(coupon);
 
       if (success && mounted) {
-        Navigator.pop(context);
+        context.pop();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(widget.coupon == null ? 'Coupon added successfully' : 'Coupon updated successfully'),

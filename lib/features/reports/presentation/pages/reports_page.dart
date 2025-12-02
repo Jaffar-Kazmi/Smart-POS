@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../providers/reports_provider.dart';
 import '../../../sales/presentation/providers/sales_provider.dart';
 import '../../../customers/presentation/providers/customer_provider.dart';
 import '../../../../core/services/export_service.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../../core/presentation/widgets/futuristic_header.dart';
 
 class ReportsPage extends StatefulWidget {
   const ReportsPage({super.key});
@@ -32,17 +34,46 @@ class _ReportsPageState extends State<ReportsPage> {
     final stats = reportsProvider.stats;
 
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context),
-            const SizedBox(height: 24),
-            if (reportsProvider.isLoading || stats == null)
-              const Center(child: CircularProgressIndicator())
-            else
-              Column(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FuturisticHeader(
+            title: 'Reports & Analytics',
+            actions: [
+              Tooltip(
+                message: 'Export all data to CSV',
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    if (stats == null) return;
+                    final path = await ExportService.exportComprehensiveSalesReport(
+                      salesProvider.sales,
+                      stats,
+                      customerProvider,
+                    );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('CSV exported successfully to: $path'),
+                          backgroundColor: Colors.green,
+                          duration: const Duration(seconds: 3),
+                          showCloseIcon: true,
+                        ),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.file_upload),
+                  label: const Text('Export Report'),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          if (reportsProvider.isLoading || stats == null)
+            const Center(child: CircularProgressIndicator())
+          else
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
                 children: [
                   Row(
                     children: [
@@ -83,89 +114,29 @@ class _ReportsPageState extends State<ReportsPage> {
                   ),
                 ],
               ),
-            const SizedBox(height: 24),
-            Expanded(
-              child: salesProvider.sales.isEmpty
-                  ? const Center(child: Text('No sales yet'))
-                  : ListView.builder(
-                      itemCount: salesProvider.sales.length,
-                      itemBuilder: (context, index) {
-                        final sale = salesProvider.sales[index];
-                        return ListTile(
-                          leading: const Icon(Icons.receipt_long),
-                          title: Text(
-                            'Sale #${sale.id} • ${sale.finalAmount.toStringAsFixed(2)}',
-                          ),
-                          subtitle: Text(
-                            sale.createdAt.toString().split(' ')[0],
-                          ),
-                        );
-                      },
-                    ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final salesProvider = context.watch<SalesProvider>();
-    final reportsProvider = context.watch<ReportsProvider>();
-    final customerProvider = context.watch<CustomerProvider>();
-    final stats = reportsProvider.stats;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          'Reports & Analytics',
-          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(width: 16),
-        Chip(
-          avatar: const Icon(Icons.person, size: 16),
-          label: Text(authProvider.currentUser?.name ?? 'System Administrator'),
-        ),
-        const Spacer(),
-        Tooltip(
-          message: 'Export all data to CSV',
-          child: OutlinedButton.icon(
-            onPressed: () async {
-              if (stats == null) return;
-              final path = await ExportService.exportComprehensiveSalesReport(
-                salesProvider.sales,
-                stats,
-                customerProvider,
-              );
-              if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('CSV exported successfully to: $path'),
-                    backgroundColor: Colors.green,
-                    duration: const Duration(seconds: 3),
-                    showCloseIcon: true,
+          const SizedBox(height: 24),
+          Expanded(
+            child: salesProvider.sales.isEmpty
+                ? const Center(child: Text('No sales yet'))
+                : ListView.builder(
+                    itemCount: salesProvider.sales.length,
+                    itemBuilder: (context, index) {
+                      final sale = salesProvider.sales[index];
+                      return ListTile(
+                        leading: const Icon(Icons.receipt_long),
+                        title: Text(
+                          'Sale #${sale.id} • ${sale.finalAmount.toStringAsFixed(2)}',
+                        ),
+                        subtitle: Text(
+                          sale.createdAt.toString().split(' ')[0],
+                        ),
+                      );
+                    },
                   ),
-                );
-              }
-            },
-            icon: const Icon(Icons.file_upload),
-            label: const Text('Export Report'),
           ),
-        ),
-        const SizedBox(width: 16),
-        IconButton(
-          icon: const Icon(Icons.logout, color: Colors.red),
-          onPressed: () {
-            authProvider.logout();
-            Navigator.of(context).pushReplacementNamed('/login');
-          },
-          tooltip: 'Logout',
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

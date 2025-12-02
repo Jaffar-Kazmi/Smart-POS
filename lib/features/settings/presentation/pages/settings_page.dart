@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/theme/theme_provider.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
@@ -79,7 +80,7 @@ class SettingsPage extends StatelessWidget {
                           icon: Icons.category,
                           title: 'Product Categories',
                           subtitle: 'Add, edit, or delete product categories',
-                          onTap: () => Navigator.pushNamed(context, '/categories'),
+                          onTap: () => context.push('/categories'),
                           textColor: textColor,
                           subtitleColor: subtitleColor,
                         ),
@@ -89,7 +90,7 @@ class SettingsPage extends StatelessWidget {
                           icon: Icons.local_offer,
                           title: 'Manage Coupons',
                           subtitle: 'Create and manage discount coupons',
-                          onTap: () => Navigator.pushNamed(context, '/coupons'),
+                          onTap: () => context.push('/coupons'),
                           textColor: textColor,
                           subtitleColor: subtitleColor,
                         ),
@@ -99,7 +100,7 @@ class SettingsPage extends StatelessWidget {
                           icon: Icons.people_alt,
                           title: 'User Management',
                           subtitle: 'Manage users and roles',
-                          onTap: () => Navigator.pushNamed(context, '/user_management'),
+                          onTap: () => context.push('/user_management'),
                           textColor: textColor,
                           subtitleColor: subtitleColor,
                         ),

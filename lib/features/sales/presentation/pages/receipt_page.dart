@@ -52,7 +52,7 @@ class ReceiptPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          const FuturisticHeader(title: 'Receipt'),
+          const FuturisticHeader(title: 'Receipt', actions: []),
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
