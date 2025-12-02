@@ -4,11 +4,11 @@ import 'package:intl/intl.dart';
 import '../providers/product_provider.dart';
 import '../../domain/entities/product.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/export_service.dart';
 import '../../../categories/presentation/providers/category_provider.dart';
 import '../../../categories/domain/entities/category.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({Key? key}) : super(key: key);
@@ -41,7 +41,7 @@ class _ProductsPageState extends State<ProductsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(isAdmin),
+            _buildHeader(context, isAdmin),
             const SizedBox(height: 16),
             _buildSearchBar(),
             const SizedBox(height: 12),
@@ -58,15 +58,15 @@ class _ProductsPageState extends State<ProductsPage> {
               message: 'Add new product',
               child: FloatingActionButton(
                 onPressed: () => _showAddProductDialog(),
-                backgroundColor: AppColors.primary,
-                child: const Icon(Icons.add, color: Colors.white),
+                child: const Icon(Icons.add),
               ),
             )
           : null,
     );
   }
 
-  Widget _buildHeader(bool isAdmin) {
+  Widget _buildHeader(BuildContext context, bool isAdmin) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Row(
       children: [
         Text(
@@ -74,6 +74,11 @@ class _ProductsPageState extends State<ProductsPage> {
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
+        ),
+        const SizedBox(width: 16),
+        Chip(
+          avatar: const Icon(Icons.person, size: 16),
+          label: Text(authProvider.currentUser?.name ?? 'System Administrator'),
         ),
         const Spacer(),
         if (isAdmin)
@@ -85,6 +90,15 @@ class _ProductsPageState extends State<ProductsPage> {
               label: const Text('Export'),
             ),
           ),
+        const SizedBox(width: 16),
+        IconButton(
+          icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+          onPressed: () {
+            authProvider.logout();
+            Navigator.of(context).pushReplacementNamed('/login');
+          },
+          tooltip: 'Logout',
+        ),
       ],
     );
   }
@@ -155,10 +169,11 @@ class _ProductsPageState extends State<ProductsPage> {
                         });
                         _applyFilters();
                       },
-                      backgroundColor: Colors.grey[200],
-                      selectedColor: AppColors.primary,
+                      selectedColor: Theme.of(context).colorScheme.primary,
                       labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurface,
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
@@ -200,8 +215,8 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   Widget _buildProductsList(bool isAdmin) {
-    return Consumer<ProductProvider>(
-      builder: (context, productProvider, child) {
+    return Consumer2<ProductProvider, SettingsProvider>(
+      builder: (context, productProvider, settingsProvider, child) {
         if (productProvider.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -249,6 +264,10 @@ class _ProductsPageState extends State<ProductsPage> {
           itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
             final product = filteredProducts[index];
+            final isExpiring = product.expiryDate != null &&
+                product.expiryDate!.isBefore(DateTime.now()
+                    .add(Duration(days: settingsProvider.expiryThreshold)));
+
             return FuturisticCard(
               padding: const EdgeInsets.all(8),
               child: ListTile(
@@ -275,13 +294,19 @@ class _ProductsPageState extends State<ProductsPage> {
                         style: TextStyle(fontSize: 11, color: Colors.grey[600]),
                       ),
                     if (product.expiryDate != null)
-                      Text(
-                        'Expiry: ${DateFormat.yMMMd().format(product.expiryDate!)}',
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: product.expiryDate!.isBefore(DateTime.now())
-                              ? Colors.red
-                              : Colors.grey[600],
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: isExpiring
+                                  ? Colors.red.shade300
+                                  : Colors.grey[600]),
+                          children: [
+                            const TextSpan(text: 'Expiry: '),
+                            TextSpan(
+                                text: DateFormat.yMMMd()
+                                    .format(product.expiryDate!)),
+                          ],
                         ),
                       ),
                   ],
@@ -294,7 +319,7 @@ class _ProductsPageState extends State<ProductsPage> {
                             if (value == 'edit') {
                               _showEditProductDialog(product);
                             } else if (value == 'delete') {
-                              _showDeleteConfirmation(product);
+                              _deleteProduct(context, product);
                             }
                           },
                           itemBuilder: (context) => [
@@ -335,7 +360,8 @@ class _ProductsPageState extends State<ProductsPage> {
       context: context,
       builder: (context) => _ProductDialog(
         onSave: (product) async {
-          final productProvider = Provider.of<ProductProvider>(context, listen: false);
+          final productProvider =
+              Provider.of<ProductProvider>(context, listen: false);
           await productProvider.addProduct(product);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -353,7 +379,8 @@ class _ProductsPageState extends State<ProductsPage> {
       builder: (context) => _ProductDialog(
         product: product,
         onSave: (updatedProduct) {
-          final productProvider = Provider.of<ProductProvider>(context, listen: false);
+          final productProvider =
+              Provider.of<ProductProvider>(context, listen: false);
           productProvider.updateProduct(updatedProduct);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Product updated successfully')),
@@ -363,31 +390,51 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  void _showDeleteConfirmation(Product product) {
-    showDialog(
+  Future<void> _deleteProduct(BuildContext context, Product product) async {
+    final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Product'),
-        content: Text('Are you sure you want to delete ${product.name}?'),
+        content: Text('Are you sure you want to delete "${product.name}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              Provider.of<ProductProvider>(context, listen: false).deleteProduct(product.id);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Product deleted successfully')),
-              );
-            },
+            onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+            child: const Text('Delete'),
           ),
         ],
       ),
     );
+
+    if (confirm == true) {
+      final provider = context.read<ProductProvider>();
+      await provider.deleteProduct(product.id);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+              SnackBar(
+                content: Text('Product "${product.name}" deleted'),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () => provider.undoDelete(),
+                ),
+                duration: const Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+              ),
+            )
+            .closed
+            .then((reason) {
+          if (reason != SnackBarClosedReason.action) {
+            provider.confirmDelete();
+          }
+        });
+      }
+    }
   }
 
   Future<void> _exportProductsToCSV() async {
@@ -581,7 +628,7 @@ class _ProductDialogState extends State<_ProductDialog> {
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
-                            return 'Required';
+                            return 'Invalid number';
                           }
                           if (double.tryParse(value) == null) {
                             return 'Invalid number';
@@ -696,7 +743,7 @@ class _ProductDialogState extends State<_ProductDialog> {
         ElevatedButton(
           onPressed: _isLoading ? null : _saveProduct,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
           ),
           child: _isLoading

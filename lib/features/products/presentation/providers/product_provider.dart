@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../domain/entities/product.dart';
 import '../../data/repositories/product_repository_impl.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 
 enum ProductFilterType {
   none,
@@ -10,6 +11,7 @@ enum ProductFilterType {
 
 class ProductProvider extends ChangeNotifier {
   final ProductRepositoryImpl _repository = ProductRepositoryImpl();
+  SettingsProvider _settingsProvider;
 
   List<Product> _products = [];
   List<Product> _filteredProducts = [];
@@ -17,6 +19,15 @@ class ProductProvider extends ChangeNotifier {
   String? _error;
   String _searchQuery = '';
   ProductFilterType _filterType = ProductFilterType.none;
+
+  Product? _lastDeletedProduct;
+
+  ProductProvider(this._settingsProvider);
+
+  void update(SettingsProvider settingsProvider) {
+    _settingsProvider = settingsProvider;
+    notifyListeners();
+  }
 
   List<Product> get products => _filteredProducts;
   bool get isLoading => _isLoading;
@@ -74,10 +85,11 @@ class ProductProvider extends ChangeNotifier {
     if (_filterType == ProductFilterType.lowStock) {
       tempProducts = tempProducts.where((p) => p.isLowStock).toList();
     } else if (_filterType == ProductFilterType.expiringSoon) {
-      final thirtyDaysFromNow = DateTime.now().add(const Duration(days: 30));
+      final expiryThreshold = _settingsProvider.expiryThreshold;
+      final thresholdDate = DateTime.now().add(Duration(days: expiryThreshold));
       tempProducts = tempProducts
           .where((p) =>
-              p.expiryDate != null && p.expiryDate!.isBefore(thirtyDaysFromNow))
+              p.expiryDate != null && p.expiryDate!.isBefore(thresholdDate))
           .toList();
     }
 
@@ -108,15 +120,36 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteProduct(int productId) async {
-    try {
-      await _repository.deleteProduct(productId);
-      await loadProducts(); // Refresh the list
-      return true;
-    } catch (e) {
-      _error = e.toString();
+  Future<void> deleteProduct(int productId) async {
+    final productIndex = _products.indexWhere((p) => p.id == productId);
+    if (productIndex == -1) return;
+
+    _lastDeletedProduct = _products[productIndex];
+    _products.removeAt(productIndex);
+    _applyFilter();
+    notifyListeners();
+  }
+
+  Future<void> confirmDelete() async {
+    if (_lastDeletedProduct != null) {
+      try {
+        await _repository.deleteProduct(_lastDeletedProduct!.id);
+        _lastDeletedProduct = null;
+      } catch (e) {
+        _error = 'Error deleting product from DB: $e';
+        print(_error);
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> undoDelete() async {
+    if (_lastDeletedProduct != null) {
+      _products.add(_lastDeletedProduct!);
+      _products.sort((a, b) => a.name.compareTo(b.name));
+      _applyFilter();
+      _lastDeletedProduct = null;
       notifyListeners();
-      return false;
     }
   }
 

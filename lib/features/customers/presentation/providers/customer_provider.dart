@@ -1,5 +1,3 @@
-// lib/features/customers/presentation/providers/customer_provider.dart
-
 import 'package:flutter/foundation.dart';
 import '../../../../core/database/database_helper.dart';
 import '../../domain/entities/customer.dart';
@@ -9,6 +7,8 @@ class CustomerProvider extends ChangeNotifier {
   List<Customer> _customers = [];
   bool _isLoading = false;
   String? _error;
+
+  Customer? _lastDeletedCustomer;
 
   CustomerProvider(this._db);
 
@@ -64,16 +64,34 @@ class CustomerProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteCustomer(int id) async {
-    try {
-      await _db.deleteCustomer(id);
-      _customers.removeWhere((c) => c.id == id);
+  Future<void> deleteCustomer(int id) async {
+    final customerIndex = _customers.indexWhere((c) => c.id == id);
+    if (customerIndex == -1) return;
+
+    _lastDeletedCustomer = _customers[customerIndex];
+    _customers.removeAt(customerIndex);
+    notifyListeners();
+  }
+
+  Future<void> confirmDelete() async {
+    if (_lastDeletedCustomer != null) {
+      try {
+        await _db.deleteCustomer(_lastDeletedCustomer!.id);
+        _lastDeletedCustomer = null;
+      } catch (e) {
+        _error = 'Error deleting customer from DB: $e';
+        print(_error);
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> undoDelete() async {
+    if (_lastDeletedCustomer != null) {
+      _customers.add(_lastDeletedCustomer!);
+      _customers.sort((a, b) => a.name.compareTo(b.name));
+      _lastDeletedCustomer = null;
       notifyListeners();
-      return true;
-    } catch (e) {
-      _error = 'Error deleting customer: $e';
-      print(_error);
-      return false;
     }
   }
 

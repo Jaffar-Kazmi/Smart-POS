@@ -23,12 +23,13 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<void> updateExpiryThreshold(int days) async {
     _expiryThreshold = days;
+    notifyListeners(); // Notify listeners immediately
+
     final db = await _db.database;
     await db.insert(
       'settings',
       {'key': 'expiry_threshold', 'value': days.toString()},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    notifyListeners();
   }
 }

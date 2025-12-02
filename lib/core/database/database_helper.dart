@@ -5,6 +5,8 @@ import '../../features/categories/domain/entities/category.dart';
 import '../../features/customers/domain/entities/customer.dart';
 import '../../features/coupons/domain/entities/coupon.dart';
 import '../../features/sales/domain/entities/sale.dart';
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -39,6 +41,7 @@ class DatabaseHelper {
     await db.execute(DatabaseTables.createCouponsTable);
     await db.execute(DatabaseTables.createSalesTable);
     await db.execute(DatabaseTables.createSaleItemsTable);
+    await db.execute(DatabaseTables.createSettingsTable);
 
     // Insert initial/mock data
     await _insertMockData(db);
@@ -52,6 +55,12 @@ class DatabaseHelper {
         if (!productColumns.contains('expiry_date')) {
           await db.execute('ALTER TABLE products ADD COLUMN expiry_date TEXT');
         }
+
+        final settingsInfo = await db.rawQuery("PRAGMA table_info(settings)");
+        if (settingsInfo.isEmpty) {
+          await db.execute(DatabaseTables.createSettingsTable);
+        }
+
       } catch (e) {
         print('Error during migration to v7: $e');
       }
@@ -173,6 +182,12 @@ class DatabaseHelper {
     }
   }
 
+  String _hashPassword(String password) {
+    final bytes = utf8.encode(password);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
   Future<void> _insertMockData(Database db) async {
     try {
       final userCount = Sqflite.firstIntValue(
@@ -185,7 +200,7 @@ class DatabaseHelper {
         await db.insert('users', {
           'email': 'admin@smartpos.com',
           'username': 'admin',
-          'password': 'password',
+          'password': _hashPassword('password'),
           'role': 'Admin',
           'name': 'System Administrator',
           'created_at': DateTime.now().toIso8601String(),
@@ -195,7 +210,7 @@ class DatabaseHelper {
         await db.insert('users', {
           'email': 'cashier@smartpos.com',
           'username': 'cashier',
-          'password': 'password',
+          'password': _hashPassword('password'),
           'role': 'Cashier',
           'name': 'John Cashier',
           'created_at': DateTime.now().toIso8601String(),
@@ -247,7 +262,7 @@ class DatabaseHelper {
         'name': name,
         'email': email,
         'username': username,
-        'password': password,
+        'password': _hashPassword(password),
         'role': role,
         'created_at': DateTime.now().toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
@@ -285,6 +300,27 @@ class DatabaseHelper {
   Future<int> deleteCategory(int id) async {
     final db = await database;
     return await db.delete('categories', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> getProductCountForCategory(int categoryId) async {
+    final db = await database;
+    final result = await db.rawQuery('SELECT COUNT(*) as count FROM products WHERE category_id = ?', [categoryId]);
+    return (result.first['count'] as int?) ?? 0;
+  }
+
+  Future<void> deleteProductsByCategoryId(int categoryId) async {
+    final db = await database;
+    await db.delete('products', where: 'category_id = ?', whereArgs: [categoryId]);
+  }
+
+  Future<void> moveProductsToCategory(int fromCategoryId, int toCategoryId) async {
+    final db = await database;
+    await db.update(
+      'products',
+      {'category_id': toCategoryId},
+      where: 'category_id = ?',
+      whereArgs: [fromCategoryId],
+    );
   }
 
   Future<Category?> getCategoryById(int id) async {
@@ -381,16 +417,21 @@ class DatabaseHelper {
   Future<Map<String, dynamic>?> loginUser(String identifier, String password) async {
     try {
       final db = await database;
-
       final result = await db.query(
         'users',
-        where: '(email = ? OR username = ?) AND password = ?',
-        whereArgs: [identifier, identifier, password],
+        where: 'email = ? OR username = ?',
+        whereArgs: [identifier, identifier],
       );
 
       if (result.isNotEmpty) {
-        print('User logged in successfully: $identifier');
-        return result.first;
+        final user = result.first;
+        final storedPassword = user['password'] as String;
+        final hashedPassword = _hashPassword(password);
+
+        if (storedPassword == hashedPassword || storedPassword == password) {
+          print('User logged in successfully: $identifier');
+          return user;
+        }
       }
 
       print('Invalid email/username or password');
@@ -400,6 +441,17 @@ class DatabaseHelper {
       return null;
     }
   }
+
+  Future<Map<String, dynamic>?> getUserByIdentifier(String identifier) async {
+    final db = await database;
+    final result = await db.query(
+      'users',
+      where: 'email = ? OR username = ?',
+      whereArgs: [identifier, identifier],
+    );
+    return result.isNotEmpty ? result.first : null;
+  }
+
 
   Future<Map<String, dynamic>?> getUserById(int id) async {
     try {
@@ -430,6 +482,10 @@ class DatabaseHelper {
     try {
       final db = await database;
       values['updated_at'] = DateTime.now().toIso8601String();
+
+      if (values.containsKey('password')) {
+        values['password'] = _hashPassword(values['password'] as String);
+      }
 
       final result = await db.update(
         'users',
@@ -478,8 +534,8 @@ class DatabaseHelper {
   Future<double> getWeeklyRevenue() async {
     final db = await database;
     final now = DateTime.now();
-    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final endOfWeek = startOfWeek.add(const Duration(days: 6));
+    final startOfWeek = now.subtract(Duration(days: now.weekday % 7));
+    final endOfWeek = startOfWeek.add(const Duration(days: 6, hours: 23, minutes: 59, seconds: 59));
 
     final result = await db.rawQuery('''
       SELECT SUM(total_amount) as total
@@ -494,7 +550,7 @@ class DatabaseHelper {
     final db = await database;
     final now = DateTime.now();
     final startOfMonth = DateTime(now.year, now.month, 1);
-    final endOfMonth = DateTime(now.year, now.month + 1, 0);
+    final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
 
     final result = await db.rawQuery('''
       SELECT SUM(total_amount) as total
@@ -511,12 +567,12 @@ class DatabaseHelper {
     return (result.first['count'] as int?) ?? 0;
   }
 
-  Future<int> getExpiringSoonCount() async {
+  Future<int> getExpiringSoonCount(int days) async {
     final db = await database;
-    final thirtyDaysFromNow = DateTime.now().add(const Duration(days: 30));
+    final thresholdDate = DateTime.now().add(Duration(days: days));
     final result = await db.rawQuery(
       'SELECT COUNT(*) as count FROM products WHERE expiry_date IS NOT NULL AND expiry_date < ?',
-      [thirtyDaysFromNow.toIso8601String()],
+      [thresholdDate.toIso8601String()],
     );
     return (result.first['count'] as int?) ?? 0;
   }

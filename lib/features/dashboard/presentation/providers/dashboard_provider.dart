@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/database/database_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 
 class DashboardStats {
   final double todaysSales;
@@ -48,12 +49,18 @@ class Transaction {
 
 class DashboardProvider extends ChangeNotifier {
   final DatabaseHelper _db;
+  SettingsProvider _settingsProvider;
   bool _isLoading = false;
   DashboardStats? _dashboardStats;
   List<WeeklySalesData> _weeklySalesData = [];
   List<Transaction> _recentTransactions = [];
 
-  DashboardProvider(this._db);
+  DashboardProvider(this._db, this._settingsProvider);
+
+  void update(SettingsProvider settingsProvider) {
+    _settingsProvider = settingsProvider;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
   DashboardStats? get dashboardStats => _dashboardStats;
@@ -85,7 +92,7 @@ class DashboardProvider extends ChangeNotifier {
       final totalProducts = Sqflite.firstIntValue(productsResult) ?? 0;
 
       // 3. Get Expiring Soon Count
-      final expiringSoonCount = await _db.getExpiringSoonCount();
+      final expiringSoonCount = await _db.getExpiringSoonCount(_settingsProvider.expiryThreshold);
 
       // 4. Get Low Stock Count
       final lowStockResult = await db.rawQuery('SELECT COUNT(*) as count FROM products WHERE stock_quantity <= min_stock');

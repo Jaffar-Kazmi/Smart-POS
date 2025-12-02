@@ -120,7 +120,7 @@ class _CustomersPageState extends State<CustomersPage> {
                               message: 'Delete customer',
                               child: IconButton(
                                 icon: const Icon(Icons.delete, color: Colors.redAccent),
-                                onPressed: () => _deleteCustomer(customer),
+                                onPressed: () => _deleteCustomer(context, customer),
                               ),
                             ),
                           ],
@@ -256,14 +256,12 @@ class _CustomersPageState extends State<CustomersPage> {
     );
   }
 
-  Future<void> _deleteCustomer(Customer customer) async {
+  Future<void> _deleteCustomer(BuildContext context, Customer customer) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Customer'),
-        content: Text(
-          'Are you sure you want to delete "${customer.name}"?\n\nThis action cannot be undone.',
-        ),
+        content: Text('Are you sure you want to delete "${customer.name}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -272,21 +270,36 @@ class _CustomersPageState extends State<CustomersPage> {
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+            child: const Text('Delete'),
           ),
         ],
       ),
     );
 
-    if (confirm == true && mounted) {
-      final success = await context.read<CustomerProvider>().deleteCustomer(customer.id);
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Customer deleted successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
+    if (confirm == true) {
+      final provider = context.read<CustomerProvider>();
+      await provider.deleteCustomer(customer.id);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+              SnackBar(
+                content: Text('Customer "${customer.name}" deleted'),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () => provider.undoDelete(),
+                ),
+                duration: const Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+                showCloseIcon: true,
+              ),
+            )
+            .closed
+            .then((reason) {
+          if (reason != SnackBarClosedReason.action) {
+            provider.confirmDelete();
+          }
+        });
       }
     }
   }

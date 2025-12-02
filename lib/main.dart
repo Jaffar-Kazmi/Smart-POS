@@ -43,23 +43,37 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsProvider(dbHelper)),
+        ChangeNotifierProxyProvider<SettingsProvider, ProductProvider>(
+          create: (context) => ProductProvider(Provider.of<SettingsProvider>(context, listen: false)),
+          update: (context, settingsProvider, productProvider) {
+            productProvider?.update(settingsProvider);
+            return productProvider!;
+          },
+        ),
         ChangeNotifierProxyProvider<ProductProvider, SalesProvider>(
           create: (context) => SalesProvider(Provider.of<ProductProvider>(context, listen: false)),
-          update: (context, productProvider, salesProvider) =>
-              salesProvider ?? SalesProvider(productProvider),
+          update: (context, productProvider, salesProvider) {
+            salesProvider?.update(productProvider);
+            return salesProvider!;
+          },
         ),
         ChangeNotifierProvider(create: (_) => CategoryProvider(dbHelper)),
         ChangeNotifierProvider(create: (_) => CustomerProvider(dbHelper)),
         ChangeNotifierProvider(create: (_) => CouponProvider(dbHelper)),
-        ChangeNotifierProvider(create: (_) => DashboardProvider(dbHelper)),
+        ChangeNotifierProxyProvider<SettingsProvider, DashboardProvider>(
+          create: (context) => DashboardProvider(dbHelper, Provider.of<SettingsProvider>(context, listen: false)),
+          update: (context, settingsProvider, dashboardProvider) {
+            dashboardProvider?.update(settingsProvider);
+            return dashboardProvider!;
+          },
+        ),
         ChangeNotifierProvider(create: (_) => ReportsProvider(dbHelper)),
-        ChangeNotifierProvider(create: (_) => SettingsProvider(dbHelper)),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {
           return MaterialApp(
-            title: 'SmartPOS',
+            title: 'Smart POS',
             themeMode: themeProvider.themeMode,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
@@ -94,7 +108,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
     final authProvider = context.read<AuthProvider>();
 
-    // Use the 'currentUser' API (may be synchronous or a Future) instead of calling a possibly removed getCurrentUser()
     dynamic userOrFuture = authProvider.currentUser;
     dynamic user;
     if (userOrFuture is Future) {
@@ -126,7 +139,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'SmartPOS',
+              'Smart POS',
               style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: AppColors.primary,

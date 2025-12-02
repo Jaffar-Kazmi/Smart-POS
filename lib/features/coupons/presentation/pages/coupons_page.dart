@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
-import '../../../../core/presentation/widgets/futuristic_button.dart';
 import '../providers/coupon_provider.dart';
 import '../../domain/entities/coupon.dart';
 

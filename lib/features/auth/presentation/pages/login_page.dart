@@ -112,7 +112,15 @@ class _LoginPageState extends State<LoginPage> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 16),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: _showForgotPasswordDialog,
+                            child: const Text('Forgot Password?'),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
 
                         Consumer<AuthProvider>(
                             builder: (context, authProvider, child) {
@@ -216,5 +224,132 @@ class _LoginPageState extends State<LoginPage> {
         }
       }
     }
+  }
+
+  void _showForgotPasswordDialog() {
+    final identifierController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Forgot Password'),
+        content: TextField(
+          controller: identifierController,
+          decoration: const InputDecoration(
+            labelText: 'Email or Username',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              final authProvider = context.read<AuthProvider>();
+              final user = await authProvider.getUserByIdentifier(identifierController.text.trim());
+              if (user != null && mounted) {
+                Navigator.pop(context);
+                _showResetPasswordDialog(identifierController.text.trim());
+              } else {
+                if(mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(authProvider.error ?? 'User not found'),
+                      backgroundColor: AppColors.error,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Find Account'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showResetPasswordDialog(String identifier) {
+    final passwordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Reset Password'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextFormField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'New Password',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a new password';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: confirmPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Confirm New Password',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value != passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                final authProvider = context.read<AuthProvider>();
+                final success = await authProvider.resetPassword(identifier, passwordController.text);
+                if (success && mounted) {
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Password reset successfully'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  if(mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(authProvider.error ?? 'Password reset failed'),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+            child: const Text('Reset Password'),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -212,7 +212,6 @@ class _POSPageState extends State<POSPage> {
                       product.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -232,7 +231,7 @@ class _POSPageState extends State<POSPage> {
                         fontSize: 12,
                         color: product.stockQuantity <= product.minStock
                             ? AppColors.error
-                            : Colors.white70,
+                            : Theme.of(context).textTheme.bodySmall?.color,
                       ),
                     ),
                   ],

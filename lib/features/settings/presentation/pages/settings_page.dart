@@ -62,7 +62,7 @@ class SettingsPage extends StatelessWidget {
                           divisions: 12,
                           label: settingsProvider.expiryThreshold.toString(),
                           onChanged: (value) {
-                            settingsProvider.updateExpiryThreshold(value.toInt());
+                            context.read<SettingsProvider>().updateExpiryThreshold(value.toInt());
                           },
                         ),
                       ],
