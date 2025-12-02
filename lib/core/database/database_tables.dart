@@ -34,6 +34,7 @@ class DatabaseTables {
       category_id INTEGER,
       barcode TEXT,
       image_path TEXT,
+      expiry_date TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL,
       FOREIGN KEY (category_id) REFERENCES categories (id)
@@ -99,6 +100,13 @@ class DatabaseTables {
       subtotal REAL NOT NULL,
       FOREIGN KEY (sale_id) REFERENCES sales (id),
       FOREIGN KEY (product_id) REFERENCES products (id)
+    )
+  ''';
+
+  static const String createSettingsTable = '''
+    CREATE TABLE settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL
     )
   ''';
 }

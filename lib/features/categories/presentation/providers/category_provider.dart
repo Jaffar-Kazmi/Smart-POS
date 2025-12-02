@@ -1,5 +1,3 @@
-// lib/features/categories/presentation/providers/category_provider.dart
-
 import 'package:flutter/foundation.dart' hide Category;
 import '../../../../core/database/database_helper.dart';
 import '../../domain/entities/category.dart';
@@ -9,6 +7,10 @@ class CategoryProvider extends ChangeNotifier {
   List<Category> _categories = [];
   bool _isLoading = false;
   String? _error;
+
+  Category? _lastDeletedCategory;
+  int? _newCategoryIdForProducts;
+  bool _shouldDeleteProducts = false;
 
   CategoryProvider(this._db);
 
@@ -64,16 +66,50 @@ class CategoryProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteCategory(int id) async {
-    try {
-      await _db.deleteCategory(id);
-      _categories.removeWhere((c) => c.id == id);
+  Future<int> getProductCountForCategory(int categoryId) async {
+    return await _db.getProductCountForCategory(categoryId);
+  }
+
+  Future<void> deleteCategory(int id, {int? newCategoryId, bool deleteProducts = false}) async {
+    final categoryIndex = _categories.indexWhere((c) => c.id == id);
+    if (categoryIndex == -1) return;
+
+    _lastDeletedCategory = _categories[categoryIndex];
+    _newCategoryIdForProducts = newCategoryId;
+    _shouldDeleteProducts = deleteProducts;
+
+    _categories.removeAt(categoryIndex);
+    notifyListeners();
+  }
+
+  Future<void> confirmDelete() async {
+    if (_lastDeletedCategory != null) {
+      try {
+        if (_shouldDeleteProducts) {
+          await _db.deleteProductsByCategoryId(_lastDeletedCategory!.id);
+        } else if (_newCategoryIdForProducts != null) {
+          await _db.moveProductsToCategory(_lastDeletedCategory!.id, _newCategoryIdForProducts!);
+        }
+        await _db.deleteCategory(_lastDeletedCategory!.id);
+        _lastDeletedCategory = null;
+        _newCategoryIdForProducts = null;
+        _shouldDeleteProducts = false;
+      } catch (e) {
+        _error = 'Error deleting category from DB: $e';
+        print(_error);
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> undoDelete() async {
+    if (_lastDeletedCategory != null) {
+      _categories.add(_lastDeletedCategory!);
+      _categories.sort((a, b) => a.name.compareTo(b.name));
+      _lastDeletedCategory = null;
+      _newCategoryIdForProducts = null;
+      _shouldDeleteProducts = false;
       notifyListeners();
-      return true;
-    } catch (e) {
-      _error = 'Error deleting category: $e';
-      print(_error);
-      return false;
     }
   }
 

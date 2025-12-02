@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import '../../domain/entities/user.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../../../core/database/database_helper.dart';
@@ -9,6 +10,7 @@ class AuthProvider extends ChangeNotifier {
   User? _currentUser;
   bool _isLoading = false;
   String? _error;
+  String? _verificationCode;
 
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
@@ -105,6 +107,44 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> sendPasswordResetCode(String identifier) async {
+    final user = await DatabaseHelper.instance.getUserByIdentifier(identifier);
+    if (user != null) {
+      _verificationCode = (Random().nextInt(900000) + 100000).toString();
+      // In a real app, this would be sent via email.
+      print('Verification Code: $_verificationCode');
+      return true;
+    } else {
+      _error = "User not found";
+      return false;
+    }
+  }
+
+  bool verifyPasswordResetCode(String code) {
+    if (code == _verificationCode) {
+      _verificationCode = null; // Invalidate the code after use
+      return true;
+    } else {
+      _error = 'Invalid verification code';
+      return false;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserByIdentifier(String identifier) async {
+    return await DatabaseHelper.instance.getUserByIdentifier(identifier);
+  }
+
+  Future<bool> resetPassword(String identifier, String newPassword) async {
+    final user = await DatabaseHelper.instance.getUserByIdentifier(identifier);
+    if (user != null) {
+      return await DatabaseHelper.instance.updateUser(user['id'], {'password': newPassword});
+    } else {
+      _error = "User not found";
+      return false;
+    }
+  }
+
 
   List<User> _allUsers = [];
   List<User> get allUsers => _allUsers;

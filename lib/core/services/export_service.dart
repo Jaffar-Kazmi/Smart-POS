@@ -1,9 +1,70 @@
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:intl/intl.dart';
 import '../../features/products/domain/entities/product.dart';
+import '../../features/sales/domain/entities/sale.dart';
+import '../../features/customers/domain/entities/customer.dart';
+import '../../features/reports/presentation/providers/reports_provider.dart';
+import '../../features/customers/presentation/providers/customer_provider.dart';
 
 class ExportService {
+  static Future<String> exportComprehensiveSalesReport(
+    List<Sale> sales,
+    ReportsStats stats,
+    CustomerProvider customerProvider,
+  ) async {
+    try {
+      List<List<dynamic>> csvData = [];
+
+      // Summary Section
+      csvData.add(['Sales Summary']);
+      csvData.add(['Metric', 'Value']);
+      csvData.add(['Total Revenue', stats.totalRevenue.toStringAsFixed(2)]);
+      csvData.add(['Total Orders', stats.totalOrders.toString()]);
+      csvData.add(['Today Revenue', stats.todayRevenue.toStringAsFixed(2)]);
+      csvData.add(['Weekly Revenue', stats.weeklyRevenue.toStringAsFixed(2)]);
+      csvData.add(['Monthly Revenue', stats.monthlyRevenue.toStringAsFixed(2)]);
+      csvData.add(['Total Customers', stats.totalCustomers.toString()]);
+      csvData.add([]); // Add a blank line for spacing
+
+      // Detailed Sales Section
+      csvData.add(['All Sales']);
+      csvData.add([
+        'Sale ID',
+        'Customer Name',
+        'Final Amount',
+        'Date',
+      ]);
+
+      for (var sale in sales) {
+        csvData.add([
+          sale.id.toString(),
+          customerProvider.getCustomerName(sale.customerId),
+          sale.finalAmount.toStringAsFixed(2),
+          DateFormat.yMMMd().format(sale.createdAt),
+        ]);
+      }
+
+      String csvString = const ListToCsvConverter().convert(csvData);
+      final directory = await getDownloadsDirectory();
+      if (directory == null) {
+        throw Exception('Could not access downloads directory');
+      }
+
+      final fileName = 'comprehensive_sales_report_${DateFormat('yyyy-MM-dd_HH-mm-ss').format(DateTime.now())}.csv';
+      final file = File('${directory.path}/$fileName');
+
+      await file.writeAsString(csvString);
+
+      print('CSV exported successfully to: ${file.path}');
+      return file.path;
+    } catch (e) {
+      print('Error exporting comprehensive CSV: $e');
+      rethrow;
+    }
+  }
+  
   /// Export products to CSV file with correct column mapping
   static Future<String> exportProductsToCSV(List<Product> products) async {
     try {
@@ -21,6 +82,7 @@ class ExportService {
         'Min Stock',
         'Barcode',
         'Category ID',
+        'Expiry Date',
         'Created At',
         'Updated At',
       ]);
@@ -28,17 +90,20 @@ class ExportService {
       // Add product rows - MAKE SURE ORDER MATCHES HEADERS
       for (var product in products) {
         csvData.add([
-          product.id.toString(),                           // ID
-          product.name,                                     // Product Name
-          product.description,                             // Description
-          product.price.toStringAsFixed(2),               // Price
-          product.cost.toStringAsFixed(2),                // Cost
-          product.stockQuantity.toString(),               // Stock Quantity
-          product.minStock.toString(),                    // Min Stock
-          product.barcode,                                // Barcode
-          product.categoryId.toString(),                  // Category ID
-          product.createdAt.toIso8601String(),           // Created At
-          product.updatedAt.toIso8601String(),           // Updated At
+          product.id.toString(), // ID
+          product.name, // Product Name
+          product.description, // Description
+          product.price.toStringAsFixed(2), // Price
+          product.cost.toStringAsFixed(2), // Cost
+          product.stockQuantity.toString(), // Stock Quantity
+          product.minStock.toString(), // Min Stock
+          product.barcode, // Barcode
+          product.categoryId.toString(), // Category ID
+          product.expiryDate != null
+              ? DateFormat.yMMMd().format(product.expiryDate!)
+              : '',
+          product.createdAt.toIso8601String(), // Created At
+          product.updatedAt.toIso8601String(), // Updated At
         ]);
       }
 
@@ -53,7 +118,8 @@ class ExportService {
       }
 
       // Create file with timestamp
-      final fileName = 'products_${DateTime.now().toString().replaceAll(':', '-').split('.')[0]}.csv';
+      final fileName =
+          'products_${DateTime.now().toString().replaceAll(':', '-').split('.')[0]}.csv';
       final file = File('${directory.path}/$fileName');
 
       // Write CSV to file
@@ -61,117 +127,107 @@ class ExportService {
 
       print('CSV exported successfully to: ${file.path}');
       return file.path;
-
     } catch (e) {
       print('Error exporting CSV: $e');
       rethrow;
     }
   }
 
-  /// Export products summary to CSV (simplified version)
-  static Future<String> exportProductsSummaryToCSV(List<Product> products) async {
+  static Future<String> exportDailyReportToCSV(List<Sale> sales, CustomerProvider customerProvider) async {
+    return _exportSalesReportToCSV(sales, 'daily_report', customerProvider);
+  }
+
+  static Future<String> exportWeeklyReportToCSV(List<Sale> sales, CustomerProvider customerProvider) async {
+    return _exportSalesReportToCSV(sales, 'weekly_report', customerProvider);
+  }
+
+  static Future<String> exportMonthlyReportToCSV(List<Sale> sales, CustomerProvider customerProvider) async {
+    return _exportSalesReportToCSV(sales, 'monthly_report', customerProvider);
+  }
+
+  static Future<String> exportAnnualReportToCSV(List<Sale> sales, CustomerProvider customerProvider) async {
+    return _exportSalesReportToCSV(sales, 'annual_report', customerProvider);
+  }
+
+  static Future<String> _exportSalesReportToCSV(
+      List<Sale> sales, String reportType, CustomerProvider customerProvider) async {
     try {
       List<List<dynamic>> csvData = [];
-
-      // Add headers
       csvData.add([
-        'Product Name',
-        'Price',
-        'Stock',
-        'Min Stock',
-        'Status',
+        'Sale ID',
+        'Customer Name',
+        'Final Amount',
+        'Created At',
       ]);
 
-      // Add product rows
-      for (var product in products) {
-        final status = product.stockQuantity <= product.minStock ? 'Low Stock' : 'OK';
+      for (var sale in sales) {
         csvData.add([
-          product.name,                           // Product Name
-          product.price.toStringAsFixed(2),      // Price
-          product.stockQuantity.toString(),      // Stock
-          product.minStock.toString(),           // Min Stock
-          status,                                // Status
+          sale.id.toString(),
+          customerProvider.getCustomerName(sale.customerId),
+          sale.finalAmount.toStringAsFixed(2),
+          DateFormat.yMMMd().format(sale.createdAt),
         ]);
       }
 
       String csvString = const ListToCsvConverter().convert(csvData);
 
       final directory = await getDownloadsDirectory();
+
       if (directory == null) {
         throw Exception('Downloads directory not found');
       }
 
-      final fileName = 'products_summary_${DateTime.now().toString().replaceAll(':', '-').split('.')[0]}.csv';
+      final fileName =
+          '${reportType}_${DateTime.now().toString().replaceAll(':', '-').split('.')[0]}.csv';
       final file = File('${directory.path}/$fileName');
 
       await file.writeAsString(csvString);
 
-      print('Summary CSV exported to: ${file.path}');
+      print('CSV exported successfully to: ${file.path}');
       return file.path;
-
     } catch (e) {
-      print('Error exporting summary CSV: $e');
+      print('Error exporting CSV: $e');
       rethrow;
     }
   }
 
-  /// Export detailed inventory report
-  static Future<String> exportInventoryReportCSV(List<Product> products) async {
+  static Future<String> exportCustomersToCSV(List<Customer> customers) async {
     try {
       List<List<dynamic>> csvData = [];
-
-      // Add headers
       csvData.add([
-        'SKU/ID',
-        'Product',
-        'Category',
-        'Unit Price',
-        'Unit Cost',
-        'Current Stock',
-        'Reorder Level',
-        'Inventory Value',
-        'Stock Status',
+        'Customer ID',
+        'Name',
+        'Email',
+        'Phone',
       ]);
 
-      // Add product rows with calculations
-      for (var product in products) {
-        final inventoryValue = product.price * product.stockQuantity;
-        final status = product.stockQuantity <= product.minStock
-            ? 'CRITICAL'
-            : product.stockQuantity <= (product.minStock * 1.5)
-            ? 'LOW'
-            : 'ADEQUATE';
-
+      for (var customer in customers) {
         csvData.add([
-          product.id.toString(),
-          product.name,
-          product.categoryId.toString(),
-          product.price.toStringAsFixed(2),
-          product.cost.toStringAsFixed(2),
-          product.stockQuantity.toString(),
-          product.minStock.toString(),
-          inventoryValue.toStringAsFixed(2),
-          status,
+          customer.id.toString(),
+          customer.name,
+          customer.email,
+          customer.phone,
         ]);
       }
 
       String csvString = const ListToCsvConverter().convert(csvData);
 
       final directory = await getDownloadsDirectory();
+
       if (directory == null) {
         throw Exception('Downloads directory not found');
       }
 
-      final fileName = 'inventory_report_${DateTime.now().toString().replaceAll(':', '-').split('.')[0]}.csv';
+      final fileName =
+          'customers_${DateTime.now().toString().replaceAll(':', '-').split('.')[0]}.csv';
       final file = File('${directory.path}/$fileName');
 
       await file.writeAsString(csvString);
 
-      print('Inventory report exported to: ${file.path}');
+      print('CSV exported successfully to: ${file.path}');
       return file.path;
-
     } catch (e) {
-      print('Error exporting inventory report: $e');
+      print('Error exporting CSV: $e');
       rethrow;
     }
   }

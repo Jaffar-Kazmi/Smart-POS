@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import '../../../../core/database/database_helper.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 
 class DashboardStats {
   final double todaysSales;
   final int totalProducts;
-  final int totalCustomers;
+  final int expiringSoonCount;
   final int lowStockCount;
 
   DashboardStats({
     required this.todaysSales,
     required this.totalProducts,
-    required this.totalCustomers,
+    required this.expiringSoonCount,
     required this.lowStockCount,
   });
+
 }
 
 class WeeklySalesData {
@@ -47,12 +49,18 @@ class Transaction {
 
 class DashboardProvider extends ChangeNotifier {
   final DatabaseHelper _db;
+  SettingsProvider _settingsProvider;
   bool _isLoading = false;
   DashboardStats? _dashboardStats;
   List<WeeklySalesData> _weeklySalesData = [];
   List<Transaction> _recentTransactions = [];
 
-  DashboardProvider(this._db);
+  DashboardProvider(this._db, this._settingsProvider);
+
+  void update(SettingsProvider settingsProvider) {
+    _settingsProvider = settingsProvider;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
   DashboardStats? get dashboardStats => _dashboardStats;
@@ -83,9 +91,8 @@ class DashboardProvider extends ChangeNotifier {
       final productsResult = await db.rawQuery('SELECT COUNT(*) as count FROM products');
       final totalProducts = Sqflite.firstIntValue(productsResult) ?? 0;
 
-      // 3. Get Total Customers
-      final customersResult = await db.rawQuery('SELECT COUNT(*) as count FROM customers');
-      final totalCustomers = Sqflite.firstIntValue(customersResult) ?? 0;
+      // 3. Get Expiring Soon Count
+      final expiringSoonCount = await _db.getExpiringSoonCount(_settingsProvider.expiryThreshold);
 
       // 4. Get Low Stock Count
       final lowStockResult = await db.rawQuery('SELECT COUNT(*) as count FROM products WHERE stock_quantity <= min_stock');
@@ -94,7 +101,7 @@ class DashboardProvider extends ChangeNotifier {
       _dashboardStats = DashboardStats(
         todaysSales: todaysSales,
         totalProducts: totalProducts,
-        totalCustomers: totalCustomers,
+        expiringSoonCount: expiringSoonCount,
         lowStockCount: lowStockCount,
       );
 

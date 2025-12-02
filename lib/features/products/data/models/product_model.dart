@@ -1,5 +1,4 @@
-
-import 'package:pos_app/features/products/domain/entities/product.dart';
+import '../../domain/entities/product.dart';
 
 class ProductModel extends Product {
   ProductModel({
@@ -13,6 +12,7 @@ class ProductModel extends Product {
     int? categoryId,
     String? barcode,
     String? imagePath,
+    DateTime? expiryDate,
     required DateTime createdAt,
     required DateTime updatedAt,
   }) : super(
@@ -26,28 +26,32 @@ class ProductModel extends Product {
           categoryId: categoryId,
           barcode: barcode,
           imagePath: imagePath,
+          expiryDate: expiryDate,
           createdAt: createdAt,
           updatedAt: updatedAt,
         );
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) {
+  factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      price: json['price'],
-      cost: json['cost'],
-      stockQuantity: json['stock_quantity'],
-      minStock: json['min_stock'],
-      categoryId: json['category_id'],
-      barcode: json['barcode'],
-      imagePath: json['image_path'],
-      createdAt: DateTime.parse(json['created_at']),
-      updatedAt: DateTime.parse(json['updated_at']),
+      id: map['id'],
+      name: map['name'],
+      description: map['description'],
+      price: (map['price'] as num).toDouble(),
+      cost: (map['cost'] as num).toDouble(),
+      stockQuantity: map['stock_quantity'],
+      minStock: map['min_stock'],
+      categoryId: map['category_id'],
+      barcode: map['barcode'],
+      imagePath: map['image_path'],
+      expiryDate: map['expiry_date'] == null
+          ? null
+          : DateTime.parse(map['expiry_date']),
+      createdAt: DateTime.parse(map['created_at']),
+      updatedAt: DateTime.parse(map['updated_at']),
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
@@ -59,6 +63,7 @@ class ProductModel extends Product {
       'category_id': categoryId,
       'barcode': barcode,
       'image_path': imagePath,
+      'expiry_date': expiryDate?.toIso8601String(),
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };
@@ -76,6 +81,7 @@ class ProductModel extends Product {
     int? categoryId,
     String? barcode,
     String? imagePath,
+    DateTime? expiryDate,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -90,6 +96,7 @@ class ProductModel extends Product {
       categoryId: categoryId ?? this.categoryId,
       barcode: barcode ?? this.barcode,
       imagePath: imagePath ?? this.imagePath,
+      expiryDate: expiryDate ?? this.expiryDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );

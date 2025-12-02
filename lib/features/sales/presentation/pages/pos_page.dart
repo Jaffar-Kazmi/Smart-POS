@@ -212,7 +212,6 @@ class _POSPageState extends State<POSPage> {
                       product.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -232,7 +231,7 @@ class _POSPageState extends State<POSPage> {
                         fontSize: 12,
                         color: product.stockQuantity <= product.minStock
                             ? AppColors.error
-                            : Colors.white70,
+                            : Theme.of(context).textTheme.bodySmall?.color,
                       ),
                     ),
                   ],
@@ -248,106 +247,129 @@ class _POSPageState extends State<POSPage> {
   Widget _buildCartSection() {
     return Consumer<SalesProvider>(
       builder: (context, salesProvider, child) {
-        return Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Current Order',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+        return Theme(
+          data: Theme.of(context).copyWith(
+            textTheme: Theme.of(context).textTheme.copyWith(
+                  // Ensure good contrast for cart text
+                  bodyLarge: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  bodyMedium: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                ),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Current Order',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.red),
-                    onPressed: salesProvider.cart.isEmpty
-                        ? null
-                        : () => _showClearCartConfirmation(context),
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.delete_outline, color: Colors.red),
+                      onPressed: salesProvider.cart.isEmpty
+                          ? null
+                          : () => _showClearCartConfirmation(context),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: salesProvider.cart.isEmpty
-                  ? const Center(
-                      child: Text(
-                        'Cart is empty',
-                        style: TextStyle(color: Colors.white54),
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: salesProvider.cart.length,
-                      itemBuilder: (context, index) {
-                        final item = salesProvider.cart[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: FuturisticCard(
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.product.name,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
+              Expanded(
+                child: salesProvider.cart.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Cart is empty',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: salesProvider.cart.length,
+                        itemBuilder: (context, index) {
+                          final item = salesProvider.cart[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: FuturisticCard(
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.product.name,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                         ),
+                                        Text(
+                                          '${item.product.price.toStringAsFixed(2)} x ${item.quantity}',
+                                          style: Theme.of(context).textTheme.bodyMedium,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.remove_circle_outline,
+                                            size: 20),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                        onPressed: () => salesProvider
+                                            .updateCartItemQuantity(
+                                                item, item.quantity - 1),
                                       ),
                                       Text(
-                                        '${item.product.price.toStringAsFixed(2)} x ${item.quantity}',
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.white70,
-                                        ),
+                                        '${item.quantity}',
+                                        style: Theme.of(context).textTheme.bodyMedium,
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.add_circle_outline,
+                                            size: 20),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurfaceVariant,
+                                        onPressed: () => salesProvider
+                                            .updateCartItemQuantity(
+                                                item, item.quantity + 1),
                                       ),
                                     ],
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove_circle_outline, size: 20),
-                                      color: Colors.white70,
-                                      onPressed: () => salesProvider.updateCartItemQuantity(
-                                          item, item.quantity - 1),
-                                    ),
-                                    Text(
-                                      '${item.quantity}',
-                                      style: const TextStyle(color: Colors.white),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.add_circle_outline, size: 20),
-                                      color: Colors.white70,
-                                      onPressed: () => salesProvider.updateCartItemQuantity(
-                                          item, item.quantity + 1),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  item.subtotal.toStringAsFixed(2),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                  Text(
+                                    item.subtotal.toStringAsFixed(2),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyLarge
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            _buildCartSummary(salesProvider),
-          ],
+                          );
+                        },
+                      ),
+              ),
+              _buildCartSummary(salesProvider),
+            ],
+          ),
         );
       },
     );
@@ -369,15 +391,15 @@ class _POSPageState extends State<POSPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Subtotal', style: TextStyle(color: Colors.white70)),
+              Text('Subtotal', style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
               Text(
                 '${salesProvider.cartSubtotal.toStringAsFixed(2)}/-',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold),
               ),
             ],
           ),
           const SizedBox(height: 16),
-            SizedBox(
+          SizedBox(
             width: double.infinity,
             child: FuturisticButton(
               onPressed: salesProvider.cart.isEmpty
@@ -439,12 +461,12 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
   Widget build(BuildContext context) {
     final salesProvider = Provider.of<SalesProvider>(context);
     final subtotal = salesProvider.cartSubtotal;
-    
+
     double discountAmount = 0;
     if (_appliedCoupon != null) {
       discountAmount = _appliedCoupon!.calculateDiscount(subtotal);
     }
-    
+
     final total = subtotal - discountAmount;
 
     return AlertDialog(
@@ -460,7 +482,8 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
               const SizedBox(height: 16),
               _buildCouponSection(),
               const SizedBox(height: 16),
-              const Text('Payment Method', style: TextStyle(fontWeight: FontWeight.bold)),
+              const Text('Payment Method',
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               Row(
                 children: [
@@ -512,6 +535,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                   labelText: 'Customer (Optional)',
                   prefixIcon: Icon(Icons.person),
                 ),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                 items: [
                   const DropdownMenuItem<Customer>(
                     value: null,
@@ -598,12 +622,13 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
             onPressed: () async {
               if (nameController.text.trim().isEmpty) {
                 ScaffoldMessenger.of(ctx).showSnackBar(
-                  const SnackBar(content: Text('Name is required')),
+                  const SnackBar(content: Text('Name is required *')),
                 );
                 return;
               }
 
-              final customerProvider = Provider.of<CustomerProvider>(context, listen: false);
+              final customerProvider =
+                  Provider.of<CustomerProvider>(context, listen: false);
               final newCustomer = Customer(
                 id: 0,
                 name: nameController.text.trim(),
@@ -615,7 +640,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
               );
 
               await customerProvider.addCustomer(newCustomer);
-              
+
               // Refresh list and select the new customer
               if (mounted) {
                 // The provider should have reloaded, but we need to find the new customer
@@ -625,11 +650,11 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
                 // For now, let's assume it's the last one added.
                 final updatedList = customerProvider.customers;
                 if (updatedList.isNotEmpty) {
-                   setState(() {
+                  setState(() {
                     _selectedCustomer = updatedList.last;
-                     Provider.of<SalesProvider>(context, listen: false)
+                    Provider.of<SalesProvider>(context, listen: false)
                         .setSelectedCustomer(_selectedCustomer);
-                   });
+                  });
                 }
                 Navigator.pop(ctx);
               }
@@ -697,7 +722,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
       },
       selectedColor: Theme.of(context).colorScheme.primary,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.black : Colors.white,
+        color: isSelected ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface,
         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
       ),
     );
@@ -715,7 +740,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
             style: TextStyle(
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
               fontSize: isTotal ? 18 : 14,
-              color: isDiscount ? Colors.greenAccent : Colors.white,
+              color: isDiscount ? Colors.green : Theme.of(context).colorScheme.onSurface,
             ),
           ),
           Text(
@@ -723,7 +748,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
             style: TextStyle(
               fontWeight: isTotal ? FontWeight.bold : FontWeight.normal,
               fontSize: isTotal ? 18 : 14,
-              color: isDiscount ? Colors.greenAccent : Colors.white,
+              color: isDiscount ? Colors.green : Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],
@@ -731,25 +756,29 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
     );
   }
 
-  Future<void> _completeSale(BuildContext context, double discountAmount) async {
+  Future<void> _completeSale(
+      BuildContext context, double discountAmount) async {
     final salesProvider = Provider.of<SalesProvider>(context, listen: false);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     // Capture items before they are cleared
-    final cartItems = salesProvider.cart.map((item) => ReceiptItemDisplay(
-      productName: item.product.name,
-      quantity: item.quantity,
-      price: item.product.price,
-      total: item.subtotal,
-    )).toList();
+    final cartItems = salesProvider.cart
+        .map((item) => ReceiptItemDisplay(
+              productName: item.product.name,
+              quantity: item.quantity,
+              price: item.product.price,
+              total: item.subtotal,
+            ))
+        .toList();
 
     salesProvider.setDiscountAmount(discountAmount);
     // Calculate approximate percent for backward compatibility or receipt display if needed
-    // But for now we just set 0 or calculate it if needed. 
+    // But for now we just set 0 or calculate it if needed.
     // The ReceiptPage might expect discountPercent, so let's calculate it.
     final subtotal = salesProvider.cartSubtotal;
-    final discountPercent = subtotal > 0 ? (discountAmount / subtotal) * 100 : 0.0;
-    
+    final discountPercent =
+        subtotal > 0 ? (discountAmount / subtotal) * 100 : 0.0;
+
     salesProvider.setDiscountPercent(discountPercent);
     salesProvider.setCouponCode(_appliedCoupon?.code);
     salesProvider.setSelectedCustomer(_selectedCustomer);
@@ -761,7 +790,7 @@ class _CheckoutDialogState extends State<_CheckoutDialog> {
 
     if (success && mounted) {
       final completedSale = salesProvider.lastSale;
-      
+
       Navigator.of(context).pop(); // Close dialog
 
       if (completedSale != null) {

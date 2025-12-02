@@ -48,6 +48,12 @@ dependencies:
   # CSV Export
   csv: ^5.0.0
 
+  # Security
+  crypto: ^3.0.3
+
+  # URL Launcher
+  url_launcher: ^6.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

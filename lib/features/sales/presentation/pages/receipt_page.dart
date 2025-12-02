@@ -42,6 +42,7 @@ class ReceiptPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dateFormat = DateFormat('yyyy-MM-dd HH:mm');
+    final theme = Theme.of(context);
 
     // Auto-print when page opens
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -63,39 +64,42 @@ class ReceiptPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Icon(Icons.check_circle_outline,
-                            size: 64, color: Colors.green),
+                        Icon(Icons.check_circle_outline,
+                            size: 64, color: theme.colorScheme.primary),
                         const SizedBox(height: 16),
-                        const Text(
+                        Text(
                           'Payment Successful',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24,
+                          style: theme.textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'Transaction ID: #${sale.id}',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white54),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          ),
                         ),
                         const SizedBox(height: 24),
-                        const Divider(color: Colors.white24),
+                        const Divider(),
                         const SizedBox(height: 16),
-                        _buildInfoRow('Date', dateFormat.format(sale.createdAt)),
-                        _buildInfoRow('Cashier', cashierName),
+                        _buildInfoRow(context, 'Date', dateFormat.format(sale.createdAt)),
+                        _buildInfoRow(context, 'Cashier', cashierName),
                         if (customer != null)
-                          _buildInfoRow('Customer', customer!.name),
-                        _buildInfoRow('Payment Method', sale.paymentMethod),
+                          _buildInfoRow(context, 'Customer', customer!.name),
+                        _buildInfoRow(context, 'Payment Method', sale.paymentMethod),
                         const SizedBox(height: 16),
-                        const Divider(color: Colors.white24),
+                        const Divider(),
                         const SizedBox(height: 16),
-                        const Text(
+                        Text(
                           'Items',
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onSurface,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         ...items.map((item) => Padding(
@@ -106,48 +110,47 @@ class ReceiptPage extends StatelessWidget {
                                   Expanded(
                                     child: Text(
                                       '${item.productName} x${item.quantity}',
-                                      style: const TextStyle(color: Colors.white70),
+                                      style: theme.textTheme.bodyMedium,
                                     ),
                                   ),
                                   Text(
                                     '${item.total.toStringAsFixed(2)}',
-                                    style: const TextStyle(color: Colors.white70),
+                                    style: theme.textTheme.bodyMedium,
                                   ),
                                 ],
                               ),
                             )),
                         const SizedBox(height: 16),
-                        const Divider(color: Colors.white24),
+                        const Divider(),
                         const SizedBox(height: 16),
-                        _buildInfoRow('Subtotal',
+                        _buildInfoRow(context, 'Subtotal',
                             '${sale.subtotal.toStringAsFixed(2)}'),
                         if (sale.discountAmount > 0)
                           _buildInfoRow(
+                            context,
                             'Discount',
                             '-${sale.discountAmount.toStringAsFixed(2)}',
-                            color: Colors.greenAccent,
+                            color: Colors.green,
                           ),
                         if (sale.taxAmount > 0)
                           _buildInfoRow(
-                            'Tax', '${sale.taxAmount.toStringAsFixed(2)}'),
+                            context, 'Tax', '${sale.taxAmount.toStringAsFixed(2)}'),
                         const SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
+                            Text(
                               'Total',
-                              style: TextStyle(
-                                fontSize: 20,
+                              style: theme.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                             Text(
                               '${sale.finalAmount.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: 20,
+                              style: theme.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.primary,
+                                color: theme.colorScheme.primary,
                               ),
                             ),
                           ],
@@ -174,16 +177,19 @@ class ReceiptPage extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, {Color? color}) {
+  Widget _buildInfoRow(BuildContext context, String label, String value, {Color? color}) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: const TextStyle(color: Colors.white54)),
+          Text(label, style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7))),
           Text(value,
-              style: TextStyle(
-                  color: color ?? Colors.white, fontWeight: FontWeight.w500)),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: color ?? theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w500,
+              )),
         ],
       ),
     );

@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../providers/dashboard_provider.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../products/presentation/providers/product_provider.dart';
 import '../../../sales/presentation/pages/pos_page.dart';
 import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
+import '../../../home/presentation/pages/home_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -92,55 +94,85 @@ class _DashboardPageState extends State<DashboardPage> {
         _statCard(
           'Today\'s Sales',
           'PKR ${stats.todaysSales.toStringAsFixed(2)}',
-          Icons.attach_money,
+          Icons.point_of_sale_sharp,
           Colors.green,
+          () {
+            final homePageState = context.findAncestorStateOfType<HomePageState>();
+            homePageState?.onItemTapped(4); // Navigate to reports page
+          },
         ),
         _statCard(
           'Total Products',
           stats.totalProducts.toString(),
           Icons.inventory_2,
           Colors.blue,
+          () {
+            final homePageState = context.findAncestorStateOfType<HomePageState>();
+            homePageState?.onItemTapped(1); // Navigate to products page
+          },
         ),
         _statCard(
-          'Total Customers',
-          stats.totalCustomers.toString(),
-          Icons.people,
+          'Expiry Alert',
+          stats.expiringSoonCount.toString(),
+          Icons.event_busy,
           Colors.orange,
+          () {
+            final productProvider = context.read<ProductProvider>();
+            productProvider.setFilter(ProductFilterType.expiringSoon);
+            final homePageState = context.findAncestorStateOfType<HomePageState>();
+            homePageState?.onItemTapped(1); // Navigate to products page
+          },
         ),
         _statCard(
           'Low Stock',
           stats.lowStockCount.toString(),
           Icons.warning,
           Colors.red,
+          () {
+            final productProvider = context.read<ProductProvider>();
+            productProvider.setFilter(ProductFilterType.lowStock);
+            final homePageState = context.findAncestorStateOfType<HomePageState>();
+            homePageState?.onItemTapped(1); // Navigate to products page
+          },
         ),
       ],
     );
   }
 
-  Widget _statCard(String title, String value, IconData icon, Color color) {
-    return FuturisticCard(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 32, color: color),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
+  Widget _statCard(
+    String title,
+    String value,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: FuturisticCard(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 32, color: color),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
+            const SizedBox(height: 4),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

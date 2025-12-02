@@ -4,6 +4,7 @@ import '../../../../core/theme/theme_provider.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
 import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
+import '../providers/settings_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -12,6 +13,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final authProvider = context.watch<AuthProvider>();
+    final settingsProvider = context.watch<SettingsProvider>();
     final isDark = themeProvider.isDark;
     final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
     final subtitleColor = Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7) ?? Colors.grey;
@@ -41,6 +43,32 @@ class SettingsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 if (authProvider.isAdmin) ...[
+                  _buildSectionHeader(context, 'Product Settings'),
+                  FuturisticCard(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Expiry Alert Threshold (Days)', style: TextStyle(color: textColor)),
+                            Text(settingsProvider.expiryThreshold.toString(), style: TextStyle(color: textColor, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                        Slider(
+                          value: settingsProvider.expiryThreshold.toDouble(),
+                          min: 7,
+                          max: 90,
+                          divisions: 12,
+                          label: settingsProvider.expiryThreshold.toString(),
+                          onChanged: (value) {
+                            context.read<SettingsProvider>().updateExpiryThreshold(value.toInt());
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
                   _buildSectionHeader(context, 'Management'),
                   FuturisticCard(
                     padding: EdgeInsets.zero,

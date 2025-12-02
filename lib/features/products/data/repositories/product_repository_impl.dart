@@ -9,7 +9,7 @@ class ProductRepositoryImpl implements ProductRepository {
     final db = await DatabaseHelper.instance.database;
     final result = await db.query('products');
 
-    return result.map((json) => ProductModel.fromJson(json)).toList();
+    return result.map((json) => ProductModel.fromMap(json)).toList();
   }
 
   @override
@@ -26,6 +26,7 @@ class ProductRepositoryImpl implements ProductRepository {
       'category_id': product.categoryId,
       'barcode': product.barcode,
       'image_path': product.imagePath,
+      'expiry_date': product.expiryDate?.toIso8601String(),
       'created_at': DateTime.now().toIso8601String(),
       'updated_at': DateTime.now().toIso8601String(),
     });
@@ -47,6 +48,7 @@ class ProductRepositoryImpl implements ProductRepository {
         'category_id': product.categoryId,
         'barcode': product.barcode,
         'image_path': product.imagePath,
+        'expiry_date': product.expiryDate?.toIso8601String(),
         'updated_at': DateTime.now().toIso8601String(),
       },
       where: 'id = ?',

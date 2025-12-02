@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../../../products/presentation/providers/product_provider.dart';
 import '../../domain/entities/sale.dart';
@@ -18,7 +17,7 @@ class CartItem {
 
 class SalesProvider extends ChangeNotifier {
   final SalesRepositoryImpl _repository = SalesRepositoryImpl();
-  final ProductProvider _productProvider;
+  ProductProvider _productProvider;
 
   List<Sale> _sales = [];
   List<CartItem> _cart = [];
@@ -32,6 +31,11 @@ class SalesProvider extends ChangeNotifier {
   Sale? _lastSale;
 
   SalesProvider(this._productProvider);
+
+  void update(ProductProvider productProvider) {
+    _productProvider = productProvider;
+    notifyListeners();
+  }
 
   List<Sale> get sales => _sales;
   List<CartItem> get cart => _cart;

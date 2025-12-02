@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 import '../providers/product_provider.dart';
 import '../../domain/entities/product.dart';
 import '../../../auth/presentation/providers/auth_provider.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/services/export_service.dart';
 import '../../../categories/presentation/providers/category_provider.dart';
 import '../../../categories/domain/entities/category.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
+import '../../../settings/presentation/providers/settings_provider.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class _ProductsPageState extends State<ProductsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(isAdmin),
+            _buildHeader(context, isAdmin),
             const SizedBox(height: 16),
             _buildSearchBar(),
             const SizedBox(height: 12),
@@ -53,16 +54,19 @@ class _ProductsPageState extends State<ProductsPage> {
         ),
       ),
       floatingActionButton: isAdmin
-          ? FloatingActionButton(
-              onPressed: () => _showAddProductDialog(),
-              backgroundColor: AppColors.primary,
-              child: const Icon(Icons.add, color: Colors.white),
+          ? Tooltip(
+              message: 'Add new product',
+              child: FloatingActionButton(
+                onPressed: () => _showAddProductDialog(),
+                child: const Icon(Icons.add),
+              ),
             )
           : null,
     );
   }
 
-  Widget _buildHeader(bool isAdmin) {
+  Widget _buildHeader(BuildContext context, bool isAdmin) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Row(
       children: [
         Text(
@@ -71,13 +75,30 @@ class _ProductsPageState extends State<ProductsPage> {
                 fontWeight: FontWeight.bold,
               ),
         ),
+        const SizedBox(width: 16),
+        Chip(
+          avatar: const Icon(Icons.person, size: 16),
+          label: Text(authProvider.currentUser?.name ?? 'System Administrator'),
+        ),
         const Spacer(),
         if (isAdmin)
-          OutlinedButton.icon(
-            onPressed: _exportProductsToCSV,
-            icon: const Icon(Icons.file_upload),
-            label: const Text('Export'),
+          Tooltip(
+            message: 'Export all products to CSV',
+            child: OutlinedButton.icon(
+              onPressed: _exportProductsToCSV,
+              icon: const Icon(Icons.file_upload),
+              label: const Text('Export'),
+            ),
           ),
+        const SizedBox(width: 16),
+        IconButton(
+          icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.error),
+          onPressed: () {
+            authProvider.logout();
+            Navigator.of(context).pushReplacementNamed('/login');
+          },
+          tooltip: 'Logout',
+        ),
       ],
     );
   }
@@ -92,14 +113,17 @@ class _ProductsPageState extends State<ProductsPage> {
           borderRadius: BorderRadius.circular(8),
         ),
         suffixIcon: _searchController.text.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  _searchController.clear();
-                  Provider.of<ProductProvider>(context, listen: false)
-                      .searchProducts('');
-                  setState(() {});
-                },
+            ? Tooltip(
+                message: 'Clear search',
+                child: IconButton(
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    Provider.of<ProductProvider>(context, listen: false)
+                        .searchProducts('');
+                    setState(() {});
+                  },
+                ),
               )
             : null,
       ),
@@ -123,7 +147,12 @@ class _ProductsPageState extends State<ProductsPage> {
         const SizedBox(height: 8),
         Consumer<CategoryProvider>(
           builder: (context, categoryProvider, child) {
-            final categories = ['All', ...categoryProvider.categories.map((c) => c.name)];
+            final specialFilters = ['Low Stock', 'Expiring Soon'];
+            final categories = [
+              'All',
+              ...specialFilters,
+              ...categoryProvider.categories.map((c) => c.name)
+            ];
             return SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
@@ -140,10 +169,11 @@ class _ProductsPageState extends State<ProductsPage> {
                         });
                         _applyFilters();
                       },
-                      backgroundColor: Colors.grey[200],
-                      selectedColor: AppColors.primary,
+                      selectedColor: Theme.of(context).colorScheme.primary,
                       labelStyle: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.onPrimary
+                            : Theme.of(context).colorScheme.onSurface,
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                       ),
                     ),
@@ -161,10 +191,14 @@ class _ProductsPageState extends State<ProductsPage> {
     final provider = Provider.of<ProductProvider>(context, listen: false);
     final searchText = _searchController.text.toLowerCase();
 
-    // Get all products first
-    provider.loadProducts();
+    if (_selectedCategory == 'Low Stock') {
+      provider.setFilter(ProductFilterType.lowStock);
+    } else if (_selectedCategory == 'Expiring Soon') {
+      provider.setFilter(ProductFilterType.expiringSoon);
+    } else {
+      provider.setFilter(ProductFilterType.none);
+    }
 
-    // Apply search filter
     if (searchText.isNotEmpty) {
       provider.searchProducts(searchText);
     }
@@ -181,8 +215,8 @@ class _ProductsPageState extends State<ProductsPage> {
   }
 
   Widget _buildProductsList(bool isAdmin) {
-    return Consumer<ProductProvider>(
-      builder: (context, productProvider, child) {
+    return Consumer2<ProductProvider, SettingsProvider>(
+      builder: (context, productProvider, settingsProvider, child) {
         if (productProvider.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -190,7 +224,9 @@ class _ProductsPageState extends State<ProductsPage> {
         final products = productProvider.products;
 
         // Apply category filter on the UI side if backend doesn't support it
-        final filteredProducts = _selectedCategory == 'All'
+        final filteredProducts = _selectedCategory == 'All' ||
+                _selectedCategory == 'Low Stock' ||
+                _selectedCategory == 'Expiring Soon'
             ? products
             : products
                 .where((p) => p.categoryId == _getCategoryId(_selectedCategory))
@@ -228,6 +264,10 @@ class _ProductsPageState extends State<ProductsPage> {
           itemCount: filteredProducts.length,
           itemBuilder: (context, index) {
             final product = filteredProducts[index];
+            final isExpiring = product.expiryDate != null &&
+                product.expiryDate!.isBefore(DateTime.now()
+                    .add(Duration(days: settingsProvider.expiryThreshold)));
+
             return FuturisticCard(
               padding: const EdgeInsets.all(8),
               child: ListTile(
@@ -253,39 +293,58 @@ class _ProductsPageState extends State<ProductsPage> {
                         'Barcode: ${product.barcode}',
                         style: TextStyle(fontSize: 11, color: Colors.grey[600]),
                       ),
+                    if (product.expiryDate != null)
+                      RichText(
+                        text: TextSpan(
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: isExpiring
+                                  ? Colors.red.shade300
+                                  : Colors.grey[600]),
+                          children: [
+                            const TextSpan(text: 'Expiry: '),
+                            TextSpan(
+                                text: DateFormat.yMMMd()
+                                    .format(product.expiryDate!)),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
                 trailing: isAdmin
-                    ? PopupMenuButton<String>(
-                        onSelected: (value) {
-                          if (value == 'edit') {
-                            _showEditProductDialog(product);
-                          } else if (value == 'delete') {
-                            _showDeleteConfirmation(product);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          const PopupMenuItem(
-                            value: 'edit',
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 20),
-                                SizedBox(width: 8),
-                                Text('Edit'),
-                              ],
+                    ? Tooltip(
+                        message: 'More options',
+                        child: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            if (value == 'edit') {
+                              _showEditProductDialog(product);
+                            } else if (value == 'delete') {
+                              _deleteProduct(context, product);
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            const PopupMenuItem(
+                              value: 'edit',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.edit, size: 20),
+                                  SizedBox(width: 8),
+                                  Text('Edit'),
+                                ],
+                              ),
                             ),
-                          ),
-                          const PopupMenuItem(
-                            value: 'delete',
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete, color: Colors.red, size: 20),
-                                SizedBox(width: 8),
-                                Text('Delete', style: TextStyle(color: Colors.red)),
-                              ],
+                            const PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(Icons.delete, color: Colors.red, size: 20),
+                                  SizedBox(width: 8),
+                                  Text('Delete', style: TextStyle(color: Colors.red)),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       )
                     : const Icon(Icons.lock, color: Colors.grey),
               ),
@@ -301,7 +360,8 @@ class _ProductsPageState extends State<ProductsPage> {
       context: context,
       builder: (context) => _ProductDialog(
         onSave: (product) async {
-          final productProvider = Provider.of<ProductProvider>(context, listen: false);
+          final productProvider =
+              Provider.of<ProductProvider>(context, listen: false);
           await productProvider.addProduct(product);
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -319,7 +379,8 @@ class _ProductsPageState extends State<ProductsPage> {
       builder: (context) => _ProductDialog(
         product: product,
         onSave: (updatedProduct) {
-          final productProvider = Provider.of<ProductProvider>(context, listen: false);
+          final productProvider =
+              Provider.of<ProductProvider>(context, listen: false);
           productProvider.updateProduct(updatedProduct);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Product updated successfully')),
@@ -329,31 +390,51 @@ class _ProductsPageState extends State<ProductsPage> {
     );
   }
 
-  void _showDeleteConfirmation(Product product) {
-    showDialog(
+  Future<void> _deleteProduct(BuildContext context, Product product) async {
+    final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Product'),
-        content: Text('Are you sure you want to delete ${product.name}?'),
+        content: Text('Are you sure you want to delete "${product.name}"?'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => Navigator.pop(context, false),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
-            onPressed: () {
-              Provider.of<ProductProvider>(context, listen: false).deleteProduct(product.id);
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Product deleted successfully')),
-              );
-            },
+            onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
+            child: const Text('Delete'),
           ),
         ],
       ),
     );
+
+    if (confirm == true) {
+      final provider = context.read<ProductProvider>();
+      await provider.deleteProduct(product.id);
+
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+              SnackBar(
+                content: Text('Product "${product.name}" deleted'),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () => provider.undoDelete(),
+                ),
+                duration: const Duration(seconds: 3),
+                behavior: SnackBarBehavior.floating,
+              ),
+            )
+            .closed
+            .then((reason) {
+          if (reason != SnackBarClosedReason.action) {
+            provider.confirmDelete();
+          }
+        });
+      }
+    }
   }
 
   Future<void> _exportProductsToCSV() async {
@@ -420,6 +501,7 @@ class _ProductDialogState extends State<_ProductDialog> {
   late TextEditingController _stockController;
   late TextEditingController _minStockController;
   late TextEditingController _barcodeController;
+  late DateTime? _expiryDate;
   int _selectedCategoryId = 1;
   bool _isLoading = false;
 
@@ -439,7 +521,8 @@ class _ProductDialogState extends State<_ProductDialog> {
         text: widget.product?.minStock.toString() ?? '');
     _barcodeController =
         TextEditingController(text: widget.product?.barcode ?? '');
-    
+    _expiryDate = widget.product?.expiryDate;
+
     final categoryProvider = Provider.of<CategoryProvider>(context, listen: false);
     if (widget.product != null) {
       _selectedCategoryId = widget.product!.categoryId ?? 1;
@@ -462,6 +545,20 @@ class _ProductDialogState extends State<_ProductDialog> {
     super.dispose();
   }
 
+  Future<void> _selectExpiryDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _expiryDate ?? DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null && picked != _expiryDate) {
+      setState(() {
+        _expiryDate = picked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -477,11 +574,15 @@ class _ProductDialogState extends State<_ProductDialog> {
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(
-                    labelText: 'Product Name',
+                    labelText: 'Product Name *',
                     border: OutlineInputBorder(),
                   ),
-                  validator: (value) =>
-                      value?.isEmpty ?? true ? 'Required' : null,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Required';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -499,14 +600,16 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _priceController,
                         decoration: const InputDecoration(
-                          labelText: 'Price',
+                          labelText: 'Price *',
                           border: OutlineInputBorder(),
                           suffixText: '/-',
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (double.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          if (double.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -518,14 +621,16 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _costController,
                         decoration: const InputDecoration(
-                          labelText: 'Cost',
+                          labelText: 'Cost *',
                           border: OutlineInputBorder(),
                           suffixText: '/-',
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (double.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Invalid number';
+                          }
+                          if (double.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -541,13 +646,15 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _stockController,
                         decoration: const InputDecoration(
-                          labelText: 'Stock Quantity',
+                          labelText: 'Stock Quantity *',
                           border: OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (int.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          if (int.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -559,13 +666,15 @@ class _ProductDialogState extends State<_ProductDialog> {
                       child: TextFormField(
                         controller: _minStockController,
                         decoration: const InputDecoration(
-                          labelText: 'Min Stock',
+                          labelText: 'Min Stock *',
                           border: OutlineInputBorder(),
                         ),
                         keyboardType: TextInputType.number,
                         validator: (value) {
-                          if (value?.isEmpty ?? true) return 'Required';
-                          if (int.tryParse(value!) == null) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'Required';
+                          }
+                          if (int.tryParse(value) == null) {
                             return 'Invalid number';
                           }
                           return null;
@@ -580,6 +689,17 @@ class _ProductDialogState extends State<_ProductDialog> {
                   decoration: const InputDecoration(
                     labelText: 'Barcode',
                     border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Tooltip(
+                  message: 'Select the product\'s expiry date',
+                  child: ListTile(
+                    title: Text(_expiryDate == null
+                        ? 'Select Expiry Date'
+                        : DateFormat.yMMMd().format(_expiryDate!)),
+                    trailing: const Icon(Icons.calendar_today),
+                    onTap: () => _selectExpiryDate(context),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -623,7 +743,7 @@ class _ProductDialogState extends State<_ProductDialog> {
         ElevatedButton(
           onPressed: _isLoading ? null : _saveProduct,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
+            backgroundColor: Theme.of(context).colorScheme.primary,
             foregroundColor: Colors.white,
           ),
           child: _isLoading
@@ -655,6 +775,7 @@ class _ProductDialogState extends State<_ProductDialog> {
         minStock: int.parse(_minStockController.text),
         barcode: _barcodeController.text.trim(),
         categoryId: _selectedCategoryId,
+        expiryDate: _expiryDate,
         createdAt: widget.product?.createdAt ?? DateTime.now(),
         updatedAt: DateTime.now(),
       );
@@ -667,15 +788,25 @@ class _ProductDialogState extends State<_ProductDialog> {
 
   Future<int?> _showAddCategoryDialog(BuildContext context) async {
     final nameController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
     return showDialog<int>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text('Add New Category'),
-        content: TextField(
-          controller: nameController,
-          decoration: const InputDecoration(
-            labelText: 'Category name',
-            border: OutlineInputBorder(),
+        content: Form(
+          key: formKey,
+          child: TextFormField(
+            controller: nameController,
+            decoration: const InputDecoration(
+              labelText: 'Category name *',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value == null || value.trim().isEmpty) {
+                return 'Please enter category name';
+              }
+              return null;
+            },
           ),
         ),
         actions: [
@@ -685,24 +816,19 @@ class _ProductDialogState extends State<_ProductDialog> {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (nameController.text.trim().isEmpty) {
-                ScaffoldMessenger.of(ctx).showSnackBar(
-                  const SnackBar(content: Text('Please enter category name')),
+              if (formKey.currentState!.validate()) {
+                final categoryProvider = ctx.read<CategoryProvider>();
+                final category = Category(
+                  id: 0,
+                  name: nameController.text.trim(),
                 );
-                return;
-              }
 
-              final categoryProvider = ctx.read<CategoryProvider>();
-              final category = Category(
-                id: 0,
-                name: nameController.text.trim(),
-              );
+                await categoryProvider.addCategory(category);
 
-              await categoryProvider.addCategory(category);
-
-              if (ctx.mounted) {
-                final newId = categoryProvider.categories.last.id;
-                Navigator.pop(ctx, newId);
+                if (ctx.mounted) {
+                  final newId = categoryProvider.categories.last.id;
+                  Navigator.pop(ctx, newId);
+                }
               }
             },
             child: const Text('Save'),

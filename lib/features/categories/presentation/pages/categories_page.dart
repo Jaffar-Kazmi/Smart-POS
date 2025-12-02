@@ -1,5 +1,3 @@
-// lib/features/categories/presentation/pages/categories_page.dart
-
 import 'package:flutter/material.dart' hide Category;
 import 'package:provider/provider.dart';
 import '../../domain/entities/category.dart';
@@ -73,7 +71,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteCategory(category),
+                        onPressed: () => _deleteCategory(context, category),
                       ),
                     ],
                   ),
@@ -177,38 +175,106 @@ class _CategoriesPageState extends State<CategoriesPage> {
     );
   }
 
-  Future<void> _deleteCategory(Category category) async {
-    final confirm = await showDialog<bool>(
+  Future<void> _deleteCategory(BuildContext context, Category category) async {
+    final provider = context.read<CategoryProvider>();
+    final productCount = await provider.getProductCountForCategory(category.id);
+
+    if (productCount > 0) {
+      await _showDeleteCategoryWithProductsDialog(context, category, productCount);
+    } else {
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Delete Category'),
+          content: Text('Are you sure you want to delete "${category.name}"?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              child: const Text('Delete'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm == true) {
+        await provider.deleteCategory(category.id);
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+                SnackBar(
+                  content: Text('Category "${category.name}" deleted'),
+                  action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () => provider.undoDelete(),
+                  ),
+                  duration: const Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                  showCloseIcon: true,
+                ),
+              )
+              .closed
+              .then((reason) {
+            if (reason != SnackBarClosedReason.action) {
+              provider.confirmDelete();
+            }
+          });
+        }
+      }
+    }
+  }
+
+  Future<void> _showDeleteCategoryWithProductsDialog(
+      BuildContext context, Category category, int productCount) async {
+    final provider = context.read<CategoryProvider>();
+    int? selectedCategoryId;
+
+    await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Category'),
-        content: Text(
-          'Are you sure you want to delete "${category.name}"?\n\nThis action cannot be undone.',
+        title: Text('Delete Category: ${category.name}'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+                'This category has $productCount products associated with it. What would you like to do?'),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<int>(
+              hint: const Text('Move products to...'),
+              items: provider.categories
+                  .where((c) => c.id != category.id)
+                  .map((c) => DropdownMenuItem(value: c.id, child: Text(c.name)))
+                  .toList(),
+              onChanged: (value) => selectedCategoryId = value,
+            ),
+          ],
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          ElevatedButton(
+            onPressed: () {
+              if (selectedCategoryId != null) {
+                Navigator.pop(context);
+                provider.deleteCategory(category.id, newCategoryId: selectedCategoryId);
+              }
+            },
+            child: const Text('Move Products'),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () {
+              Navigator.pop(context);
+              provider.deleteCategory(category.id, deleteProducts: true);
+            },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Delete'),
+            child: const Text('Delete All Products'),
           ),
         ],
       ),
     );
-
-    if (confirm == true && mounted) {
-      final success = await context.read<CategoryProvider>().deleteCategory(category.id);
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Category deleted successfully'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    }
   }
 }
