@@ -146,35 +146,6 @@ class _LoginPageState extends State<LoginPage> {
                               );
                             }
                         ),
-                        const SizedBox(height: 24),
-
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.teal,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Demo Credentials:',
-                                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                                  color: AppColors.textSecondary,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Admin: admin / password\nCashier: cashier / password',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Colors.white,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 8),
-                            ],
-                          ),
-                        ),
                       ],
                     ),
                   ),

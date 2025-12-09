@@ -28,7 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
-    
+
     if (!authProvider.isAdmin) {
       return POSPage();
     }
@@ -86,6 +86,8 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildStatCards(DashboardStats stats) {
     final homePageState = context.findAncestorStateOfType<HomePageState>();
+    final colorScheme = Theme.of(context).colorScheme;
+
     return GridView.count(
       crossAxisCount: 4,
       crossAxisSpacing: 16,
@@ -95,10 +97,10 @@ class _DashboardPageState extends State<DashboardPage> {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         _statCard(
-          'Today\'s Sales',
+          "Today's Sales",
           'PKR ${stats.todaysSales.toStringAsFixed(2)}',
           Icons.point_of_sale_sharp,
-          Theme.of(context).colorScheme.primary,
+          colorScheme.primary,
           () {
             homePageState?.onItemTapped(4); // Navigate to reports page
           },
@@ -107,7 +109,7 @@ class _DashboardPageState extends State<DashboardPage> {
           'Total Products',
           stats.totalProducts.toString(),
           Icons.inventory_2,
-          Theme.of(context).colorScheme.primary,
+          colorScheme.primary,
           () {
             homePageState?.onItemTapped(1); // Navigate to products page
           },
@@ -116,7 +118,7 @@ class _DashboardPageState extends State<DashboardPage> {
           'Expiry Alert',
           stats.expiringSoonCount.toString(),
           Icons.event_busy,
-          Colors.orange,
+          colorScheme.secondary,
           () {
             final productProvider = context.read<ProductProvider>();
             productProvider.setFilter(ProductFilterType.expiringSoon);
@@ -127,7 +129,7 @@ class _DashboardPageState extends State<DashboardPage> {
           'Low Stock',
           stats.lowStockCount.toString(),
           Icons.warning,
-          Colors.red,
+          colorScheme.error,
           () {
             final productProvider = context.read<ProductProvider>();
             productProvider.setFilter(ProductFilterType.lowStock);
@@ -158,7 +160,9 @@ class _DashboardPageState extends State<DashboardPage> {
             const SizedBox(height: 12),
             Text(
               value,
-              style: textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: textTheme.headlineLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -175,6 +179,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildSalesChart(List<WeeklySalesData> data) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final colorScheme = Theme.of(context).colorScheme;
     return FuturisticCard(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -190,25 +195,25 @@ class _DashboardPageState extends State<DashboardPage> {
             child: BarChart(
               BarChartData(
                 alignment: BarChartAlignment.spaceAround,
-                maxY: data.isEmpty 
-                    ? 100 
+                maxY: data.isEmpty
+                    ? 100
                     : data.map((e) => e.revenue).reduce((a, b) => a > b ? a : b) * 1.2,
                 barTouchData: BarTouchData(
                   enabled: true,
                   touchTooltipData: BarTouchTooltipData(
-                    getTooltipColor: (_) => Colors.blueGrey,
+                    getTooltipColor: (_) => colorScheme.surfaceVariant,
                     getTooltipItem: (group, groupIndex, rod, rodIndex) {
                       return BarTooltipItem(
                         '${data[group.x.toInt()].date}\n',
-                        const TextStyle(
-                          color: Colors.white,
+                        TextStyle(
+                          color: colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.bold,
                         ),
                         children: <TextSpan>[
                           TextSpan(
                             text: (rod.toY - 1).toString(),
-                            style: const TextStyle(
-                              color: Colors.yellow,
+                            style: TextStyle(
+                              color: colorScheme.primary,
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                             ),
@@ -265,7 +270,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     barRods: [
                       BarChartRodData(
                         toY: entry.value.revenue,
-                        color: isDarkMode ? Theme.of(context).colorScheme.secondary : Theme.of(context).primaryColor,
+                        color: isDarkMode ? colorScheme.secondary : colorScheme.primary,
                         width: 16,
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
                       ),
@@ -281,6 +286,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Widget _buildRecentTransactions(List<Transaction> transactions) {
+    final colorScheme = Theme.of(context).colorScheme;
     return FuturisticCard(
       padding: const EdgeInsets.all(24),
       child: Column(
@@ -304,10 +310,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: CircleAvatar(
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: colorScheme.surfaceVariant,
                     child: Icon(
                       tx.paymentMethod == 'Cash' ? Icons.money : Icons.credit_card,
-                      color: Colors.grey[700],
+                      color: colorScheme.onSurfaceVariant,
                       size: 20,
                     ),
                   ),

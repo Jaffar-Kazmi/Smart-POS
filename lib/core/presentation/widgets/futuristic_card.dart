@@ -10,6 +10,7 @@ class FuturisticCard extends StatelessWidget {
   final VoidCallback? onTap;
   final EdgeInsetsGeometry? padding;
   final Widget? child;
+  final Color? color;
 
   const FuturisticCard({
     Key? key,
@@ -21,6 +22,7 @@ class FuturisticCard extends StatelessWidget {
     this.onTap,
     this.padding,
     this.child,
+    this.color,
   }) : super(key: key);
 
   @override
@@ -28,6 +30,7 @@ class FuturisticCard extends StatelessWidget {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: color,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
