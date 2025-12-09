@@ -18,10 +18,6 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   void initState() {
     super.initState();
-    // Load users if not already loaded or refresh
-    // Assuming AuthProvider handles user management for now, or we might need a separate UserProvider
-    // For simplicity, let's assume AuthProvider has a method to get all users.
-    // If not, we'll need to add it.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<AuthProvider>().loadAllUsers();
     });
@@ -48,7 +44,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => context.pop(),
             ),
-            actions: [],
+            onReload: () => Provider.of<AuthProvider>(context, listen: false).loadAllUsers(),
           ),
           Expanded(
             child: authProvider.isLoading

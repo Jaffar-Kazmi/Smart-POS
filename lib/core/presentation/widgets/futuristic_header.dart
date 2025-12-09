@@ -7,12 +7,14 @@ class FuturisticHeader extends StatelessWidget {
   final String title;
   final List<Widget>? actions;
   final Widget? leading;
+  final VoidCallback? onReload;
 
   const FuturisticHeader({
     Key? key,
     required this.title,
     this.actions,
     this.leading,
+    this.onReload,
   }) : super(key: key);
 
   @override
@@ -38,6 +40,12 @@ class FuturisticHeader extends StatelessWidget {
               label: Text(currentUser.name),
             ),
           const Spacer(),
+          if (onReload != null)
+            IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: onReload,
+              tooltip: 'Reload Data',
+            ),
           if (actions != null) ...actions!,
           const SizedBox(width: 16),
           IconButton(

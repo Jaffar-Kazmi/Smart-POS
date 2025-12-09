@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/category.dart';
 import '../providers/category_provider.dart';
+import '../../../../core/presentation/widgets/futuristic_header.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
@@ -29,6 +30,18 @@ class _CategoriesPageState extends State<CategoriesPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              Provider.of<CategoryProvider>(context, listen: false).loadCategories();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Categories reloaded')),
+              );
+            },
+            tooltip: 'Reload Categories',
+          ),
+        ],
         elevation: 0,
       ),
       body: Consumer<CategoryProvider>(

@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  shared_preferences: ^2.2.2 # NEW
+  shared_preferences: ^2.2.2
   screen_retriever: any
 
   # State Management
@@ -27,6 +27,7 @@ dependencies:
 
   # UI & Material Design
   cupertino_icons: ^1.0.6
+  google_fonts: ^6.2.1
 
   # Charts & Data Visualization
   fl_chart: ^1.1.1

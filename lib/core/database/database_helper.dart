@@ -244,6 +244,16 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
+  Future<bool> barcodeExists(String barcode, {int? currentProductId}) async {
+    final db = await database;
+    final result = await db.query(
+      'products',
+      where: 'barcode = ? AND id != ?',
+      whereArgs: [barcode, currentProductId ?? -1],
+    );
+    return result.isNotEmpty;
+  }
+
   Future<bool> registerUser({
     required String name,
     required String email,
@@ -575,6 +585,18 @@ class DatabaseHelper {
       [thresholdDate.toIso8601String()],
     );
     return (result.first['count'] as int?) ?? 0;
+  }
+
+  Future<double> getTotalCostOfSales(String startDate, String endDate) async {
+    final db = await database;
+    final result = await db.rawQuery('''
+      SELECT SUM(p.cost * si.quantity) as total_cost
+      FROM sale_items si
+      JOIN products p ON si.product_id = p.id
+      JOIN sales s ON si.sale_id = s.id
+      WHERE s.created_at BETWEEN ? AND ?
+    ''', [startDate, endDate]);
+    return (result.first['total_cost'] as double?) ?? 0.0;
   }
 
 

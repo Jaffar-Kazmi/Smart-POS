@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart' hide Category;
 import '../../../../core/database/database_helper.dart';
 import '../../domain/entities/category.dart';
@@ -11,6 +12,7 @@ class CategoryProvider extends ChangeNotifier {
   Category? _lastDeletedCategory;
   int? _newCategoryIdForProducts;
   bool _shouldDeleteProducts = false;
+  Timer? _deleteTimer;
 
   CategoryProvider(this._db);
 
@@ -71,38 +73,63 @@ class CategoryProvider extends ChangeNotifier {
   }
 
   Future<void> deleteCategory(int id, {int? newCategoryId, bool deleteProducts = false}) async {
+    _deleteTimer?.cancel();
+    print('deleteCategory called with id=$id');
+
     final categoryIndex = _categories.indexWhere((c) => c.id == id);
-    if (categoryIndex == -1) return;
+    if (categoryIndex == -1) {
+      print('Category not found in local list');
+      return;
+    }
 
     _lastDeletedCategory = _categories[categoryIndex];
+    print('Marked for delete: ${_lastDeletedCategory!.id} ${_lastDeletedCategory!.name}');
     _newCategoryIdForProducts = newCategoryId;
     _shouldDeleteProducts = deleteProducts;
 
     _categories.removeAt(categoryIndex);
     notifyListeners();
+
+    _deleteTimer = Timer(const Duration(seconds: 4), () {
+      print('Timer fired -> calling confirmDelete()');
+      confirmDelete();
+    });
   }
 
+
   Future<void> confirmDelete() async {
+    print('confirmDelete called');
+    _deleteTimer?.cancel();
     if (_lastDeletedCategory != null) {
+      print('Deleting from DB: ${_lastDeletedCategory!.id}');
       try {
         if (_shouldDeleteProducts) {
           await _db.deleteProductsByCategoryId(_lastDeletedCategory!.id);
         } else if (_newCategoryIdForProducts != null) {
-          await _db.moveProductsToCategory(_lastDeletedCategory!.id, _newCategoryIdForProducts!);
+          await _db.moveProductsToCategory(
+            _lastDeletedCategory!.id,
+            _newCategoryIdForProducts!,
+          );
         }
         await _db.deleteCategory(_lastDeletedCategory!.id);
         _lastDeletedCategory = null;
         _newCategoryIdForProducts = null;
         _shouldDeleteProducts = false;
+        // important: reload from DB so UI matches DB
+        await loadCategories();
       } catch (e) {
         _error = 'Error deleting category from DB: $e';
         print(_error);
         notifyListeners();
       }
+    } else {
+      print('No lastDeletedCategory when confirmDelete called');
     }
   }
 
+
   Future<void> undoDelete() async {
+    _deleteTimer?.cancel(); // Cancel the automatic confirmation
     if (_lastDeletedCategory != null) {
       _categories.add(_lastDeletedCategory!);
       _categories.sort((a, b) => a.name.compareTo(b.name));

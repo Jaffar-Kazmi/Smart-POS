@@ -9,6 +9,8 @@ class ReportsStats {
   final double weeklyRevenue;
   final double monthlyRevenue;
   final int totalCustomers;
+  final double totalCostOfGoods;
+  final double grossProfit;
 
   ReportsStats({
     required this.totalRevenue,
@@ -17,6 +19,8 @@ class ReportsStats {
     required this.weeklyRevenue,
     required this.monthlyRevenue,
     required this.totalCustomers,
+    required this.totalCostOfGoods,
+    required this.grossProfit,
   });
 }
 
@@ -44,6 +48,11 @@ class ReportsProvider extends ChangeNotifier {
       
       final totalRevenueResult = await db.rawQuery('SELECT SUM(total_amount) as total FROM sales');
       final totalRevenue = (totalRevenueResult.first['total'] as num?)?.toDouble() ?? 0.0;
+
+      final startDate = DateTime(2000).toIso8601String();
+      final endDate = DateTime.now().add(const Duration(days: 365)).toIso8601String();
+      final totalCostOfGoods = await _db.getTotalCostOfSales(startDate, endDate);
+      final grossProfit = totalRevenue - totalCostOfGoods;
       
       final totalOrdersResult = await db.rawQuery('SELECT COUNT(*) as count FROM sales');
       final totalOrders = Sqflite.firstIntValue(totalOrdersResult) ?? 0;
@@ -55,6 +64,8 @@ class ReportsProvider extends ChangeNotifier {
         totalCustomers: totalCustomers,
         totalRevenue: totalRevenue,
         totalOrders: totalOrders,
+        totalCostOfGoods: totalCostOfGoods,
+        grossProfit: grossProfit,
       );
     } catch (e) {
       print('Error loading report stats: $e');

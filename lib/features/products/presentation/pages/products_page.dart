@@ -11,6 +11,7 @@ import '../../../categories/domain/entities/category.dart';
 import '../../../../core/presentation/widgets/futuristic_card.dart';
 import '../../../../core/presentation/widgets/futuristic_header.dart';
 import '../../../settings/presentation/providers/settings_provider.dart';
+import '../../../../core/database/database_helper.dart';
 
 class ProductsPage extends StatefulWidget {
   const ProductsPage({Key? key}) : super(key: key);
@@ -27,9 +28,20 @@ class _ProductsPageState extends State<ProductsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProductProvider>(context, listen: false).loadProducts();
-      Provider.of<CategoryProvider>(context, listen: false).loadCategories();
+      _loadData();
     });
+  }
+
+  void _loadData({bool clearFilters = false}) {
+    if (clearFilters) {
+      _searchController.clear();
+      setState(() {
+        _selectedCategory = 'All';
+      });
+      Provider.of<ProductProvider>(context, listen: false).setFilter(ProductFilterType.none);
+    }
+    Provider.of<ProductProvider>(context, listen: false).loadProducts();
+    Provider.of<CategoryProvider>(context, listen: false).loadCategories();
   }
 
   @override
@@ -43,6 +55,12 @@ class _ProductsPageState extends State<ProductsPage> {
         children: [
           FuturisticHeader(
             title: 'Products & Inventory',
+            onReload: () {
+              _loadData(clearFilters: true);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Product list reloaded and filters cleared')),
+              );
+            },
             actions: [
               if (isAdmin)
                 Tooltip(
@@ -204,7 +222,6 @@ class _ProductsPageState extends State<ProductsPage> {
 
         final products = productProvider.products;
 
-        // Apply category filter on the UI side if backend doesn't support it
         final filteredProducts = _selectedCategory == 'All' ||
                 _selectedCategory == 'Low Stock' ||
                 _selectedCategory == 'Expiring Soon'
@@ -434,11 +451,7 @@ class _ProductsPageState extends State<ProductsPage> {
         return;
       }
 
-      print('📦 Exporting ${products.length} products...');
-
       final filePath = await ExportService.exportProductsToCSV(products);
-
-      print('Export complete: $filePath');
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -450,8 +463,6 @@ class _ProductsPageState extends State<ProductsPage> {
         );
       }
     } catch (e) {
-      print('Export error: $e');
-
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -514,7 +525,7 @@ class _ProductDialogState extends State<_ProductDialog> {
     } else if (categoryProvider.categories.isNotEmpty) {
       _selectedCategoryId = categoryProvider.categories.first.id;
     } else {
-      _selectedCategoryId = -1; // Default to "Add new" if no categories exist
+      _selectedCategoryId = -1;
     }
   }
 
@@ -542,6 +553,15 @@ class _ProductDialogState extends State<_ProductDialog> {
         _expiryDate = picked;
       });
     }
+  }
+
+  Future<bool> _isBarcodeDuplicate(String barcode) async {
+    if (barcode.trim().isEmpty) return false;
+    final dbHelper = DatabaseHelper.instance;
+    return await dbHelper.barcodeExists(
+      barcode.trim(),
+      currentProductId: widget.product?.id,
+    );
   }
 
   @override
@@ -746,27 +766,44 @@ class _ProductDialogState extends State<_ProductDialog> {
     );
   }
 
-  void _saveProduct() {
-    if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+  void _saveProduct() async {
+    if (!(_formKey.currentState?.validate() ?? false)) {
+      return;
+    }
 
-      final product = Product(
-        id: widget.product?.id ?? 0,
-        name: _nameController.text.trim(),
-        description: _descriptionController.text.trim(),
-        price: double.parse(_priceController.text),
-        cost: double.parse(_costController.text),
-        stockQuantity: int.parse(_stockController.text),
-        minStock: int.parse(_minStockController.text),
-        barcode: _barcodeController.text.trim(),
-        categoryId: _selectedCategoryId,
-        expiryDate: _expiryDate,
-        createdAt: widget.product?.createdAt ?? DateTime.now(),
-        updatedAt: DateTime.now(),
-      );
+    setState(() => _isLoading = true);
 
-      widget.onSave(product);
+    final isDuplicate = await _isBarcodeDuplicate(_barcodeController.text);
+    if (isDuplicate) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('This barcode is already in use.'),
+              backgroundColor: Colors.red),
+        );
+        setState(() => _isLoading = false);
+      }
+      return;
+    }
 
+    final product = Product(
+      id: widget.product?.id ?? 0,
+      name: _nameController.text.trim(),
+      description: _descriptionController.text.trim(),
+      price: double.parse(_priceController.text),
+      cost: double.parse(_costController.text),
+      stockQuantity: int.parse(_stockController.text),
+      minStock: int.parse(_minStockController.text),
+      barcode: _barcodeController.text.trim(),
+      categoryId: _selectedCategoryId,
+      expiryDate: _expiryDate,
+      createdAt: widget.product?.createdAt ?? DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    widget.onSave(product);
+
+    if (mounted) {
       Navigator.pop(context);
     }
   }

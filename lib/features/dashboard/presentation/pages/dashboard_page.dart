@@ -28,7 +28,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     final authProvider = context.watch<AuthProvider>();
-
+    
     if (!authProvider.isAdmin) {
       return POSPage();
     }
@@ -36,7 +36,10 @@ class _DashboardPageState extends State<DashboardPage> {
     return Scaffold(
       body: Column(
         children: [
-          const FuturisticHeader(title: 'Dashboard', actions: []),
+          FuturisticHeader(
+            title: 'Dashboard',
+            onReload: () => Provider.of<DashboardProvider>(context, listen: false).loadDashboardData(),
+          ),
           Expanded(
             child: Consumer<DashboardProvider>(
               builder: (context, provider, child) {
@@ -142,6 +145,8 @@ class _DashboardPageState extends State<DashboardPage> {
     Color color,
     VoidCallback onTap,
   ) {
+    final textTheme = Theme.of(context).textTheme;
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
@@ -149,22 +154,17 @@ class _DashboardPageState extends State<DashboardPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 32, color: color),
-            const SizedBox(height: 8),
+            Icon(icon, size: 40, color: color),
+            const SizedBox(height: 12),
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: textTheme.headlineLarge?.copyWith(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 8),
             Text(
               title,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
+              style: textTheme.titleMedium,
               textAlign: TextAlign.center,
             ),
           ],

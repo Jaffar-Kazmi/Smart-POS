@@ -42,6 +42,7 @@ class _CouponsPageState extends State<CouponsPage> {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => context.pop(),
             ),
+            onReload: () => Provider.of<CouponProvider>(context, listen: false).loadCoupons(),
           ),
           Expanded(
             child: couponProvider.isLoading

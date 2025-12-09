@@ -29,10 +29,14 @@ class _POSPageState extends State<POSPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ProductProvider>(context, listen: false).loadProducts();
-      Provider.of<CustomerProvider>(context, listen: false).loadCustomers();
-      Provider.of<CouponProvider>(context, listen: false).loadCoupons();
+      _loadData();
     });
+  }
+
+  void _loadData() {
+    Provider.of<ProductProvider>(context, listen: false).loadProducts();
+    Provider.of<CustomerProvider>(context, listen: false).loadCustomers();
+    Provider.of<CouponProvider>(context, listen: false).loadCoupons();
   }
 
   @override
@@ -48,7 +52,7 @@ class _POSPageState extends State<POSPage> {
     return Scaffold(
       body: Column(
         children: [
-          const FuturisticHeader(title: 'POS Terminal', actions: []),
+          FuturisticHeader(title: 'POS Terminal', onReload: _loadData),
           Expanded(
             child: Row(
               children: [
@@ -176,8 +180,8 @@ class _POSPageState extends State<POSPage> {
 
         return GridView.builder(
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 0.8,
+            crossAxisCount: 5,
+            childAspectRatio: 0.9,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
@@ -249,7 +253,6 @@ class _POSPageState extends State<POSPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             textTheme: Theme.of(context).textTheme.copyWith(
-                  // Ensure good contrast for cart text
                   bodyLarge: TextStyle(
                     color: Theme.of(context).colorScheme.onSurface,
                     fontWeight: FontWeight.bold,

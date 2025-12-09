@@ -20,10 +20,14 @@ class _ReportsPageState extends State<ReportsPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ReportsProvider>().loadStats();
-      context.read<SalesProvider>().loadSales();
-      context.read<CustomerProvider>().loadCustomers();
+      _loadData();
     });
+  }
+
+  void _loadData() {
+    context.read<ReportsProvider>().loadStats();
+    context.read<SalesProvider>().loadSales();
+    context.read<CustomerProvider>().loadCustomers();
   }
 
   @override
@@ -39,6 +43,7 @@ class _ReportsPageState extends State<ReportsPage> {
         children: [
           FuturisticHeader(
             title: 'Reports & Analytics',
+            onReload: _loadData,
             actions: [
               Tooltip(
                 message: 'Export all data to CSV',
@@ -83,19 +88,24 @@ class _ReportsPageState extends State<ReportsPage> {
                       ),
                       const SizedBox(width: 16),
                       _ReportCard(
-                        title: 'Total Orders',
-                        value: stats.totalOrders.toString(),
+                        title: 'Total Cost of Goods',
+                        value: stats.totalCostOfGoods.toStringAsFixed(2),
                       ),
                       const SizedBox(width: 16),
                       _ReportCard(
-                        title: 'Today Revenue',
-                        value: stats.todayRevenue.toStringAsFixed(2),
+                        title: 'Gross Profit',
+                        value: stats.grossProfit.toStringAsFixed(2),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
+                      _ReportCard(
+                        title: 'Total Orders',
+                        value: stats.totalOrders.toString(),
+                      ),
+                      const SizedBox(width: 16),
                       _ReportCard(
                         title: 'Weekly Revenue',
                         value: stats.weeklyRevenue.toStringAsFixed(2),
@@ -104,11 +114,6 @@ class _ReportsPageState extends State<ReportsPage> {
                       _ReportCard(
                         title: 'Monthly Revenue',
                         value: stats.monthlyRevenue.toStringAsFixed(2),
-                      ),
-                      const SizedBox(width: 16),
-                      _ReportCard(
-                        title: 'Total Customers',
-                        value: stats.totalCustomers.toString(),
                       ),
                     ],
                   ),
